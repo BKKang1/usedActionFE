@@ -1,14 +1,21 @@
-import Search from "./Search";
+import Search from "./others/Search";
 import axios from "axios";
 import { API } from "../../config";
+import DropdownMenu from "./others/DropdownMenu";
 import {
   WechatOutlined,
   TeamOutlined,
   PayCircleFilled,
 } from "@ant-design/icons";
-import Title from "./Title";
-import LoginModal from "./LoginModal";
+import Title from "./others/Title";
+import LoginModal from "./login/LoginModal";
+import { NavLink } from "react-router-dom";
 axios.defaults.withCredentials = true;
+const outerBox = {
+  display: "flex",
+  flexDirection: "column",
+  margin: "2rem 15%",
+};
 const headerBox = {
   display: "flex",
   justifyContent: "center",
@@ -17,8 +24,10 @@ const headerBox = {
 };
 const innerBox = {
   display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   margin: "2rem",
+  whiteSpace: "nowrap",
   alignItems: "center",
 };
 const iconSize = {
@@ -26,41 +35,54 @@ const iconSize = {
 };
 
 const LoginModalBoxStyle = {
-  margin: "2rem",
-  marginRight:"24rem",
   display: "flex",
   flexDirection: "row-reverse",
 };
 const itemStyle1 = {
   flexBasis: "30rem",
 };
+const item = [
+ 
+];
 
-
-const boxStyle = {};
 const Headers = () => {
   return (
-    <div>
-      <div style={LoginModalBoxStyle}>
-        <LoginModal ></LoginModal>
+    <div style={outerBox}>
+     
+      <div style={LoginModalBoxStyle} >
+        <LoginModal></LoginModal>
       </div>
+    
       <div style={headerBox}>
-        <div style={innerBox}>
+      <NavLink to="/" >
+      <div style={innerBox} >
           <Title></Title>
         </div>
+        </NavLink>
+  
         <div style={innerBox && itemStyle1}>
           <Search></Search>
         </div>
 
         <div style={innerBox}>
           <PayCircleFilled style={iconSize} />
+
+          <b>판매하기</b>
         </div>
         <div style={innerBox}>
           <TeamOutlined style={iconSize} />
+
+          <b>내 상점</b>
         </div>
 
         <div style={innerBox}>
           <WechatOutlined style={iconSize} />
+
+          <b>채팅</b>
         </div>
+      </div>
+      <div>
+        <DropdownMenu item={item}></DropdownMenu>
       </div>
     </div>
   );
