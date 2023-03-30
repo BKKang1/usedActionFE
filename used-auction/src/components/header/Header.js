@@ -1,5 +1,6 @@
 import Search from "./others/Search";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { API } from "../../config";
 import DropdownMenu from "./others/DropdownMenu";
 import {
@@ -21,6 +22,7 @@ const headerBox = {
   justifyContent: "center",
   margin: "2rem",
   alignItems: "center",
+  borderBottom: "2px solid",
 };
 const innerBox = {
   display: "flex",
@@ -69,12 +71,12 @@ const Headers = () => {
 
           <b>판매하기</b>
         </div>
+        <Link to="/myStore">
         <div style={innerBox}>
           <TeamOutlined style={iconSize} />
-
           <b>내 상점</b>
         </div>
-
+        </Link>
         <div style={innerBox}>
           <WechatOutlined style={iconSize} />
 
