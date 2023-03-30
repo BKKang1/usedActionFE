@@ -1,5 +1,6 @@
 import Search from "./Search";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { API } from "../../config";
 import {
   WechatOutlined,
@@ -14,6 +15,7 @@ const headerBox = {
   justifyContent: "center",
   margin: "2rem",
   alignItems: "center",
+  borderBottom: "2px solid",
 };
 const innerBox = {
   display: "flex",
@@ -54,10 +56,11 @@ const Headers = () => {
         <div style={innerBox}>
           <PayCircleFilled style={iconSize} />
         </div>
-        <div style={innerBox}>
-          <TeamOutlined style={iconSize} />
-        </div>
-
+        <Link to="/myStore">
+          <div style={innerBox}>
+            <TeamOutlined style={iconSize} />
+          </div>
+        </Link>
         <div style={innerBox}>
           <WechatOutlined style={iconSize} />
         </div>
