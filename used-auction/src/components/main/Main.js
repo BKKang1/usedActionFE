@@ -36,7 +36,7 @@ const Main = () => {
   }, []);
   return (
     <div style={boxStyle}>
-      <Row gutter={[100, 100]}>
+      <Row gutter={[20, 100]}>
         {MainContent.map((value, i) => {
           return (
             <GridItem

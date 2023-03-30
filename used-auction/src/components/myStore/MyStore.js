@@ -85,7 +85,7 @@ const menuTable = {
 const menu = {
   display: "table-cell",
   fontSize: "20px",
-  fontWeight: "700",
+  fontWeight: "300",
   paddingRight: "20px",
   paddingLeft: "20px",
   paddingBottom: "15px",
@@ -99,7 +99,7 @@ const menuHover = {
   display: "table-cell",
   fontSize: "20px",
   color: "blue",
-  fontWeight: "700",
+  fontWeight: "300",
   paddingRight: "20px",
   paddingLeft: "20px",
   paddingBottom: "15px",
@@ -175,7 +175,7 @@ const MyStore = () => {
           </div>
           <div 
             className="menu2" 
-            style={isHovering1 ? menuHover : menu}
+            style={isHovering2 ? menuHover : menu}
             onClick={() => setChoiceNum(2)}
             onMouseOver={() => {setIsHovering2(true);}}
             onMouseOut={() => {setIsHovering2(false);}}
@@ -184,7 +184,7 @@ const MyStore = () => {
           </div>
           <div 
             className="menu3" 
-            style={isHovering1 ? menuHover : menu}
+            style={isHovering3 ? menuHover : menu}
             onClick={() => setChoiceNum(3)}
             onMouseOver={() => {setIsHovering3(true);}}
             onMouseOut={() => {setIsHovering3(false);}}
