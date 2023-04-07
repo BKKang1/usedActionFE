@@ -11,16 +11,15 @@ const layoutStyle = {
   minWidth: "1200px",
 };
 axios.defaults.withCredentials = true;
-axios.defaults.headers.post["Content-Type"]="application/json"
+axios.defaults.headers.post["Content-Type"] = "application/json";
 function App() {
-  
   return (
     <div style={layoutStyle}>
       <BrowserRouter>
         <Header></Header>
         <Routes>
-          <Route path="/" element={<Main></Main>}></Route>
-          <Route path="/myStore" element={<MyStore />}></Route>
+          <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
+          <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

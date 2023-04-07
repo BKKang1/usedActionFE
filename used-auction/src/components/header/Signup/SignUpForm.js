@@ -65,7 +65,7 @@ const SignUp = ({ onCancel }) => {
     const loginId = form.getFieldsValue().loginId;
     const url = API.IDCHECK + `/${loginId}/exists`;
     console.log("id", loginId);
-    if (loginId == undefined) {
+    if (loginId === undefined) {
       console.log("공백은 허용되지 않습니다", loginId);
       return;
     }
@@ -83,7 +83,7 @@ const SignUp = ({ onCancel }) => {
   const checkNickname = () => {
     const name = form.getFieldsValue().name;
     const url = API.NICKNAMECHECK + `/${name}/exists`;
-    if (name == undefined) {
+    if (name === undefined) {
       console.log("공백은 허용되지 않습니다", name);
       return;
     }

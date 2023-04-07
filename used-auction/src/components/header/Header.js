@@ -1,7 +1,6 @@
 import Search from "./others/Search";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { API } from "../../config";
 import DropdownMenu from "./others/DropdownMenu";
 import {
   WechatOutlined,
@@ -43,25 +42,24 @@ const LoginModalBoxStyle = {
 const itemStyle1 = {
   flexBasis: "30rem",
 };
-const item = [
- 
-];
 
 const Headers = () => {
   return (
     <div style={outerBox}>
-     
-      <div style={LoginModalBoxStyle} >
+      <div style={LoginModalBoxStyle}>
         <LoginModal></LoginModal>
       </div>
-    
+
       <div style={headerBox}>
-      <NavLink to="/" >
-      <div style={innerBox} >
-          <Title></Title>
-        </div>
+        <NavLink to="/usedAuctionFE">
+          <div style={innerBox}>
+            <Title></Title>
+          </div>
         </NavLink>
-  
+
+        <div style={innerBox}>
+          <DropdownMenu />
+        </div>
         <div style={innerBox && itemStyle1}>
           <Search></Search>
         </div>
@@ -71,20 +69,17 @@ const Headers = () => {
 
           <b>판매하기</b>
         </div>
-        <Link to="/myStore">
-        <div style={innerBox}>
-          <TeamOutlined style={iconSize} />
-          <b>내 상점</b>
-        </div>
+        <Link to="/usedAuctionFE/myStore">
+          <div style={innerBox}>
+            <TeamOutlined style={iconSize} />
+            <b>내 상점</b>
+          </div>
         </Link>
         <div style={innerBox}>
           <WechatOutlined style={iconSize} />
 
           <b>채팅</b>
         </div>
-      </div>
-      <div>
-        <DropdownMenu item={item}></DropdownMenu>
       </div>
     </div>
   );

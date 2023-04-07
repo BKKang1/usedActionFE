@@ -22,12 +22,15 @@ const LoginModal = () => {
         setToken(null)
       });
   }, []);
+  useEffect(() => {
+    console.log("after token",token)
+  }, [token]);
   const showModal = () => {
     setIsModalOpen(true);
   };
   const logout = () => {
-    console.log("qw",token)
-    console.log("qwer",API.Headers)
+    console.log("before token",token)
+
     axios
       .get(API.LOGOUT)
       .then((response) => {
@@ -37,6 +40,8 @@ const LoginModal = () => {
          setToken(null)
         }
       });
+      
+
   };
   const handleCancel = () => {
     setIsModalOpen(false);
