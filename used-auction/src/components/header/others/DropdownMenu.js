@@ -3,7 +3,11 @@ import { Dropdown, Space, Typography } from "antd";
 
 const menuStyle = {
   color: "black",
+  fontSize:"2.5rem"
 };
+
+
+
 const items = [
   {
     key: "0",
@@ -43,15 +47,15 @@ const items = [
   },
   {
     key: "9",
-    label: "남성패션/잡화",
+    label: "도서",
   },
   {
     key: "10",
-    label: "뷰티/미용",
+    label: "가공식품",
   },
   {
     key: "11",
-    label: "스포츠/레저",
+    label: "식품",
   },
   {
     key: "12",
@@ -59,33 +63,31 @@ const items = [
   },
   {
     key: "13",
-    label: "중고차",
+    label: "기타 중고물품",
   },
   {
     key: "14",
-    label: "도서",
+    label: "남성패션/잡화",
   },
   {
     key: "15",
-    label: "티켓/교환권",
+    label: "뷰티/미용",
   },
   {
     key: "16",
-    label: "가공식품",
+    label: "티켓/교환권",
   },
   {
     key: "17",
-    label: "반려동물물품",
+    label: "스포츠/레저",
   },
   {
     key: "18",
-    label: "식물",
+    label: "취미/게임/음반",
   },
-  {
-    key: "19",
-    label: "기타 중고물품",
-  },
+
 ];
+
 
 const DropdownMenu = ({ item }) => {
   const onSelect = (selectedKeys) => {

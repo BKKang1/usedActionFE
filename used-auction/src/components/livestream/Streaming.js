@@ -6,7 +6,7 @@ import pic from "../../img/webrtc.png";
 var kurentoUtils =require('kurento-utils')
 const Streaming = () => {
   // const location =useState();
-  var ws = new WebSocket('wss://' + window.location.host + '/call');
+  var ws = new WebSocket('wss://' + 000 + '/call');
   var video;
   var webRtcPeer;
 
@@ -102,7 +102,7 @@ const Streaming = () => {
   function onOfferPresenter(error, offerSdp) {
     if (error)
       return console.error('Error generating the offer');
-    console.info('Invoking SDP offer callback function ' + location.host);
+    console.info('Invoking SDP offer callback function ' + window.location.host);
     var message = {
       id : 'presenter',
       sdpOffer : offerSdp
@@ -133,7 +133,7 @@ const Streaming = () => {
   function onOfferViewer(error, offerSdp) {
     if (error)
       return console.error('Error generating the offer');
-    console.info('Invoking SDP offer callback function ' + location.host);
+    console.info('Invoking SDP offer callback function ' + window.location.host);
     var message = {
       id : 'viewer',
       sdpOffer : offerSdp

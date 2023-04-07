@@ -13,7 +13,7 @@ const doCheckCookie = () => {
       console.log("쿠키 결과", response);
     });
 };
-const Main = () => {
+const Cookie = () => {
   return (
     <div>
       <Button variant="contained" onClick={doCheckCookie}>
@@ -22,4 +22,4 @@ const Main = () => {
     </div>
   );
 };
-export default Main;
+export default Cookie;

@@ -1,27 +1,19 @@
 {
-  "posts": [
-    {
-      "id": 1,
-      "title": "json-server",
-      "author": "typicode"
+ 
+  "isLogin":{
+    "result":{
+      "status":true,
+      "name":"강병관"
     }
-  ],
-  "comments": [
-    {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
+  },
+  
+  "logout":{
+    "result":{
+      "status":true
+      
     }
-  ],
-  "profile": [
-    {
-      "name": "typicode"
-    }
-  ],
-  "todos": [
-    { "id": 1, "description": "json-server 공부하기", "isCompleted": false },
-    { "id": 2, "description": "시리즈 읽어보기", "isCompleted": true }
-  ],
+  }
+  ,
   "main": {
     "result": [
       {

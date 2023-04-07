@@ -20,10 +20,10 @@ const textStyle = {
   overflow: "hidden",
   textOverflow: "ellipsis",
   display: "-webkit-box",
-  webkitLineClamp: "2",
-  webkitBoxOrient: "vertical",
+  WebkitLineClamp: "2",
+  WebkitBoxOrient: "vertical",
 };
-const { Text } = Typography;
+
 const GridItem = ({ imgSigSrc, productId, productName, price }) => {
   return (
     <Col className="gutter-row" span={8}>
