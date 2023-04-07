@@ -12,7 +12,7 @@ const Main = () => {
     justifyContent: "center",
     margin: "4rem 15%",
     alignItems: "center",
-    minWidth:"800px"
+    minWidth: "800px",
   };
   const [MainContent, setMainContent] = useState([
     {
@@ -28,8 +28,17 @@ const Main = () => {
       .then((response) => {
         setMainContent(response.data.result);
         console.log("리스트 이미지 결과", response.data.result);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, []);
+  {
+    if (MainContent) {
+      console.log(origin)
+      return <div></div>;
+    }
+  }
   return (
     <div style={boxStyle}>
       <Row gutter={[20, 100]}>

@@ -3,10 +3,8 @@ import { Dropdown, Space, Typography } from "antd";
 
 const menuStyle = {
   color: "black",
-  fontSize:"2.5rem"
+  fontSize: "2.5rem",
 };
-
-
 
 const items = [
   {
@@ -55,11 +53,11 @@ const items = [
   },
   {
     key: "11",
-    label: "식품",
+    label: "반려동물물품",
   },
   {
     key: "12",
-    label: "취미/게임/음반",
+    label: "식품",
   },
   {
     key: "13",
@@ -85,9 +83,7 @@ const items = [
     key: "18",
     label: "취미/게임/음반",
   },
-
 ];
-
 
 const DropdownMenu = ({ item }) => {
   const onSelect = (selectedKeys) => {
@@ -96,6 +92,8 @@ const DropdownMenu = ({ item }) => {
   };
   return (
     <Dropdown
+      placement="bottom"
+      arrow
       menu={{
         items,
         selectable: true,
@@ -105,7 +103,6 @@ const DropdownMenu = ({ item }) => {
     >
       <Typography.Link>
         <Space style={menuStyle}>
-          카테고리
           <DownOutlined />
         </Space>
       </Typography.Link>

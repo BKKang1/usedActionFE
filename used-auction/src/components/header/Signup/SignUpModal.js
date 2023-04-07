@@ -11,9 +11,7 @@ const SignUpModal = () => {
     setOpen(true);
   };
 
-  const handleOk = () => {
-    setOpen(false);
-  };
+ 
 
   const handleCancel = () => {
    
