@@ -16,7 +16,6 @@ const SignUpModal = () => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
    
     setOpen(false);
   };
@@ -34,7 +33,7 @@ const SignUpModal = () => {
     
         destroyOnClose="true"
       >
-        <SignUp></SignUp>
+        <SignUp onCancel={handleCancel}></SignUp>
       </Modal>
     </>
   );

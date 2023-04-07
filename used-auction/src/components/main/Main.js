@@ -24,11 +24,7 @@ const Main = () => {
   ]);
   useEffect(() => {
     axios
-      .get(API.MAIN, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .get(API.MAIN)
       .then((response) => {
         setMainContent(response.data.result);
         console.log("리스트 이미지 결과", response.data.result);
