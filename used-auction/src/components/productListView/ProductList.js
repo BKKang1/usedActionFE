@@ -1,12 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { API } from "../../config";
-import GridItem from "./GridItem";
+import GridItem from "../main/GridItem";
 import { Row } from "antd";
 
-axios.defaults.withCredentials = true;
-
-const Main = () => {
+const ProductList = () => {
   const boxStyle = {
     display: "flex",
     justifyContent: "center",
@@ -35,7 +33,7 @@ const Main = () => {
   }, []);
   {
     if (!MainContent) {
-      console.log(origin)
+      console.log(origin);
       return <div></div>;
     }
   }
@@ -57,4 +55,4 @@ const Main = () => {
     </div>
   );
 };
-export default Main;
+export default ProductList;

@@ -10,7 +10,8 @@ export const API = {
   EMAILSEND: `${BASE_URL}/api/email`,
   NICKNAMECHECK: `${BASE_URL}/api/member/name`,
   LOGIN: `${BASE_URL}/api/member/login`,
-  ISLOGIN: `${BASE_URL2}/isLogin`,
+  ISLOGIN: `${BASE_URL}/api/member/is-login`,
   LOGOUT: `${BASE_URL2}/logout`,
+  SEARCH: `${BASE_URL}/api/products`
   
 };

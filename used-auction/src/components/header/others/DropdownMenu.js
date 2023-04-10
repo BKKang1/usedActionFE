@@ -85,10 +85,9 @@ const items = [
   },
 ];
 
-const DropdownMenu = ({ item }) => {
+const DropdownMenu = ({ categoryId }) => {
   const onSelect = (selectedKeys) => {
-    item = selectedKeys;
-    console.log("item체크", item);
+    categoryId.current = selectedKeys.key;
   };
   return (
     <Dropdown

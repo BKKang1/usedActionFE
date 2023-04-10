@@ -2,6 +2,7 @@ import Search from "./others/Search";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
+import { useRef } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -10,7 +11,7 @@ import {
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink } from "react-router-dom";
-axios.defaults.withCredentials = true;
+
 const outerBox = {
   display: "flex",
   flexDirection: "column",
@@ -44,6 +45,8 @@ const itemStyle1 = {
 };
 
 const Headers = () => {
+  const categoryId = useRef("0");
+  const productName= useRef("");
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
@@ -58,10 +61,10 @@ const Headers = () => {
         </NavLink>
 
         <div style={innerBox}>
-          <DropdownMenu />
+          <DropdownMenu categoryId={categoryId} />
         </div>
         <div style={innerBox && itemStyle1}>
-          <Search></Search>
+          <Search productName={productName} categoryId={categoryId}></Search>
         </div>
 
         <div style={innerBox}>

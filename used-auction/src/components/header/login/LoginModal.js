@@ -4,7 +4,7 @@ import Login from "./LoginForm";
 import { API } from "../../../config";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import {loginState} from "../../../recoil/loginState";
+import { loginState } from "../../../recoil/loginState";
 const LoginModal = () => {
   const [token, setToken] = useRecoilState(loginState);
   const [name, setName] = useState(null);
@@ -14,34 +14,30 @@ const LoginModal = () => {
       .get(API.ISLOGIN)
       .then((response) => {
         if (response.data.result.status === true) {
-          setName(response.data.result.name);
+          setName(response.data.result.loginId);
         }
       })
       .catch(() => {
         setName(null);
-        setToken(null)
+        setToken(null);
       });
   }, []);
   useEffect(() => {
-    console.log("after token",token)
+    console.log("token", token);
   }, [token]);
   const showModal = () => {
     setIsModalOpen(true);
   };
   const logout = () => {
-    console.log("before token",token)
+    console.log("before token", token);
 
-    axios
-      .get(API.LOGOUT)
-      .then((response) => {
-        console.log(response.data.result);
-        if (response.data.result) {
-         setName(null);
-         setToken(null)
-        }
-      });
-      
-
+    axios.get(API.LOGOUT).then((response) => {
+      console.log(response.data.result);
+      if (response.data.result) {
+        setName(null);
+        setToken(null);
+      }
+    });
   };
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -66,7 +62,7 @@ const LoginModal = () => {
         footer={false}
         destroyOnClose="true"
       >
-        <Login onCancel={handleCancel} setName={setName} ></Login>
+        <Login onCancel={handleCancel} setName={setName}></Login>
       </Modal>
     </>
   );
