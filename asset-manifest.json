@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/usedAuctionFE/static/js/main.f5e93bf2.js",
+    "main.js": "/usedAuctionFE/static/js/main.9b79c4cb.js",
     "index.html": "/usedAuctionFE/index.html",
-    "main.f5e93bf2.js.map": "/usedAuctionFE/static/js/main.f5e93bf2.js.map"
+    "main.9b79c4cb.js.map": "/usedAuctionFE/static/js/main.9b79c4cb.js.map"
   },
   "entrypoints": [
-    "static/js/main.f5e93bf2.js"
+    "static/js/main.9b79c4cb.js"
   ]
 }
