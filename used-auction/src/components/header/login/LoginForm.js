@@ -21,13 +21,12 @@ const formStyle = {
 const LoginForm = ({ onCancel, setName }) => {
   const [token, setToken] = useRecoilState(loginState);
   useEffect(() => {
-    
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+ 
     axios
       .get(API.ISLOGIN)
       .then((response) => {
         if (response.data.result.status === true) {
-          setName(response.data.result.name);
+          setName(response.data.result.loginId);
         }
       })
       .catch(() => {
@@ -41,7 +40,7 @@ const LoginForm = ({ onCancel, setName }) => {
 
     axios
       .post(API.LOGIN, json)
-      .then(async (response) => {
+      .then((response) => {
         console.log(response.data.result);
         setToken(response.data.result.accessToken);
       })
