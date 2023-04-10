@@ -23,7 +23,6 @@ const Search = ({ categoryId, productName }) => {
         API.SEARCH +
           `?categoryId=${categoryId.current}&productName=${productName.current}&orderBy=${orderBy}&page=${page}&size=${size}`
       )
-
       .then((response) => {
         console.log(response.data);
       })
