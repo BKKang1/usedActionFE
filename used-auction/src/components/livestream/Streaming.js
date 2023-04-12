@@ -4,8 +4,11 @@ import React, { location, useState, useEffect } from "react";
 import { WebRtcPeer, KurentoClient } from 'kurento-utils'
 import pic from "../../img/webrtc.png";
 var kurentoUtils =require('kurento-utils')
+
 const Streaming = () => {
   // const location =useState();
+  const [wsState, setWsState] = useState(true);
+  const [prevStateID, setPrevStateID] = useState(" ");
   var ws = new WebSocket('wss://' + 000 + '/call');
   var video;
   var webRtcPeer;
@@ -13,8 +16,34 @@ const Streaming = () => {
   useEffect(() => {
     video = document.getElementById('video');
     console.log(video);
-    console.log(window.location);
-  }, []);
+    console.log(window.location); 
+
+    console.log("Trying to open ws");
+    setWsState(true);
+
+    ws.onopen = () => {
+      console.log('ws opened');
+      if(prevStateID == "presenter"){
+        presenter();
+      }
+      else if(prevStateID == "viewer"){
+        viewer();
+      }
+      else if(prevStateID == "stop"){
+        stop();
+      }
+      else{
+
+      }
+    };
+
+    ws.onclose = (event) => {
+      // Parse event code and log
+      setTimeout(() => {setWsState(false)}, 5000)
+      console.log('ws closed');
+    }
+
+  }, [wsState]);
 
   // window.onload = function() {
   //   //console = new Console();
@@ -107,6 +136,7 @@ const Streaming = () => {
       id : 'presenter',
       sdpOffer : offerSdp
     }
+    setPrevStateID("presenter");
     sendMessage(message);
   }
 
@@ -138,6 +168,7 @@ const Streaming = () => {
       id : 'viewer',
       sdpOffer : offerSdp
     }
+    setPrevStateID("viewer");
     sendMessage(message);
   }
 
@@ -155,6 +186,7 @@ const Streaming = () => {
     var message = {
       id : 'stop'
     }
+    setPrevStateID("stop");
     sendMessage(message);
     dispose();
   }
@@ -163,6 +195,7 @@ const Streaming = () => {
     if (webRtcPeer) {
       webRtcPeer.dispose();
       webRtcPeer = null;
+      ws.close();
     }
     hideSpinner(video);
 
@@ -194,6 +227,7 @@ const Streaming = () => {
   function sendMessage(message) {
     var jsonMessage = JSON.stringify(message);
     console.log('Sending message: ' + jsonMessage);
+    //if (!isOpen(ws)) return;
     ws.send(jsonMessage);
   }
 
@@ -211,6 +245,8 @@ const Streaming = () => {
       arguments[i].style.background = '';
     }
   }
+
+  function isOpen(ws) { return ws.readyState === ws.OPEN }
 
   return (
     <div>

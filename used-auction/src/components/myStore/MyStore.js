@@ -1,7 +1,7 @@
 
 import axios from "axios";
 import { API } from "../../config";
-import { Button, Layout, Menu } from "antd";
+import { Button, Layout, Menu, Modal } from "antd";
 import { PageHeader } from '@ant-design/pro-layout';
 import React, { location, useState, useEffect } from "react";
 import { BrowserRouter, Link, Route, Routes, NavLink, useNavigate,} from "react-router-dom";
@@ -125,18 +125,39 @@ const MyStore = () => {
   const [userName, setUserName] = useState("강댕강댕");
   const [userScore, setUserScore] = useState("88");
   const [choiceNum, setChoiceNum] = useState(1);
-
+  const [userInfo, setUserInfo] = useState([]);
   const [isHovering1, setIsHovering1] = useState(false);
   const [isHovering2, setIsHovering2] = useState(false);
   const [isHovering3, setIsHovering3] = useState(false);
 
-  const ifNum = () => {
-    if (choiceNum == 1) {
-        return(
-          <ProductManagement></ProductManagement>
-        );
-    }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
   };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+ 
+  };
+
+  const ifNum = () => {
+    return(
+      <ProductManagement props ={choiceNum}></ProductManagement>
+    );
+  };
+
+  useEffect(() => {
+    console.log(userInfo);
+    axios
+      .get("https://usedauction.shop/api/mypage", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        
+      });
+  }, [userInfo]);
 
   return (
     <Layout className="total-box" style={totalBox}>
@@ -151,9 +172,16 @@ const MyStore = () => {
             {userName}
           </span>
           <div className="button-box" style={buttonBox}>
-            <Button className="button1" type="primary" style={btnStyle}>
-              개인 정보 조회
+            <Button className="button1" type="primary" style={btnStyle} onClick={showModal}>
+              회원 정보 조회
             </Button>
+            <Modal 
+            title="회원 정보 조회" 
+            open={isModalOpen} 
+            onCancel={handleCancel} 
+            footer={false}  
+            destroyOnClose="true">
+            </Modal>
           </div>
           <span className="user-score" style={userScoreText1}>
             평가점수 :  
