@@ -7,9 +7,9 @@ var kurentoUtils =require('kurento-utils')
 
 const Streaming = () => {
   // const location =useState();
-  const ws = new WebSocket('wss://' + "usedauction.shop:8443" + '/call');
   const [wsState, setWsState] = useState(true);
   const [prevStateID, setPrevStateID] = useState(" ");
+  var ws = new WebSocket('wss://' + 000 + '/call');
   var video;
   var webRtcPeer;
 

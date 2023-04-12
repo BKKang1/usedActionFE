@@ -1,8 +1,8 @@
 import Search from "./others/Search";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { API } from "../../config";
 import DropdownMenu from "./others/DropdownMenu";
+import { useRef } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -11,7 +11,7 @@ import {
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink } from "react-router-dom";
-axios.defaults.withCredentials = true;
+
 const outerBox = {
   display: "flex",
   flexDirection: "column",
@@ -43,27 +43,28 @@ const LoginModalBoxStyle = {
 const itemStyle1 = {
   flexBasis: "30rem",
 };
-const item = [
- 
-];
 
 const Headers = () => {
+  const categoryId = useRef("0");
+  const productName= useRef("");
   return (
     <div style={outerBox}>
-     
-      <div style={LoginModalBoxStyle} >
+      <div style={LoginModalBoxStyle}>
         <LoginModal></LoginModal>
       </div>
-    
+
       <div style={headerBox}>
-      <NavLink to="/" >
-      <div style={innerBox} >
-          <Title></Title>
-        </div>
+        <NavLink to="/usedAuctionFE">
+          <div style={innerBox}>
+            <Title></Title>
+          </div>
         </NavLink>
-  
+
+        <div style={innerBox}>
+          <DropdownMenu categoryId={categoryId} />
+        </div>
         <div style={innerBox && itemStyle1}>
-          <Search></Search>
+          <Search productName={productName} categoryId={categoryId}></Search>
         </div>
 
         <div style={innerBox}>
@@ -71,20 +72,17 @@ const Headers = () => {
 
           <b>판매하기</b>
         </div>
-        <Link to="/myStore">
-        <div style={innerBox}>
-          <TeamOutlined style={iconSize} />
-          <b>내 상점</b>
-        </div>
+        <Link to="/usedAuctionFE/myStore">
+          <div style={innerBox}>
+            <TeamOutlined style={iconSize} />
+            <b>내 상점</b>
+          </div>
         </Link>
         <div style={innerBox}>
           <WechatOutlined style={iconSize} />
 
           <b>채팅</b>
         </div>
-      </div>
-      <div>
-        <DropdownMenu item={item}></DropdownMenu>
       </div>
     </div>
   );
