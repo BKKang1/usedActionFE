@@ -21,12 +21,11 @@ const formStyle = {
 const LoginForm = ({ onCancel, setName }) => {
   const [token, setToken] = useRecoilState(loginState);
   useEffect(() => {
- 
     axios
       .get(API.ISLOGIN)
       .then((response) => {
         if (response.data.result.status === true) {
-          setName(response.data.result.loginId);
+          setName(response.data.result.name);
         }
       })
       .catch(() => {

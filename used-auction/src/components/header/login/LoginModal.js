@@ -14,7 +14,7 @@ const LoginModal = () => {
       .get(API.ISLOGIN)
       .then((response) => {
         if (response.data.result.status === true) {
-          setName(response.data.result.loginId);
+          setName(response.data.result.name);
         }
       })
       .catch(() => {
@@ -31,13 +31,18 @@ const LoginModal = () => {
   const logout = () => {
     console.log("before token", token);
 
-    axios.get(API.LOGOUT).then((response) => {
-      console.log(response.data.result);
-      if (response.data.result) {
+    axios
+      .post(API.LOGOUT,token)
+      .then((response) => {
+        console.log(response.data.result);
+
         setName(null);
         setToken(null);
-      }
-    });
+      })
+      .catch(() => {
+        setName(null);
+        setToken(null);
+      });
   };
   const handleCancel = () => {
     setIsModalOpen(false);

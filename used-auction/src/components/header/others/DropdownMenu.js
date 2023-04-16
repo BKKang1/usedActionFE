@@ -87,12 +87,13 @@ const items = [
 
 const DropdownMenu = ({ categoryId }) => {
   const onSelect = (selectedKeys) => {
+    
     categoryId.current = selectedKeys.key;
+    console.log(categoryId.current)
   };
   return (
     <Dropdown
-      placement="bottom"
-      arrow
+      autoAdjustOverflow={false}
       menu={{
         items,
         selectable: true,
@@ -102,6 +103,7 @@ const DropdownMenu = ({ categoryId }) => {
     >
       <Typography.Link>
         <Space style={menuStyle}>
+          카테고리
           <DownOutlined />
         </Space>
       </Typography.Link>

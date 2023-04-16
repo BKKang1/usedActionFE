@@ -2,58 +2,70 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { API } from "../../config";
 import GridItem from "./GridItem";
-import { Row } from "antd";
+import { Divider } from "antd";
 
 axios.defaults.withCredentials = true;
 
 const Main = () => {
-  const boxStyle = {
-    display: "flex",
-    justifyContent: "center",
-    margin: "4rem 15%",
-    alignItems: "center",
-    minWidth: "800px",
-  };
+ 
+  const style={
+    margin: "100px 250px",
+    padding: "5px",
+    width: "1200px",
+    display: "grid",
+    gridTemplateRows: "2fr ",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+    
+  }
+  
   const [MainContent, setMainContent] = useState([
     {
-      imgSigSrc: null,
-      productId: null,
+      nickname: null,
+      categoryName: null,
       productName: null,
-      price: null,
+      productId: null,
+      nowPrice: null,
+      auctionEndDate: null,
+      sigImgSrc: null,
+      status: null,
     },
   ]);
   useEffect(() => {
     axios
-      .get(API.MAIN)
+      .get(
+        API.SEARCH +
+          `?categoryId=0&productName=&orderBy=VIEW_ORDER&page=0&size=8`
+      )
       .then((response) => {
-        setMainContent(response.data.result);
-        console.log("리스트 이미지 결과", response.data.result);
+        setMainContent(response.data.content);
+        console.log("리스트 이미지 결과", response.data.content);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
-  {
-    if (!MainContent) {
-      console.log(origin)
-      return <div></div>;
-    }
-  }
+
+  
   return (
-    <div style={boxStyle}>
-      <Row gutter={[20, 100]}>
-        {MainContent.map((value, i) => {
+    <div style={style}  >
+      {MainContent.map((value, i) => {
+        {
+     
           return (
             <GridItem
               key={i}
-              imgSigSrc={value.imgSigSrc}
+              sigImgSrc={value.sigImgSrc}
               productId={value.productId}
               productName={value.productName}
-              price={value.price}
+              nowPrice={value.nowPrice}
+              nickname={value.nickname}
+              categoryName={value.categoryName}
+              auctionEndDate={value.auctionEndDate}
+              status={value.status}
             ></GridItem>
           );
-        })}
-      </Row>
+        }
+      })}
     </div>
   );
 };
