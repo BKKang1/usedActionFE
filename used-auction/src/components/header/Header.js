@@ -15,8 +15,8 @@ import { NavLink } from "react-router-dom";
 const outerBox = {
   display: "flex",
   flexDirection: "column",
-  margin: "2rem 15%",
-  minWidth:"1200px"
+  margin: "2rem",
+
   
 };
 const headerBox = {

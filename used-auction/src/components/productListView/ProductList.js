@@ -15,9 +15,16 @@ const ProductList = () => {
     margin: "4rem 15%",
     alignItems: "center",
   };
+  const style ={
+    padding: "5px",
+    width: "1200px",
+    display: "grid",
+    gridTemplateRows: "2fr ",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+  }
   const sortStyle = {
-    display: "flex",
-    margin: "4rem 15%",
+
+    margin: "2rem auto",
   };
   const [MainContent, setMainContent] = useState([
     {
@@ -66,7 +73,7 @@ const ProductList = () => {
       <div style={sortStyle}>
         <SelectSort orderBy={orderBy} setOrderBy={setOrderBy}/>
       </div>
-      <div style={boxStyle}>
+      <div style={style}>
         {MainContent.map((value, i) => {
           return (
             <GridItem

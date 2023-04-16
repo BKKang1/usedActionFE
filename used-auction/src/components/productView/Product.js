@@ -77,13 +77,14 @@ const Product = () => {
               style={{
                 width: 900,
               }}
+              
             >
               <div style={cardStyle}>
                 <div style={sigImgStyle}>
                   <Image width={250} height={250} src={product.sigImg.path} />
                 </div>
 
-                <Descriptions title="상품 정보">
+                <Descriptions column={2} title="상품 정보">
                   <Descriptions.Item label="판매자">
                     <Badge
                       color="green"

@@ -9,7 +9,7 @@ axios.defaults.withCredentials = true;
 const Main = () => {
  
   const style={
-    margin: "100px 250px",
+    
     padding: "5px",
     width: "1200px",
     display: "grid",

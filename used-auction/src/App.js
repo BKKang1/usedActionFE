@@ -11,7 +11,8 @@ import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/loginState";
 import Product from "./components/productView/Product";
 const layoutStyle = {
-  minWidth: "1200px",
+  margin: "0 auto",
+  width: "1200px",
 };
 
 function App() {
@@ -31,7 +32,10 @@ function App() {
             path="/usedAuctionFE/productList"
             element={<ProductList />}
           ></Route>
-          <Route path="/usedAuctionFE/productList/productDetail/:productId" element={<Product />}></Route>
+          <Route
+            path="/usedAuctionFE/productList/productDetail/:productId"
+            element={<Product />}
+          ></Route>
         </Routes>
       </BrowserRouter>
     </div>
