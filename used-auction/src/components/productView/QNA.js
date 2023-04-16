@@ -22,7 +22,7 @@ const QNA = ({ productId }) => {
     axios
       .get(API.QUESTIONVIEW + `/${productId}?page=${0}&size=${8}`)
       .then((res) => {
-        console.log("댓글",ㅛres.data);
+        console.log("댓글",res.data);
       });
   }, [productId]);
   const [position, setPosition] = useState("bottom");
