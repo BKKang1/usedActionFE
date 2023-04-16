@@ -1,4 +1,4 @@
-import Search from "./others/Search";
+import Search from "./others/SearchProductName";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
@@ -16,6 +16,8 @@ const outerBox = {
   display: "flex",
   flexDirection: "column",
   margin: "2rem 15%",
+  minWidth:"1200px"
+  
 };
 const headerBox = {
   display: "flex",
@@ -35,7 +37,10 @@ const innerBox = {
 const iconSize = {
   fontSize: "3rem",
 };
-
+const DropdownMenuStyle={
+  width:"90%",
+  height:"90%"
+}
 const LoginModalBoxStyle = {
   display: "flex",
   flexDirection: "row-reverse",
@@ -43,10 +48,12 @@ const LoginModalBoxStyle = {
 const itemStyle1 = {
   flexBasis: "30rem",
 };
-
+const textDecoration = {
+  textDecoration: "none",
+  color:"black"
+};
 const Headers = () => {
-  const categoryId = useRef("0");
-  const productName= useRef("");
+  let categoryId = useRef("0");
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
@@ -54,17 +61,14 @@ const Headers = () => {
       </div>
 
       <div style={headerBox}>
-        <NavLink to="/usedAuctionFE">
+        <NavLink to="/usedAuctionFE" style={textDecoration}>
           <div style={innerBox}>
             <Title></Title>
           </div>
         </NavLink>
 
-        <div style={innerBox}>
-          <DropdownMenu categoryId={categoryId} />
-        </div>
         <div style={innerBox && itemStyle1}>
-          <Search productName={productName} categoryId={categoryId}></Search>
+          <Search categoryId={categoryId}></Search>
         </div>
 
         <div style={innerBox}>
@@ -83,6 +87,9 @@ const Headers = () => {
 
           <b>채팅</b>
         </div>
+      </div>
+      <div style={DropdownMenuStyle} >
+        <DropdownMenu categoryId={categoryId}></DropdownMenu>
       </div>
     </div>
   );
