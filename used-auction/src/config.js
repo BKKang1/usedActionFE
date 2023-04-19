@@ -19,4 +19,9 @@ export const API = {
   SALEHISTORY: `${BASE_URL}/api/mypage/sales-history`,
   BUYHISTORY: `${BASE_URL}/api/mypage/buy-history`,
   AUCTIONHISTORY: `${BASE_URL}/api/mypage/auction-history`,
+  LOGOUT: `${BASE_URL}/api/member/logout`,
+  SEARCH: `${BASE_URL}/api/products`,
+  ORDERBY:`${BASE_URL}/api/products/order-by`,
+  PRODUCT: `${BASE_URL}/api/products`,
+  QUESTIONVIEW:`${BASE_URL}/api/questions`
 };

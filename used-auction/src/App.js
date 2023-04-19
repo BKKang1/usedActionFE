@@ -11,8 +11,10 @@ import ChatList from "./components/chattingRoom/ChatList";
 import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/loginState";
+import Product from "./components/productView/Product";
 const layoutStyle = {
-  minWidth: "1200px",
+  margin: "0 auto",
+  width: "1200px",
 };
 
 function App() {
@@ -34,6 +36,10 @@ function App() {
           <Route
             path="/usedAuctionFE/productList"
             element={<ProductList />}
+          ></Route>
+          <Route
+            path="/usedAuctionFE/productList/productDetail/:productId"
+            element={<Product />}
           ></Route>
         </Routes>
       </BrowserRouter>

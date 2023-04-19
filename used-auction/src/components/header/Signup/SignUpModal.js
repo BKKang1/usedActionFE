@@ -2,9 +2,7 @@ import { Button, Modal } from "antd";
 import React, { useState } from "react";
 import SignUp from "./SignUpForm.js";
 
-
 const SignUpModal = () => {
- 
   const [open, setOpen] = useState(false);
 
   const showModal = () => {
@@ -12,10 +10,9 @@ const SignUpModal = () => {
   };
 
   const handleCancel = () => {
-   
     setOpen(false);
   };
-
+ 
   return (
     <>
       <Button type="primary" onClick={showModal}>
@@ -26,7 +23,6 @@ const SignUpModal = () => {
         open={open}
         onCancel={handleCancel}
         footer={false}
-    
         destroyOnClose="true"
       >
         <SignUp onCancel={handleCancel}></SignUp>

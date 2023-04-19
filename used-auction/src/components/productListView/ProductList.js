@@ -1,57 +1,102 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { API } from "../../config";
 import GridItem from "../main/GridItem";
 import { Row } from "antd";
-
+import { useLocation } from "react-router-dom";
+import { Pagination } from "antd";
+import SelectSort from "./SelectSort";
 const ProductList = () => {
+  const location = useLocation();
+
   const boxStyle = {
     display: "flex",
     justifyContent: "center",
     margin: "4rem 15%",
     alignItems: "center",
-    minWidth: "800px",
+  };
+  const style ={
+    padding: "5px",
+    width: "1200px",
+    display: "grid",
+    gridTemplateRows: "2fr ",
+    gridTemplateColumns: "1fr 1fr 1fr 1fr",
+  }
+  const sortStyle = {
+
+    margin: "2rem auto",
   };
   const [MainContent, setMainContent] = useState([
     {
-      imgSigSrc: null,
-      productId: null,
+      nickname: null,
+      categoryName: null,
       productName: null,
-      price: null,
+      productId: null,
+      nowPrice: null,
+      auctionEndDate: null,
+      sigImgSrc: null,
+      status: null,
     },
   ]);
+  const [totalPage,setTotalPage] =useState(null);
+
+  const [orderBy,setOrderBy] = useState("VIEW_ORDER")
+  const [page, setPage] = useState(0);
+  let size = "8";
+  let productName = location.state.productName;
+  let categoryId = location.state.categoryId.current;
+  const onChange = (value) => {
+    console.log(value);
+    setPage(value - 1);
+  };
   useEffect(() => {
+    console.log("productName", productName);
+    console.log("categoryId", categoryId);
+    console.log("page", page);
     axios
-      .get(API.MAIN)
+      .get(
+        API.SEARCH +
+          `?categoryId=${categoryId}&productName=${productName}&orderBy=${orderBy}&page=${
+            page | 0
+          }&size=${size}`
+      )
       .then((response) => {
-        setMainContent(response.data.result);
-        console.log("리스트 이미지 결과", response.data.result);
+        console.log(response.data.content);
+        setMainContent(response.data.content);
+        setTotalPage(response.data.getTotalPages)
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-  {
-    if (!MainContent) {
-      console.log(origin);
-      return <div></div>;
-    }
-  }
+      .catch((error) => console.log(error.response.data));
+  }, [productName, categoryId, page,orderBy]);
+
   return (
-    <div style={boxStyle}>
-      <Row gutter={[20, 100]}>
+    <div>
+      <div style={sortStyle}>
+        <SelectSort orderBy={orderBy} setOrderBy={setOrderBy}/>
+      </div>
+      <div style={style}>
         {MainContent.map((value, i) => {
           return (
             <GridItem
               key={i}
-              imgSigSrc={value.imgSigSrc}
+              sigImgSrc={value.sigImgSrc}
               productId={value.productId}
               productName={value.productName}
-              price={value.price}
+              nowPrice={value.nowPrice}
+              nickname={value.nickname}
+              categoryName={value.categoryName}
+              auctionEndDate={value.auctionEndDate}
+              status={value.status}
             ></GridItem>
           );
         })}
-      </Row>
+      </div>
+      <div style={boxStyle}>
+        <Pagination
+          onChange={onChange}
+          total={totalPage}
+          pageSize={8}
+        ></Pagination>
+      </div>
     </div>
   );
 };
