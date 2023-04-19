@@ -2,11 +2,11 @@ import axios from "axios";
 import { API } from "../../config";
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography, Button, List, Layout, Menu } from "antd";
-import React, { location, useState, useEffect } from "react";
+import React, { location, useState, useEffect,useRef } from "react";
 import { BrowserRouter, Link, Route, Routes, NavLink, useNavigate,} from "react-router-dom";
 import MyStore from "./MyStore";
-import SockJS from "sockjs-client";
-const Stomp = require('stompjs');
+// import SockJS from "sockjs-client";
+// const Stomp = require('stompjs');
 axios.defaults.withCredentials = true;
 
 const basicStyle = {
@@ -79,7 +79,7 @@ const items1 = [
     },
 ];
 
-const items3 = [
+const items2 = [
     {
       key: "0",
       label: "전체",
@@ -94,7 +94,7 @@ const items3 = [
     },
 ];
 
-const items2 = [
+const items3 = [
     {
       key: "0",
       label: "전체",
@@ -102,39 +102,52 @@ const items2 = [
 
     {
       key: "1",
-      label: "낙찰성공",
+      label: "거래성공",
     },
     {
       key: "2",
-      label: "낙찰실패",
+      label: "거래실패",
     },
 ];
 
-const productData = [
+const items4 = [
     {
-        productId: "1",
-        productName: "롤랙스 시계",
-        signatureImgSrc: "",
-        nowPrice: "1000000",
-        productState: "경매중",
-        createdDate: "2023/04/04",
+      key: "0",
+      label: "전체",
+    },
+
+    {
+      key: "1",
+      label: "입찰",
+    },
+    {
+      key: "2",
+      label: "낙찰",
     },
 ];
-
-const message = {
-    "test" : "이런거 할거면 미리 말해주지 밥먹고 올걸 ㅠㅠ",
-};
 
 const ProductManagement = (props) => {
-    const [data, setData] = useState(productData);
+    const [data, setData] = useState();
     const [categoryName, setCategoryName] = useState("전체");
-    //const [itemKey, setItemKey] = useState(0);
-    // const [choiceNum, setChoiceNum] = useState(0);
+    const [selectedKeys, setSelectedKeys] = useState(0);
     const [items,setItems] = useState(items1);
+    const [prevProps,setPrevProps] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
+    const [totalItemNum, setTotalItemNum] = useState(0);
+    const [pageSize, setPageSize] = useState(5);
 
     useEffect(() => {
         console.log(props.props);
-        setCategoryName(prev => "전체");
+        if(props.props != prevProps){
+            setCategoryName(prev => "전체");
+            setPrevProps(props.props);
+            setSelectedKeys(0);
+        }
+
+
+        // const message = {
+        //     "test" : "이런거 할거면 미리 말해주지 밥먹고 올걸 ㅠㅠ",
+        // };
 
         // let stomp_client;
         // let socket = new SockJS('https://' + "usedauction.shop" + '/chat/ws');
@@ -152,25 +165,210 @@ const ProductManagement = (props) => {
         // });
 
         if(props.props == 1){
-           setItems(prev => items1);
+            setItems(prev => items1);
+
+            if(categoryName=="전체"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="경매중"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}&status=bid`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="낙찰성공"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}&status=success-bid`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="낙찰실패"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}&status=fail-bid`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래성공"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}&status=transaction-ok`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래실패"){
+                axios
+                .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}&status=transaction-fail`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
         }
         else if(props.props == 2){
             setItems(prev => items2);
+
+            if(categoryName=="전체"){
+                axios
+                .get(API.SALEHISTORY + `?page=${pageNum}&size=${pageSize}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래성공"){
+                axios
+                .get(API.SALEHISTORY + `?page=${pageNum}&size=${pageSize}&status=transaction-ok`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래실패"){
+                axios
+                .get(API.SALEHISTORY + `?page=${pageNum}&size=${pageSize}&status=transaction-fail`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
         }
         else if(props.props == 3){
             setItems(prev => items3);
+
+            if(categoryName=="전체"){
+                axios
+                .get(API.BUYHISTORY + `?page=${pageNum}&size=${pageSize}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래성공"){
+                axios
+                .get(API.BUYHISTORY + `?page=${pageNum}&size=${pageSize}&status=transaction-ok`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="거래실패"){
+                axios
+                .get(API.BUYHISTORY + `?page=${pageNum}&size=${pageSize}&status=transaction-fail`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
         }
-    }, [props.props]);
+        else if(props.props == 4){
+            setItems(prev => items4);
 
-    useEffect(() => {
-        console.log(categoryName);
-        //여기에 axios 작업
-    }, [categoryName]);
+            if(categoryName=="전체"){
+                axios
+                .get(API.AUCTIONHISTORY + `?page=${pageNum}&size=${pageSize}`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="입찰"){
+                axios
+                .get(API.AUCTIONHISTORY + `?page=${pageNum}&size=${pageSize}&status=bid `)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+            else if(categoryName=="낙찰"){
+                axios
+                .get(API.AUCTIONHISTORY + `?page=${pageNum}&size=${pageSize}&status=successful-bid`)
+                .then((response) => {
+                    console.log(response.data);
+                    setData(response.data.content);
+                    setTotalItemNum(response.data.totalElements);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
+    }, [props.props, pageNum, categoryName]);
 
-    const onSelect = (selectedKeys) => {
-        console.log("selectedKeys체크", selectedKeys.key);
-        setCategoryName(prev => items[selectedKeys.key].label);
-      };
+    const onClick = (key) =>{
+        console.log("clicked",key);
+        setCategoryName(prev => items[key.key].label);
+        setSelectedKeys(key.key);
+        setPageNum(0);
+
+    };
 
     return (
         <div style= {basicStyle}>
@@ -179,7 +377,9 @@ const ProductManagement = (props) => {
                     items,
                     selectable: true,
                     defaultSelectedKeys: ["0"],
-                    onSelect,
+                    selectedKeys: [`${selectedKeys}`],
+                    //onSelect,
+                    onClick,
                 }}
                 >
                 <Typography.Link>
@@ -194,11 +394,13 @@ const ProductManagement = (props) => {
                     itemLayout="vertical"
                     size="large"
                     pagination={{
-                        onChange: () => {
-                            //console.log(page);
+                        onChange: (page) => {
+                            setPageNum(page-1);
                         },
                         align: "center",
-                        pageSize: 10,
+                        current: pageNum+1,
+                        total: totalItemNum,
+                        pageSize:pageSize,
                     }}
                     dataSource={data}
                     renderItem={(item) => {
@@ -209,7 +411,7 @@ const ProductManagement = (props) => {
                                     <img
                                         width={272}
                                         alt="logo"
-                                        src={item.signatureImgSrc}
+                                        src={item.sigImgSrc}
                                         style={imgStyle}
                                     />
                                 }
@@ -218,8 +420,9 @@ const ProductManagement = (props) => {
                                 title={<NavLink to={`../shop-list/shop-detail/${item.productId}`} style = {titleStyle}>{item.productName}</NavLink>}
                                 description={<span style = {descriptionStyle}>{item.nowPrice}</span>}
                             />
-                            <span style = {listSpanStyle}>{item.productState}</span>
-                            <span style = {listSpanStyle}>{item.createdDate}</span>
+                            <span style = {listSpanStyle}>{item.status}</span>
+                            <span style = {listSpanStyle}>상품등록일 : {item.createdDate}</span>
+                            <span style = {listSpanStyle}>경매종료일 : {item.auctionEndDate}</span>
                             {/* <Button className="button1" type="button" style = {buttonStyle}>
                                 삭제
                             </Button> */}

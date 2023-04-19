@@ -6,6 +6,9 @@ import { PageHeader } from '@ant-design/pro-layout';
 import React, { location, useState, useEffect } from "react";
 import { BrowserRouter, Link, Route, Routes, NavLink, useNavigate,} from "react-router-dom";
 import ProductManagement from "./ProductManagement";
+import { useRecoilState } from "recoil";
+import { loginState } from "../../recoil/loginState";
+import UserInfoForm from "./userInfo/UserInfoForm";
 import pic from "../../img/회원.jpg";
 axios.defaults.withCredentials = true;
 
@@ -76,7 +79,7 @@ const menuTable = {
   backgroundColor: "white",
   //paddingTop: "5%",
   //marginTop: "10%",
-  marginRight: "50%",
+  marginRight: "30%",
   borderBottom: "2px solid",
   borderCollapse: "collapse",
   //marginBottom: "10%",
@@ -121,14 +124,19 @@ const btnStyle = {
   backgroundColor: "black",
 };
 
+const modalStyle = {
+  fontSize: "50px",
+};
+
 const MyStore = () => {
+  const [token, setToken] = useRecoilState(loginState);
   const [userName, setUserName] = useState("강댕강댕");
   const [userScore, setUserScore] = useState("88");
   const [choiceNum, setChoiceNum] = useState(1);
-  const [userInfo, setUserInfo] = useState([]);
   const [isHovering1, setIsHovering1] = useState(false);
   const [isHovering2, setIsHovering2] = useState(false);
   const [isHovering3, setIsHovering3] = useState(false);
+  const [isHovering4, setIsHovering4] = useState(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -145,19 +153,6 @@ const MyStore = () => {
       <ProductManagement props ={choiceNum}></ProductManagement>
     );
   };
-
-  useEffect(() => {
-    console.log(userInfo);
-    axios
-      .get("https://usedauction.shop/api/mypage", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        
-      });
-  }, [userInfo]);
 
   return (
     <Layout className="total-box" style={totalBox}>
@@ -176,11 +171,12 @@ const MyStore = () => {
               회원 정보 조회
             </Button>
             <Modal 
-            title="회원 정보 조회" 
-            open={isModalOpen} 
-            onCancel={handleCancel} 
-            footer={false}  
-            destroyOnClose="true">
+              title={<div style={modalStyle}>회원 정보 조회</div>}
+              open={isModalOpen} 
+              onCancel={handleCancel} 
+              footer={false}  
+              destroyOnClose="true">
+              <UserInfoForm onCancel={handleCancel}></UserInfoForm>
             </Modal>
           </div>
           <span className="user-score" style={userScoreText1}>
@@ -194,8 +190,8 @@ const MyStore = () => {
         <section className="menu-table" style={menuTable}>
           <div 
             className="menu1" 
-            style={isHovering1 ? menuHover : menu}
-            onClick={() => setChoiceNum(1)}
+            style={isHovering1 || choiceNum =="1" ? menuHover : menu}
+            onClick={() => {setChoiceNum(1)}}
             onMouseOver={() => {setIsHovering1(true);}}
             onMouseOut={() => {setIsHovering1(false);}}
           >
@@ -203,21 +199,30 @@ const MyStore = () => {
           </div>
           <div 
             className="menu2" 
-            style={isHovering2 ? menuHover : menu}
+            style={isHovering2 || choiceNum =="2" ? menuHover : menu}
             onClick={() => setChoiceNum(2)}
             onMouseOver={() => {setIsHovering2(true);}}
             onMouseOut={() => {setIsHovering2(false);}}
           >
-            판매내역
+            판매완료내역
           </div>
           <div 
             className="menu3" 
-            style={isHovering3 ? menuHover : menu}
+            style={isHovering3 || choiceNum =="3" ? menuHover : menu}
             onClick={() => setChoiceNum(3)}
             onMouseOver={() => {setIsHovering3(true);}}
             onMouseOut={() => {setIsHovering3(false);}}
           >
-            구매내역
+            구매완료내역
+          </div>
+          <div 
+            className="menu4" 
+            style={isHovering4 || choiceNum =="4" ? menuHover : menu}
+            onClick={() => setChoiceNum(4)}
+            onMouseOver={() => {setIsHovering4(true);}}
+            onMouseOut={() => {setIsHovering4(false);}}
+          >
+            입찰/낙찰내역
           </div>
         </section>
       </div>
