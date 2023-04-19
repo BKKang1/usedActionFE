@@ -12,6 +12,11 @@ export const API = {
   LOGIN: `${BASE_URL}/api/member/login`,
   ISLOGIN: `${BASE_URL}/api/member/is-login`,
   LOGOUT: `${BASE_URL2}/logout`,
-  SEARCH: `${BASE_URL}/api/products`
-  
+  SEARCH: `${BASE_URL}/api/products`,
+  USERINFO: `${BASE_URL}/api/mypage`,
+  PRODUCT: `${BASE_URL}/api/products`,
+  PRODUCTMANAGMENT: `${BASE_URL}/api/mypage/products`,
+  SALEHISTORY: `${BASE_URL}/api/mypage/sales-history`,
+  BUYHISTORY: `${BASE_URL}/api/mypage/buy-history`,
+  AUCTIONHISTORY: `${BASE_URL}/api/mypage/auction-history`,
 };

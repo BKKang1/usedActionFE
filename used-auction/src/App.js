@@ -6,6 +6,8 @@ import Header from "./components/header/Header";
 import MyStore from "./components/myStore/MyStore";
 import ProductManagement from "./components/myStore/ProductManagement";
 import ProductList from "./components/productListView/ProductList";
+import SellProduct from "./components/sellProduct/SellProduct";
+import ChatList from "./components/chattingRoom/ChatList";
 import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/loginState";
@@ -18,6 +20,7 @@ function App() {
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.withCredentials = true;
   axios.defaults.headers.post["Content-Type"] = "application/json";
+  axios.defaults.headers.patch["Content-Type"] = "application/json";
 
   return (
     <div style={layoutStyle}>
@@ -26,7 +29,8 @@ function App() {
         <Routes>
           <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
           <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
-
+          <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
+          <Route path="/usedAuctionFE/chattingRoom" element={<ChatList />}></Route>
           <Route
             path="/usedAuctionFE/productList"
             element={<ProductList />}

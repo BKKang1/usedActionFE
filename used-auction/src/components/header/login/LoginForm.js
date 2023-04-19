@@ -23,8 +23,9 @@ const LoginForm = ({ onCancel, setName }) => {
   useEffect(() => {
  
     axios
-      .get(API.ISLOGIN)
+      .get(API.ISLOGIN )
       .then((response) => {
+        console.log(response);
         if (response.data.result.status === true) {
           setName(response.data.result.loginId);
         }

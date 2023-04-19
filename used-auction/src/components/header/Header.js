@@ -66,23 +66,24 @@ const Headers = () => {
         <div style={innerBox && itemStyle1}>
           <Search productName={productName} categoryId={categoryId}></Search>
         </div>
-
-        <div style={innerBox}>
-          <PayCircleFilled style={iconSize} />
-
-          <b>판매하기</b>
-        </div>
+        <Link to="/usedAuctionFE/sellProduct">
+          <div style={innerBox}>
+            <PayCircleFilled style={iconSize} />
+            <b>판매하기</b>
+          </div>
+        </Link>  
         <Link to="/usedAuctionFE/myStore">
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
             <b>내 상점</b>
           </div>
         </Link>
-        <div style={innerBox}>
-          <WechatOutlined style={iconSize} />
-
-          <b>채팅</b>
-        </div>
+        <Link to="/usedAuctionFE/chattingRoom">
+          <div style={innerBox}>
+            <WechatOutlined style={iconSize} />
+            <b>채팅</b>
+          </div>
+        </Link>
       </div>
     </div>
   );
