@@ -4,27 +4,50 @@ import Login from "./LoginForm";
 import { API } from "../../../config";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { loginState } from "../../../recoil/loginState";
+import { accessToken } from "../../../recoil/accessToken";
+import { refreshToken } from "../../../recoil/refreshToken";
+import { loginId, nicknameKey } from "../../../recoil/loginId";
 const LoginModal = () => {
-  const [token, setToken] = useRecoilState(loginState);
-  const [name, setName] = useState(null);
+  const [token, setToken] = useRecoilState(accessToken);
+  const [refToken, setRefToken] = useRecoilState(refreshToken);
+  const [id, setId] = useRecoilState(loginId);
+  const [name, setName] = useRecoilState(nicknameKey);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     axios
       .get(API.ISLOGIN)
       .then((response) => {
+        console.log(response);
         if (response.data.result.status === true) {
           setName(response.data.result.name);
+          setId(response.data.result.loginId);
+        } else if (token !== null) {
+          axios
+            .post(API.REISSUE, {
+              accessToken: token,
+              refreshToken: refToken,
+            })
+            .then((res) => {
+              setToken(res.data.result.accessToken);
+              setRefToken(res.data.result.refreshToken);
+            })
+            .catch(() => {
+              setToken(null);
+              setRefToken(null);
+              setName(null);
+              setId(null);
+            });
         }
       })
       .catch(() => {
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       });
-  }, []);
-  useEffect(() => {
-    console.log("token", token);
   }, [token]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -32,16 +55,20 @@ const LoginModal = () => {
     console.log("before token", token);
 
     axios
-      .post(API.LOGOUT,token)
+      .post(API.LOGOUT, token)
       .then((response) => {
-        console.log(response.data.result);
+        console.log("tok", response.data.result);
 
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       })
       .catch(() => {
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       });
   };
   const handleCancel = () => {

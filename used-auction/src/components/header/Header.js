@@ -38,8 +38,8 @@ const iconSize = {
   fontSize: "3rem",
 };
 const DropdownMenuStyle={
-  width:"90%",
-  height:"90%"
+
+  marginLeft:"2rem" 
 }
 const LoginModalBoxStyle = {
   display: "flex",

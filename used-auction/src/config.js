@@ -23,5 +23,8 @@ export const API = {
   SEARCH: `${BASE_URL}/api/products`,
   ORDERBY:`${BASE_URL}/api/products/order-by`,
   PRODUCT: `${BASE_URL}/api/products`,
-  QUESTIONVIEW:`${BASE_URL}/api/questions`
+  QUESTIONVIEW:`${BASE_URL}/api/questions`,
+  REISSUE:`${BASE_URL}/api/member/reissue`,
+  QUESTION:`${BASE_URL}/api/questions`,
+  QUESTIONDELETE:`${BASE_URL}/api/questions`,
 };

@@ -4,6 +4,7 @@ import { API } from "../../config";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import QNA from "./QNA";
+import CommentWritting from "./CommentWritting";
 
 const Product = () => {
   const location = useLocation();
@@ -59,7 +60,6 @@ const Product = () => {
   useEffect(() => {
     if (productId !== null) {
       axios.get(`${API.PRODUCT}/${productId}`).then((res) => {
-        console.log(res.data.result);
         setProduct(res.data.result);
       });
     }
@@ -77,7 +77,6 @@ const Product = () => {
               style={{
                 width: 900,
               }}
-              
             >
               <div style={cardStyle}>
                 <div style={sigImgStyle}>
@@ -162,7 +161,9 @@ const Product = () => {
                   })}
                 </div>
               </div>
-              <QNA productId={productId} />
+              <CommentWritting productId={productId} />
+              <Divider />
+              <QNA productId={productId} nickname={product.nickname} />
             </Card>
           </Space>
         </div>
