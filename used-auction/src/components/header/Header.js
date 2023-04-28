@@ -2,7 +2,7 @@ import Search from "./others/SearchProductName";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
-import { useRef } from "react";
+import { useRef,useEffect } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -10,14 +10,13 @@ import {
 } from "@ant-design/icons";
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
+
 
 const outerBox = {
   display: "flex",
   flexDirection: "column",
   margin: "2rem",
-
-  
 };
 const headerBox = {
   display: "flex",
@@ -37,10 +36,9 @@ const innerBox = {
 const iconSize = {
   fontSize: "3rem",
 };
-const DropdownMenuStyle={
-
-  marginLeft:"2rem" 
-}
+const DropdownMenuStyle = {
+  marginLeft: "2rem",
+};
 const LoginModalBoxStyle = {
   display: "flex",
   flexDirection: "row-reverse",
@@ -50,10 +48,18 @@ const itemStyle1 = {
 };
 const textDecoration = {
   textDecoration: "none",
-  color:"black"
+  color: "black",
 };
 const Headers = () => {
+  let location = useLocation();
   let categoryId = useRef("0");
+  
+  useEffect(() => {
+    console.log("location", location.pathname.includes("productDetail/"));
+  }, [location]);
+  useEffect(() => {
+    console.log("USEEFFECT 일어남");
+  }, );
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
@@ -75,7 +81,7 @@ const Headers = () => {
             <PayCircleFilled style={iconSize} />
             <b>판매하기</b>
           </div>
-        </Link>  
+        </Link>
         <Link to="/usedAuctionFE/myStore">
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
@@ -89,7 +95,7 @@ const Headers = () => {
           </div>
         </Link>
       </div>
-      <div style={DropdownMenuStyle} >
+      <div style={DropdownMenuStyle}>
         <DropdownMenu categoryId={categoryId}></DropdownMenu>
       </div>
     </div>

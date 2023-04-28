@@ -7,18 +7,18 @@ import { useRecoilState } from "recoil";
 import { accessToken } from "../../../recoil/accessToken";
 import { refreshToken } from "../../../recoil/refreshToken";
 import { loginId, nicknameKey } from "../../../recoil/loginId";
+import { useQuery } from "react-query";
 const LoginModal = () => {
   const [token, setToken] = useRecoilState(accessToken);
   const [refToken, setRefToken] = useRecoilState(refreshToken);
   const [id, setId] = useRecoilState(loginId);
   const [name, setName] = useRecoilState(nicknameKey);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
+  const tokenRefresh = () =>
     axios
       .get(API.ISLOGIN)
       .then((response) => {
-        console.log(response);
+        console.log("로그인상태체크");
         if (response.data.result.status === true) {
           setName(response.data.result.name);
           setId(response.data.result.loginId);
@@ -46,6 +46,18 @@ const LoginModal = () => {
         setName(null);
         setId(null);
       });
+
+  useQuery(["refresh_token"], tokenRefresh, {
+    refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus:false
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    tokenRefresh();
+    console.log("로그인상태체크inuseeffect");
   }, [token]);
 
   const showModal = () => {

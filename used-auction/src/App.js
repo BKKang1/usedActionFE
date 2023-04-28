@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 
 import axios from "axios";
 import Main from "./components/main/Main";
@@ -12,12 +12,16 @@ import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { accessToken } from "./recoil/accessToken";
 import Product from "./components/productView/Product";
+import { useEffect } from "react";
+import { useQuery } from 'react-query';
+ 
 const layoutStyle = {
   margin: "0 auto",
   width: "1200px",
 };
 
 function App() {
+
   const [token, setToken] = useRecoilState(accessToken);
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.withCredentials = true;
@@ -25,12 +29,13 @@ function App() {
   axios.defaults.headers.delete["Content-Type"] = "application/json";
   axios.defaults.headers.patch["Content-Type"] = "application/json";
 
+
   return (
     <div style={layoutStyle}>
       <BrowserRouter>
         <Header></Header>
-        <Routes>
-          <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
+        <Routes  >
+          <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
           <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
           <Route
             path="/usedAuctionFE/sellProduct"
