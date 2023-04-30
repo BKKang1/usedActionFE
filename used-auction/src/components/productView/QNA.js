@@ -50,7 +50,7 @@ const QNA = ({ productId, nickname }) => {
         console.log("댓글", res.data.content);
 
         setData(res.data.content);
-        setTotalPage(res.data.getTotalPages * 4);
+        setTotalPage(res.data.totalPages * 4);
       });
   }, [productId, page]);
   return (

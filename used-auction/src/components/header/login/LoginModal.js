@@ -23,6 +23,7 @@ const LoginModal = () => {
           setName(response.data.result.name);
           setId(response.data.result.loginId);
         } else if (token !== null) {
+          console.log("token", token);
           axios
             .post(API.REISSUE, {
               accessToken: token,
@@ -50,7 +51,7 @@ const LoginModal = () => {
   useQuery(["refresh_token"], tokenRefresh, {
     refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
     refetchIntervalInBackground: true,
-    refetchOnWindowFocus:false
+    refetchOnWindowFocus: false,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
