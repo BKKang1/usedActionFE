@@ -19,8 +19,8 @@ import pic from "../../img/회원.jpg";
 axios.defaults.withCredentials = true;
 
 const totalBox = {
-  marginLeft: "20%",
-  marginRight: "20%",
+  marginLeft: "15%",
+  marginRight: "15%",
 };
 const title = {
   borderBottom: "2px solid",
@@ -135,6 +135,7 @@ const modalStyle = {
 };
 
 const MyStore = () => {
+
   const [token, setToken] = useRecoilState(accessToken);
   const [userName, setUserName] = useState("강댕강댕");
   const [userScore, setUserScore] = useState("88");
@@ -144,7 +145,27 @@ const MyStore = () => {
   const [isHovering3, setIsHovering3] = useState(false);
   const [isHovering4, setIsHovering4] = useState(false);
 
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios
+    .get(API.ISLOGIN)
+    .then((response) => {
+      console.log(response);
+      if (response.data.result.status === true) {
+        console.log("로그인체크");
+      }
+      else {
+        //alert("로그인해주십시오.");
+        navigate("/usedAuctionFE");
+        alert("로그인해주십시오.");
+      }
+    });
+  }, []);
+
   const showModal = () => {
     setIsModalOpen(true);
   };

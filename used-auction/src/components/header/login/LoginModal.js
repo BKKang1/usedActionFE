@@ -20,6 +20,7 @@ const LoginModal = () => {
       .then((response) => {
         console.log("로그인상태체크");
         if (response.data.result.status === true) {
+          console.log("로그인체크");
           setName(response.data.result.name);
           setId(response.data.result.loginId);
         } else if (token !== null) {

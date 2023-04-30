@@ -38,17 +38,18 @@ const USerInfoForm = ({ onCancel }) => {
     phoneNumber: "",
   });
 
-  useEffect(() => {
-    axios
-      .get(API.USERINFO)
-      .then((response) => {
-        console.log(response.data.result);
-        setUserInfo(response.data.result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+
+    useEffect(() => {
+        axios
+          .get(API.USERINFO)
+          .then((response) => {
+            console.log(response.data.result);
+            setUserInfo(response.data.result);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+    }, []);
 
   const showModal = () => {
     setOpen(true);
