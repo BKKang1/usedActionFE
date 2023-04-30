@@ -24,6 +24,8 @@ export const API = {
   ORDERBY:`${BASE_URL}/api/products/order-by`,
   PRODUCT: `${BASE_URL}/api/products`,
   QUESTIONVIEW:`${BASE_URL}/api/questions`,
+  CHATROOMLIST: `${BASE_URL}/api/chat-room`,
+  CHATLIST: `${BASE_URL}/api/chat-message/chats`,
   REISSUE:`${BASE_URL}/api/member/reissue`,
   QUESTION:`${BASE_URL}/api/questions`,
   QUESTIONDELETE:`${BASE_URL}/api/questions`,

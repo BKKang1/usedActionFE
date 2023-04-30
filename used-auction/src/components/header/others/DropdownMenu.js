@@ -103,7 +103,7 @@ const DropdownMenu = ({ categoryId }) => {
     >
       <Typography.Link>
         <Space style={menuStyle}>
-          카테고리
+          
           <DownOutlined />
         </Space>
       </Typography.Link>

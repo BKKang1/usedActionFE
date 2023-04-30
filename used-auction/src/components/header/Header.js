@@ -36,7 +36,7 @@ const innerBox = {
 const iconSize = {
   fontSize: "3rem",
 };
-const DropdownMenuStyle = {
+const DropdownMenuStyle={
   marginLeft: "2rem",
 };
 const LoginModalBoxStyle = {
