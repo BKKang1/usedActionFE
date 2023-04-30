@@ -56,7 +56,7 @@ const UpdateUserInfoForm = ({ onCancel, onCancelTotal, userInfo }) => {
         .patch(API.USERINFO, json)
         .then((response) => {console.log(response);})
         .then(() => onCancelTotal())
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error.response.data));
     };
 
     const onFinishFailed = (errorInfo) => {

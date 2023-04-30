@@ -4,7 +4,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography, Button, List, Layout, Menu } from "antd";
 import React, { location, useState, useEffect,useRef } from "react";
 import { BrowserRouter, Link, Route, Routes, NavLink, useNavigate,} from "react-router-dom";
-import MyStore from "./MyStore";
+//import MyStore from "./MyStore";
 // import SockJS from "sockjs-client";
 // const Stomp = require('stompjs');
 axios.defaults.withCredentials = true;
@@ -176,7 +176,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="경매중"){
@@ -188,7 +188,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="낙찰성공"){
@@ -200,7 +200,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="낙찰실패"){
@@ -212,7 +212,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래성공"){
@@ -224,7 +224,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래실패"){
@@ -236,7 +236,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
         }
@@ -252,7 +252,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래성공"){
@@ -264,7 +264,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래실패"){
@@ -276,7 +276,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
         }
@@ -292,7 +292,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래성공"){
@@ -304,7 +304,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="거래실패"){
@@ -316,7 +316,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
         }
@@ -332,7 +332,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="입찰"){
@@ -344,7 +344,7 @@ const ProductManagement = (props) => {
                     setTotalItemNum(response.data.totalElements);
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.response.data);
                 });
             }
             else if(categoryName=="낙찰"){

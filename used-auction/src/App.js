@@ -4,10 +4,10 @@ import axios from "axios";
 import Main from "./components/main/Main";
 import Header from "./components/header/Header";
 import MyStore from "./components/myStore/MyStore";
-import ProductManagement from "./components/myStore/ProductManagement";
+// import ProductManagement from "./components/myStore/ProductManagement";
 import ProductList from "./components/productListView/ProductList";
 import SellProduct from "./components/sellProduct/SellProduct";
-import ChatList from "./components/chattingRoom/ChatList";
+import ChatRoomList from "./components/chattingRoom/ChatRoomList";
 import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { loginState } from "./recoil/loginState";
@@ -32,7 +32,8 @@ function App() {
           <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
           <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
           <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
-          <Route path="/usedAuctionFE/chattingRoom" element={<ChatList />}></Route>
+          <Route path="/usedAuctionFE/chattingRoom" element={<ChatRoomList />}></Route>
+          <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
           <Route
             path="/usedAuctionFE/productList"
             element={<ProductList />}

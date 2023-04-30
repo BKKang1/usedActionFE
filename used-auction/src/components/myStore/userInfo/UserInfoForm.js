@@ -48,7 +48,7 @@ const USerInfoForm = ({onCancel}) => {
             setUserInfo(response.data.result);
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
           });
     }, []);
 

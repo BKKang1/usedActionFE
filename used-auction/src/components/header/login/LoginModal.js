@@ -14,6 +14,7 @@ const LoginModal = () => {
       .get(API.ISLOGIN)
       .then((response) => {
         if (response.data.result.status === true) {
+          console.log("로그인체크");
           setName(response.data.result.name);
         }
       })
