@@ -1,6 +1,6 @@
 
 import { useRecoilState } from "recoil";
-import { loginState } from "../../recoil/loginState";
+import { accessToken, loginState } from "../../recoil/accessToken";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { 
     MainContainer, 
@@ -38,7 +38,7 @@ const sidebarStyle = {
 };
 
 const ChatRoomList = () => {
-    const [token, setToken] = useRecoilState(loginState);
+    const [token, setToken] = useRecoilState(accessToken);
     const [searchValue, setSearchValue] = useState("");
     const [conversationList, setConversationList] = useState([]);
     const [searched, setSearched] = useState([]);

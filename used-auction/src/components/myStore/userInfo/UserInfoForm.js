@@ -38,7 +38,6 @@ const USerInfoForm = ({ onCancel }) => {
     phoneNumber: "",
   });
 
-<<<<<<< HEAD
     useEffect(() => {
         axios
           .get(API.USERINFO)
@@ -50,19 +49,6 @@ const USerInfoForm = ({ onCancel }) => {
             console.log(error.response.data);
           });
     }, []);
-=======
-  useEffect(() => {
-    axios
-      .get(API.USERINFO)
-      .then((response) => {
-        console.log(response.data.result);
-        setUserInfo(response.data.result);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
->>>>>>> 27e4f6a341e8ff1818ca4413f8a9f2d01d236cd8
 
   const showModal = () => {
     setOpen(true);

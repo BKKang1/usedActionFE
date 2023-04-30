@@ -135,23 +135,17 @@ const modalStyle = {
 };
 
 const MyStore = () => {
-<<<<<<< HEAD
-  const [token, setToken] = useRecoilState(loginState);
-  const [userName, setUserName] = useState("");
-=======
+
   const [token, setToken] = useRecoilState(accessToken);
   const [userName, setUserName] = useState("강댕강댕");
->>>>>>> 27e4f6a341e8ff1818ca4413f8a9f2d01d236cd8
   const [userScore, setUserScore] = useState("88");
   const [choiceNum, setChoiceNum] = useState(1);
   const [isHovering1, setIsHovering1] = useState(false);
   const [isHovering2, setIsHovering2] = useState(false);
   const [isHovering3, setIsHovering3] = useState(false);
   const [isHovering4, setIsHovering4] = useState(false);
-<<<<<<< HEAD
-=======
 
->>>>>>> 27e4f6a341e8ff1818ca4413f8a9f2d01d236cd8
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
