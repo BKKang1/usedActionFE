@@ -10,9 +10,10 @@ const Main = () => {
  
   const style={
     
-    padding: "5px",
-    width: "1200px",
+
+    width: "1080px",
     display: "grid",
+    margin:"2rem",
     gridTemplateRows: "2fr ",
     gridTemplateColumns: "1fr 1fr 1fr 1fr",
     

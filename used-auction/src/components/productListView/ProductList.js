@@ -61,9 +61,9 @@ const ProductList = () => {
           }&size=${size}`
       )
       .then((response) => {
-        console.log(response.data.content);
+        console.log("pages",response.data.getTotalPages);
         setMainContent(response.data.content);
-        setTotalPage(response.data.getTotalPages)
+        setTotalPage(response.data.getTotalPages*8)
       })
       .catch((error) => console.log(error.response.data));
   }, [productName, categoryId, page,orderBy]);

@@ -4,28 +4,63 @@ import Login from "./LoginForm";
 import { API } from "../../../config";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { loginState } from "../../../recoil/loginState";
+import { accessToken } from "../../../recoil/accessToken";
+import { refreshToken } from "../../../recoil/refreshToken";
+import { loginId, nicknameKey } from "../../../recoil/loginId";
+import { useQuery } from "react-query";
 const LoginModal = () => {
-  const [token, setToken] = useRecoilState(loginState);
-  const [name, setName] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
+  const [token, setToken] = useRecoilState(accessToken);
+  const [refToken, setRefToken] = useRecoilState(refreshToken);
+  const [id, setId] = useRecoilState(loginId);
+  const [name, setName] = useRecoilState(nicknameKey);
+
+  const tokenRefresh = () =>
     axios
       .get(API.ISLOGIN)
       .then((response) => {
+        console.log("로그인상태체크");
         if (response.data.result.status === true) {
           console.log("로그인체크");
           setName(response.data.result.name);
+          setId(response.data.result.loginId);
+        } else if (token !== null) {
+          axios
+            .post(API.REISSUE, {
+              accessToken: token,
+              refreshToken: refToken,
+            })
+            .then((res) => {
+              setToken(res.data.result.accessToken);
+              setRefToken(res.data.result.refreshToken);
+            })
+            .catch(() => {
+              setToken(null);
+              setRefToken(null);
+              setName(null);
+              setId(null);
+            });
         }
       })
       .catch(() => {
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       });
-  }, []);
+
+  useQuery(["refresh_token"], tokenRefresh, {
+    refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus:false
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
-    console.log("token", token);
+    tokenRefresh();
+    console.log("로그인상태체크inuseeffect");
   }, [token]);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -33,16 +68,20 @@ const LoginModal = () => {
     console.log("before token", token);
 
     axios
-      .post(API.LOGOUT,token)
+      .post(API.LOGOUT, token)
       .then((response) => {
-        console.log(response.data.result);
+        console.log("tok", response.data.result);
 
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       })
       .catch(() => {
-        setName(null);
         setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
       });
   };
   const handleCancel = () => {

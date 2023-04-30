@@ -3,8 +3,10 @@ import SignUpModal from "../Signup/SignUpModal";
 import axios from "axios";
 import { API } from "../../../config";
 import { useRecoilState } from "recoil";
-import { loginState } from "../../../recoil/loginState";
+import { accessToken } from "../../../recoil/accessToken";
+import { refreshToken } from "../../../recoil/refreshToken";
 import { useEffect } from "react";
+
 const btnBoxstyle = {
   display: "flex",
   flexDirection: "row-reverse",
@@ -19,21 +21,10 @@ const formStyle = {
   marginRight: "2rem",
 };
 const LoginForm = ({ onCancel, setName }) => {
-  const [token, setToken] = useRecoilState(loginState);
-  useEffect(() => {
-    axios
-      .get(API.ISLOGIN )
-      .then((response) => {
-        console.log(response);
-        if (response.data.result.status === true) {
-          setName(response.data.result.name);
-        }
-      })
-      .catch(() => {
-        setToken(null);
-        setName(null);
-      });
-  }, [token]);
+  const [token, setToken] = useRecoilState(accessToken);
+  const [refToken, setRefToken] = useRecoilState(refreshToken);
+
+
   const onFinish = (values) => {
     const json = JSON.stringify(values);
     console.log("json", json);
@@ -43,6 +34,7 @@ const LoginForm = ({ onCancel, setName }) => {
       .then((response) => {
         console.log(response.data.result);
         setToken(response.data.result.accessToken);
+        setRefToken(response.data.result.refreshToken);
       })
 
       .then(() => onCancel())

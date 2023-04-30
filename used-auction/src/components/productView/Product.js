@@ -1,12 +1,15 @@
 import { Card, Space, Divider, Image, Descriptions, Badge } from "antd";
 import axios from "axios";
 import { API } from "../../config";
-import { useLocation } from "react-router-dom";
+import { useLocation, useBeforeUnload } from "react-router-dom";
 import { useEffect, useState } from "react";
 import QNA from "./QNA";
-
+import CommentWritting from "./CommentWritting";
+import React from "react";
+import Prompt from "react-router";
 const Product = () => {
-  const location = useLocation();
+  let location = useLocation();
+
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
   const [product, setProduct] = useState({
@@ -53,13 +56,13 @@ const Product = () => {
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
   };
+ 
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
   useEffect(() => {
     if (productId !== null) {
       axios.get(`${API.PRODUCT}/${productId}`).then((res) => {
-        console.log(res.data.result);
         setProduct(res.data.result);
       });
     }
@@ -67,6 +70,7 @@ const Product = () => {
   useEffect(() => {
     setRenderStart(true);
   }, [product]);
+
   {
     if (renderStart) {
       return (
@@ -77,7 +81,6 @@ const Product = () => {
               style={{
                 width: 900,
               }}
-              
             >
               <div style={cardStyle}>
                 <div style={sigImgStyle}>
@@ -162,7 +165,9 @@ const Product = () => {
                   })}
                 </div>
               </div>
-              <QNA productId={productId} />
+              <CommentWritting productId={productId} />
+              <Divider />
+              <QNA productId={productId} nickname={product.nickname} />
             </Card>
           </Space>
         </div>
