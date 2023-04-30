@@ -1,6 +1,7 @@
 
 import { useRecoilState } from "recoil";
 import { accessToken, loginState } from "../../recoil/accessToken";
+import {nicknameKey} from "../../recoil/loginId";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { 
     MainContainer, 
@@ -39,6 +40,7 @@ const sidebarStyle = {
 
 const ChatRoomList = () => {
     const [token, setToken] = useRecoilState(accessToken);
+    const [name, setName] = useRecoilState(nicknameKey);
     const [searchValue, setSearchValue] = useState("");
     const [conversationList, setConversationList] = useState([]);
     const [searched, setSearched] = useState([]);
@@ -132,18 +134,18 @@ const ChatRoomList = () => {
             console.log('Subscribe: Incoming message: ' + frame.body);
             if (frame.body) {
               const tempMessage = JSON.parse(frame.body);
-              if(tempMessage.type=="ENTER" && tempMessage.sender!="대현"){
+              if(tempMessage.type=="ENTER" && tempMessage.sender!=name){
                 console.log("상대가 방에 들어왔다.");
               }
-              if(tempMessage.type=="ENTER" && tempMessage.sender=="대현"){
+              if(tempMessage.type=="ENTER" && tempMessage.sender==name){
                 console.log("내가 방에 들어왔다.");
                 setOnReadTrigger(true);
               }
               else if(tempMessage.type=="TALK"){
-                if(tempMessage.sender=="대현"){
+                if(tempMessage.sender==name){
                   setMessage({...tempMessage,direction:"outgoing"});
                 }
-                else if(tempMessage.sender!="대현"){
+                else if(tempMessage.sender!=name){
                   setMessage({...tempMessage,direction:"incoming"});
                 }
               }
@@ -161,7 +163,7 @@ const ChatRoomList = () => {
               "Authorization": `Bearer ${token}`,
             }, JSON.stringify({
               chatRoomId : window.history.state.chatRoomId,
-              sender: "대현",
+              sender: name,
               type: 'ENTER'
             }));
             console.log("스톰프-send1: ");
@@ -190,7 +192,7 @@ const ChatRoomList = () => {
         "Authorization": `Bearer ${token}`,
       }, JSON.stringify({
         chatRoomId : window.history.state.chatRoomId,
-        sender: "대현",
+        sender: name,
         message: messageInputValue,
         type: 'TALK'
       }));
