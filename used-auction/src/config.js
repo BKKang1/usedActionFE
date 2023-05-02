@@ -30,5 +30,6 @@ export const API = {
   QUESTION:`${BASE_URL}/api/questions`,
   QUESTIONDELETE:`${BASE_URL}/api/questions`,
   AUCTION:`${BASE_URL}/api/auctions`,
-  SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`
+  SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`,
+  PRODUCTUPDATE:`${BASE_URL}/api/products/update`
 };

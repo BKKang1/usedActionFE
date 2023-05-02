@@ -12,6 +12,7 @@ import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { accessToken } from "./recoil/accessToken";
 import Product from "./components/productView/Product";
+import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useEffect } from "react";
 import { useQuery } from 'react-query';
  
@@ -35,9 +36,11 @@ function App() {
       <BrowserRouter>
         <Header></Header>
         <Routes  >
+        
           <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
           <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
           <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
+          <Route path="/usedAuctionFE/modifyProduct/:productId" element={<ModifyProduct />}></Route>
           <Route path="/usedAuctionFE/chattingRoom" element={<ChatRoomList />}></Route>
           <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
           <Route

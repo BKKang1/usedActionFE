@@ -12,7 +12,7 @@ const Product = () => {
 
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
-  const [nowPrice,setNowPrice] = useState(null);
+  const [nowPrice, setNowPrice] = useState(null);
   const [product, setProduct] = useState({
     auctionId: null,
     auctionEndDate: null,
@@ -71,16 +71,25 @@ const Product = () => {
   }, [productId]);
 
   useEffect(() => {
-    sseConnect(product.auctionId);
-    setRenderStart(true);
+    if (product.auctionId !== null) {
+      sseConnect(product.auctionId);
+      setRenderStart(true);
+    }
   }, [product]);
 
   const sseConnect = (auctionId) => {
-    console.log(auctionId);
+    console.log("au", auctionId);
+
     let sse = new EventSource(API.SSECONNECTIONOFPRODUCT + `/${auctionId}`, {
       withCredentials: true,
+      heartbeatTimeout: 300000,
     });
     sse.addEventListener("CONNECT", (e) => {
+      if (!window.location.pathname.includes("productDetail")) {
+        console.log("로케이션 이동 알림");
+        sse.close();
+      }
+
       const { data: receivedConnectData } = e;
       const c = JSON.parse(receivedConnectData);
       console.log("c", c);
@@ -88,6 +97,10 @@ const Product = () => {
       console.log("connect event result: ", c.result); // "연결성공!"
     });
     sse.addEventListener("SEND_BID_DATA", (e) => {
+      if (!window.location.pathname.includes("productDetail")) {
+        console.log("로케이션 이동 알림");
+        sse.close();
+      }
       const { data: receivedConnectData } = e;
       const r = JSON.parse(receivedConnectData);
       setNowPrice(r.result);
@@ -142,10 +155,7 @@ const Product = () => {
                     ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="현재가">
-                    <Badge
-                      count={nowPrice}
-                      overflowCount={9999999999}
-                    ></Badge>
+                    <Badge count={nowPrice} overflowCount={9999999999}></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="단위가격">
                     <Badge

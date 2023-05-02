@@ -2,7 +2,7 @@ import Search from "./others/SearchProductName";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
-import { useRef,useEffect } from "react";
+import { useRef, useEffect } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -11,7 +11,6 @@ import {
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
-
 
 const outerBox = {
   display: "flex",
@@ -32,11 +31,13 @@ const innerBox = {
   margin: "2rem",
   whiteSpace: "nowrap",
   alignItems: "center",
+  textDecoration: "none",
+  color: "black",
 };
 const iconSize = {
   fontSize: "3rem",
 };
-const DropdownMenuStyle={
+const DropdownMenuStyle = {
   marginLeft: "2rem",
 };
 const LoginModalBoxStyle = {
@@ -53,13 +54,13 @@ const textDecoration = {
 const Headers = () => {
   let location = useLocation();
   let categoryId = useRef("0");
-  
+
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
   }, [location]);
   useEffect(() => {
     console.log("USEEFFECT 일어남");
-  }, );
+  });
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
