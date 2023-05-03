@@ -1,4 +1,4 @@
-import axios from "axios";
+
 import { API } from "../../config";
 import {
   BrowserRouter,
@@ -27,7 +27,7 @@ import {
   Upload,
   Typography,
 } from "antd";
-
+import req from "../../axios/req";
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -157,7 +157,7 @@ const ModifyProduct = () => {
   };
 
   useEffect(() => {
-    axios.get(API.PRODUCTUPDATE + `/${productId}`).then((res) => {
+    req.get(API.PRODUCTUPDATE + `/${productId}`).then((res) => {
       console.log(res.data.result);
       setProduct(res.data.result);
     });
@@ -251,7 +251,7 @@ const ModifyProduct = () => {
       console.log(key, ":", formData.get(key));
     }
 
-    axios
+    req
       .patch(API.PRODUCTUPDATE + `/${3}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
@@ -262,10 +262,7 @@ const ModifyProduct = () => {
       .then(() => {
         refreshPage();
       })
-      .catch((error) => {
-        alert(error.response.data.msg);
-        console.log(error);
-      });
+    
   };
 
   if (renderStart) {

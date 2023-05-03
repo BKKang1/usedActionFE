@@ -1,5 +1,5 @@
 import { Card, Space, Divider, Image, Descriptions, Badge, Button } from "antd";
-import axios from "axios";
+import req from "../../axios/req";
 import { API } from "../../config";
 import { useLocation, useBeforeUnload } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -64,7 +64,7 @@ const Product = () => {
   }, []);
   useEffect(() => {
     if (productId !== null) {
-      axios.get(`${API.PRODUCT}/${productId}`).then((res) => {
+      req.get(`${API.PRODUCT}/${productId}`).then((res) => {
         setProduct(res.data.result);
       });
     }

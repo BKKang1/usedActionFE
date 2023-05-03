@@ -1,8 +1,9 @@
 import { API } from "../../../config";
 import { Descriptions, Form, Input, InputNumber, Button } from "antd";
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import moment from "moment";
+import req from "../../../axios/req";
 const Bid = ({ onCancel, priceUnit, auctionEndDate, nowPrice, auctionId }) => {
   const boxStyle = {
     border: "1px ridge black",
@@ -30,14 +31,12 @@ const Bid = ({ onCancel, priceUnit, auctionEndDate, nowPrice, auctionId }) => {
       const object = new Object();
       object.bidPrice = price;
       const json = JSON.stringify(object);
-      axios
+      req
         .post(API.AUCTION + `/${auctionId}`, json)
         .then((res) => {
           console.log(res.data);
         })
-        .catch((res) => {
-          console.log(res.response.data);
-        });
+    
     } else {
       console.log("경매 마감");
     }

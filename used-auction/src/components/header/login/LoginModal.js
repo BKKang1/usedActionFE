@@ -2,13 +2,14 @@ import { Button, Modal } from "antd";
 import { useState, useEffect } from "react";
 import Login from "./LoginForm";
 import { API } from "../../../config";
-import axios from "axios";
+
 import { useRecoilState } from "recoil";
 import { accessToken } from "../../../recoil/accessToken";
 import { refreshToken } from "../../../recoil/refreshToken";
 import { loginId, nicknameKey } from "../../../recoil/loginId";
 import { useQuery } from "react-query";
 import { redirect } from "react-router-dom";
+import req from "../../../axios/req";
 const LoginModal = () => {
   const [token, setToken] = useRecoilState(accessToken);
   const [refToken, setRefToken] = useRecoilState(refreshToken);
@@ -17,7 +18,7 @@ const LoginModal = () => {
   const reIssue = () => {
     console.log("token", token);
     if (token) {
-      axios
+      req
         .post(API.REISSUE, {
           accessToken: token,
           refreshToken: refToken,
@@ -36,7 +37,7 @@ const LoginModal = () => {
     }
   };
   const isLoginState = () =>
-    axios
+    req
       .get(API.ISLOGIN)
       .then((response) => {
         console.log("로그인상태체크");
@@ -79,7 +80,7 @@ const LoginModal = () => {
   const logout = () => {
     console.log("before token", token);
 
-    axios
+    req
       .post(API.LOGOUT, token)
       .then((response) => {
 
