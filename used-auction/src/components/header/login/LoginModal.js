@@ -62,6 +62,7 @@ const LoginModal = () => {
   useQuery(["refresh_token"], reIssue, {
     refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
     refetchIntervalInBackground: true,
+    refetchOnWindowFocus: false 
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
