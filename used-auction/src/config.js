@@ -29,6 +29,7 @@ export const API = {
   REISSUE:`${BASE_URL}/api/member/reissue`,
   QUESTION:`${BASE_URL}/api/questions`,
   QUESTIONDELETE:`${BASE_URL}/api/questions`,
+  SSECONNECTIONOFCHATTINGROOM:`${BASE_URL}/api/sse/chat-connect`,
   AUCTION:`${BASE_URL}/api/auctions`,
   SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`,
   PRODUCTUPDATE:`${BASE_URL}/api/products/update`

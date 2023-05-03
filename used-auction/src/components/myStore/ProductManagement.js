@@ -140,129 +140,28 @@ const items4 = [
 ];
 
 const ProductManagement = (props) => {
-  const [data, setData] = useState();
-  const [categoryName, setCategoryName] = useState("전체");
-  const [selectedKeys, setSelectedKeys] = useState(0);
-  const [items, setItems] = useState(items1);
-  const [prevProps, setPrevProps] = useState(0);
-  const [pageNum, setPageNum] = useState(0);
-  const [totalItemNum, setTotalItemNum] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+    const [data, setData] = useState();
+    const [categoryName, setCategoryName] = useState("전체");
+    const [selectedKeys, setSelectedKeys] = useState(0);
+    const [items,setItems] = useState(items1);
+    const [prevProps,setPrevProps] = useState(0);
+    const [pageNum, setPageNum] = useState(0);
+    const [totalItemNum, setTotalItemNum] = useState(0);
+    const [pageSize, setPageSize] = useState(3);
 
-  useEffect(() => {
-    console.log(props.props);
-    if (props.props != prevProps) {
-      setCategoryName((prev) => "전체");
-      setPrevProps(props.props);
-      setSelectedKeys(0);
-    }
+    useEffect(() => {
+        console.log(props.props);
+        if(props.props != prevProps){
+            setCategoryName(prev => "전체");
+            setPrevProps(props.props);
+            setSelectedKeys(0);
+            setPageNum(0);
+        }
+    },[props.props]);
 
-    // const message = {
-    //     "test" : "이런거 할거면 미리 말해주지 밥먹고 올걸 ㅠㅠ",
-    // };
-
-    // let stomp_client;
-    // let socket = new SockJS('https://' + "usedauction.shop" + '/chat/ws');
-    // stomp_client = Stomp.over(socket);
-    // stomp_client.connect({},function(){
-    //     console.log('Going to subscribe ... ');
-    //     stomp_client.subscribe('/sub/test', function(frame){
-    //         console.log('Subscribe: Incoming message: ' + frame.body);
-    //         if (frame.body) {
-    //           let message = JSON.parse(frame.body);
-    //           console.log('New message arrived: ' + frame.body);
-    //         }
-    //       }, {});
-    //     stomp_client.send('/pub/hello', {}, JSON.stringify(message));
-    // });
-
-    if (props.props == 1) {
-      setItems((prev) => items1);
-
-      if (categoryName == "전체") {
-        axios
-          .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}`)
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      } else if (categoryName == "경매중") {
-        axios
-          .get(
-            API.PRODUCTMANAGMENT +
-              `?page=${pageNum}&size=${pageSize}&status=bid`
-          )
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      } else if (categoryName == "낙찰성공") {
-        axios
-          .get(
-            API.PRODUCTMANAGMENT +
-              `?page=${pageNum}&size=${pageSize}&status=success-bid`
-          )
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      } else if (categoryName == "낙찰실패") {
-        axios
-          .get(
-            API.PRODUCTMANAGMENT +
-              `?page=${pageNum}&size=${pageSize}&status=fail-bid`
-          )
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      } else if (categoryName == "거래성공") {
-        axios
-          .get(
-            API.PRODUCTMANAGMENT +
-              `?page=${pageNum}&size=${pageSize}&status=transaction-ok`
-          )
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      } else if (categoryName == "거래실패") {
-        axios
-          .get(
-            API.PRODUCTMANAGMENT +
-              `?page=${pageNum}&size=${pageSize}&status=transaction-fail`
-          )
-          .then((response) => {
-            console.log(response.data);
-            setData(response.data.content);
-            setTotalItemNum(response.data.totalElements);
-          })
-          .catch((error) => {
-            console.log(error.response.data);
-          });
-      }
-    } else if (props.props == 2) {
-      setItems((prev) => items2);
+    useEffect(() => {
+        if(props.props == 1){
+            setItems(prev => items1);
 
       if (categoryName == "전체") {
         axios
@@ -390,7 +289,7 @@ const ProductManagement = (props) => {
           });
       }
     }
-  }, [props.props, pageNum, categoryName]);
+  }, [pageNum, categoryName]);
 
   const onClick = (key) => {
     console.log("clicked", key);

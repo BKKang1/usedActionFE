@@ -145,26 +145,9 @@ const MyStore = () => {
   const [isHovering3, setIsHovering3] = useState(false);
   const [isHovering4, setIsHovering4] = useState(false);
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios
-    .get(API.ISLOGIN)
-    .then((response) => {
-      console.log(response);
-      if (response.data.result.status === true) {
-        console.log("로그인체크");
-      }
-      else {
-        //alert("로그인해주십시오.");
-        navigate("/usedAuctionFE");
-        alert("로그인해주십시오.");
-      }
-    });
-  }, []);
 
   const showModal = () => {
     setIsModalOpen(true);
