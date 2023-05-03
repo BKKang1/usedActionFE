@@ -13,8 +13,25 @@ const LoginModal = () => {
   const [refToken, setRefToken] = useRecoilState(refreshToken);
   const [id, setId] = useRecoilState(loginId);
   const [name, setName] = useRecoilState(nicknameKey);
-
-  const tokenRefresh = () =>
+  const reIssue = () => {
+    console.log("token", token);
+    axios
+      .post(API.REISSUE, {
+        accessToken: token,
+        refreshToken: refToken,
+      })
+      .then((res) => {
+        setToken(res.data.result.accessToken);
+        setRefToken(res.data.result.refreshToken);
+      })
+      .catch(() => {
+        setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
+      });
+  };
+  const isLoginState = () =>
     axios
       .get(API.ISLOGIN)
       .then((response) => {
@@ -23,23 +40,12 @@ const LoginModal = () => {
           console.log("로그인체크");
           setName(response.data.result.name);
           setId(response.data.result.loginId);
-        } else if (token !== null) {
-          console.log("token", token);
-          axios
-            .post(API.REISSUE, {
-              accessToken: token,
-              refreshToken: refToken,
-            })
-            .then((res) => {
-              setToken(res.data.result.accessToken);
-              setRefToken(res.data.result.refreshToken);
-            })
-            .catch(() => {
-              setToken(null);
-              setRefToken(null);
-              setName(null);
-              setId(null);
-            });
+        } else {
+          setToken(null);
+          setRefToken(null);
+          setName(null);
+          setId(null);
+          console.log("로그아웃");
         }
       })
       .catch(() => {
@@ -49,16 +55,15 @@ const LoginModal = () => {
         setId(null);
       });
 
-  useQuery(["refresh_token"], tokenRefresh, {
+  useQuery(["refresh_token"], reIssue, {
     refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
     refetchIntervalInBackground: true,
-   
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    tokenRefresh();
+    isLoginState();
     console.log("로그인상태체크inuseeffect");
   }, [token]);
 
