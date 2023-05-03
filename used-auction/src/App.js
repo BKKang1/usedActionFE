@@ -11,12 +11,12 @@ import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { accessToken } from "./recoil/accessToken";
 import Product from "./components/productView/Product";
-import { useEffect,useRef } from "react";
+import { useEffect, useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
-import { useQuery } from 'react-query';
-import {ClientContext} from "./components/chattingRoom/Soket";
+import { useQuery } from "react-query";
+import { ClientContext } from "./components/chattingRoom/Soket";
 import SockJS from "sockjs-client";
-const Stomp = require('stompjs');
+const Stomp = require("stompjs");
 
 const layoutStyle = {
   margin: "0 auto",
@@ -24,7 +24,6 @@ const layoutStyle = {
 };
 
 function App() {
-
   const [token, setToken] = useRecoilState(accessToken);
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.withCredentials = true;
@@ -35,7 +34,7 @@ function App() {
   let client = useRef();
   const setClient = (e) => {
     console.log("client 세팅중");
-    client.current=Stomp.over(e);
+    client.current = Stomp.over(e);
   };
 
   // useEffect(() => {
@@ -45,28 +44,42 @@ function App() {
   // }, []);
 
   return (
-      <ClientContext.Provider value={{client,setClient}}>
-        <div style={layoutStyle}>
-          <BrowserRouter>
-            <Header></Header>
-            <Routes  >
-              <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
-              <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
-              <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
-              <Route path="/usedAuctionFE/chattingRoom" element={<ChatRoomList />}></Route>
-              <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
-              <Route
-                path="/usedAuctionFE/productList"
-                element={<ProductList />}
-              ></Route>
-              <Route
-                path="/usedAuctionFE/productList/productDetail/:productId"
-                element={<Product />}
-              ></Route>
-            </Routes>
-          </BrowserRouter>
-        </div>
-      </ClientContext.Provider>
+    <ClientContext.Provider value={{ client, setClient }}>
+      <div style={layoutStyle}>
+        <BrowserRouter>
+          <Header></Header>
+          <Routes>
+            <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
+            <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
+            <Route
+              path="/usedAuctionFE/sellProduct"
+              element={<SellProduct />}
+            ></Route>
+            <Route
+              path="/usedAuctionFE/chattingRoom"
+              element={<ChatRoomList />}
+            ></Route>
+            <Route
+              path="/usedAuctionFE/chattingRoom/detail/:roomId"
+              element={<ChatRoomList />}
+            ></Route>
+            <Route
+              path="/usedAuctionFE/productList"
+              element={<ProductList />}
+            ></Route>
+            <Route
+              path="/usedAuctionFE/productList/productDetail/:productId"
+              element={<Product />}
+            ></Route>
+            /usedAuctionFE/modifyProduct/4
+            <Route
+              path="/usedAuctionFE/modifyProduct/:productId"
+              element={<ModifyProduct />}
+            ></Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ClientContext.Provider>
   );
 }
 

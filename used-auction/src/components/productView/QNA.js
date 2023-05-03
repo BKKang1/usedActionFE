@@ -27,17 +27,6 @@ const QNA = ({ productId, nickname }) => {
     },
   ]);
 
-<<<<<<< HEAD
-=======
-const QNA = ({ productId }) => {
-  useEffect(() => {
-    axios
-      .get(API.QUESTIONVIEW + `/${productId}?page=${0}&size=${8}`)
-      .then((res) => {
-        console.log("댓글",res.data);
-      });
-  }, [productId]);
->>>>>>> fd111c343ab079619093e0c257228f8690f427b8
   const [position, setPosition] = useState("bottom");
   const [align, setAlign] = useState("center");
   const flexBox = { display: "flex" };

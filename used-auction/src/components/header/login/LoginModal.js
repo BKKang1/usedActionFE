@@ -15,21 +15,24 @@ const LoginModal = () => {
   const [name, setName] = useRecoilState(nicknameKey);
   const reIssue = () => {
     console.log("token", token);
-    axios
-      .post(API.REISSUE, {
-        accessToken: token,
-        refreshToken: refToken,
-      })
-      .then((res) => {
-        setToken(res.data.result.accessToken);
-        setRefToken(res.data.result.refreshToken);
-      })
-      .catch(() => {
-        setToken(null);
-        setRefToken(null);
-        setName(null);
-        setId(null);
-      });
+    if (token) {
+      axios
+        .post(API.REISSUE, {
+          accessToken: token,
+          refreshToken: refToken,
+        })
+        .then((res) => {
+          console.log("reissue",res)
+          setToken(res.data.result.accessToken);
+          setRefToken(res.data.result.refreshToken);
+        })
+        .catch(() => {
+          setToken(null);
+          setRefToken(null);
+          setName(null);
+          setId(null);
+        });
+    }
   };
   const isLoginState = () =>
     axios
@@ -40,12 +43,13 @@ const LoginModal = () => {
           console.log("로그인체크");
           setName(response.data.result.name);
           setId(response.data.result.loginId);
-        } else {
+        } else  if (response.data.result.status === false) {
           setToken(null);
           setRefToken(null);
           setName(null);
           setId(null);
           console.log("로그아웃");
+          console.log(response.data.result);
         }
       })
       .catch(() => {
