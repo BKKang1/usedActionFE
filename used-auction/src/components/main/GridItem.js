@@ -53,23 +53,7 @@ const GridItem = ({
   status,
 }) => {
   return (
-    // <div style={boxStyle}>
-
-    //     <NavLink to={productDetail + productId} style={LinkStyle}>
-    //       <img style={imgStyle} src={sigImgSrc} alt="이미지" />
-
-    //       <span style={textStyle}>
-    //         <h1 style={textStyle}>{productName}</h1>({status}) 현재 입찰가{" "}
-    //         <b>{nowPrice}</b> 원
-    //       </span>
-    //       <div style={dateStyle}>
-    //         {auctionEndDate} 까지
-    //         <br></br>
-    //         {nickname} / {categoryName}
-    //       </div>
-    //     </NavLink>
-
-    // </div>
+  
     <div style={boxStyle}>
       <Space direction="vertical" size={16}>
         <Card

@@ -15,7 +15,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import {client,ClientContext} from "../chattingRoom/Soket";
 
 
-
 const outerBox = {
   display: "flex",
   flexDirection: "column",
@@ -35,11 +34,13 @@ const innerBox = {
   margin: "2rem",
   whiteSpace: "nowrap",
   alignItems: "center",
+  textDecoration: "none",
+  color: "black",
 };
 const iconSize = {
   fontSize: "3rem",
 };
-const DropdownMenuStyle={
+const DropdownMenuStyle = {
   marginLeft: "2rem",
 };
 const LoginModalBoxStyle = {
@@ -59,6 +60,7 @@ const Headers = () => {
   const {client,setClient} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
   
+
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
     if(!(location.pathname.includes("chattingRoom"))){

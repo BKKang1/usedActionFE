@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { accessToken } from "./recoil/accessToken";
 import Product from "./components/productView/Product";
 import { useEffect,useRef } from "react";
+import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useQuery } from 'react-query';
 import {ClientContext} from "./components/chattingRoom/Soket";
 import SockJS from "sockjs-client";

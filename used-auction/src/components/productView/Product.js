@@ -1,4 +1,4 @@
-import { Card, Space, Divider, Image, Descriptions, Badge } from "antd";
+import { Card, Space, Divider, Image, Descriptions, Badge, Button } from "antd";
 import axios from "axios";
 import { API } from "../../config";
 import { useLocation, useBeforeUnload } from "react-router-dom";
@@ -6,19 +6,21 @@ import { useEffect, useState } from "react";
 import QNA from "./QNA";
 import CommentWritting from "./CommentWritting";
 import React from "react";
-import Prompt from "react-router";
+import BidModal from "./bid/BidModal";
 const Product = () => {
   let location = useLocation();
 
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
+  const [nowPrice, setNowPrice] = useState(null);
   const [product, setProduct] = useState({
+    auctionId: null,
     auctionEndDate: null,
     categoryName: null,
     info: null,
     memberId: null,
     nickname: null,
-    nowPrice: null,
+
     ordinalImgList: [
       {
         originalName: null,
@@ -56,7 +58,7 @@ const Product = () => {
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
   };
- 
+
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -67,9 +69,45 @@ const Product = () => {
       });
     }
   }, [productId]);
+
   useEffect(() => {
-    setRenderStart(true);
+    if (product.auctionId !== null) {
+      sseConnect(product.auctionId);
+      setRenderStart(true);
+    }
   }, [product]);
+
+  const sseConnect = (auctionId) => {
+    console.log("au", auctionId);
+
+    let sse = new EventSource(API.SSECONNECTIONOFPRODUCT + `/${auctionId}`, {
+      withCredentials: true,
+      heartbeatTimeout: 300000,
+    });
+    sse.addEventListener("CONNECT", (e) => {
+      if (!window.location.pathname.includes("productDetail")) {
+        console.log("로케이션 이동 알림");
+        sse.close();
+      }
+
+      const { data: receivedConnectData } = e;
+      const c = JSON.parse(receivedConnectData);
+      console.log("c", c);
+      console.log("connect event id: ", c.sseId); // "sse-id"
+      console.log("connect event result: ", c.result); // "연결성공!"
+    });
+    sse.addEventListener("SEND_BID_DATA", (e) => {
+      if (!window.location.pathname.includes("productDetail")) {
+        console.log("로케이션 이동 알림");
+        sse.close();
+      }
+      const { data: receivedConnectData } = e;
+      const r = JSON.parse(receivedConnectData);
+      setNowPrice(r.result);
+      console.log("send data sseId: ", r.sseId); // "sse-id"
+      console.log("send data result: ", r.result); // "10000" -> 입찰 가격
+    });
+  };
 
   {
     if (renderStart) {
@@ -117,10 +155,7 @@ const Product = () => {
                     ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="현재가">
-                    <Badge
-                      count={product.nowPrice}
-                      overflowCount={9999999999}
-                    ></Badge>
+                    <Badge count={nowPrice} overflowCount={9999999999}></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="단위가격">
                     <Badge
@@ -143,8 +178,17 @@ const Product = () => {
                       overflowCount={999999999999}
                     ></Badge>
                   </Descriptions.Item>
+                  <Descriptions.Item>
+                    <BidModal
+                      priceUnit={product.priceUnit}
+                      auctionEndDate={product.auctionEndDate}
+                      nowPrice={nowPrice}
+                      auctionId={product.auctionId}
+                    />
+                  </Descriptions.Item>
                 </Descriptions>
               </div>
+
               <Divider />
               <div>{product.info}</div>
               <Divider />
