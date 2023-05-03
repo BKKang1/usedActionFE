@@ -8,6 +8,7 @@ import { accessToken } from "../../../recoil/accessToken";
 import { refreshToken } from "../../../recoil/refreshToken";
 import { loginId, nicknameKey } from "../../../recoil/loginId";
 import { useQuery } from "react-query";
+import { redirect } from "react-router-dom";
 const LoginModal = () => {
   const [token, setToken] = useRecoilState(accessToken);
   const [refToken, setRefToken] = useRecoilState(refreshToken);
@@ -22,7 +23,7 @@ const LoginModal = () => {
           refreshToken: refToken,
         })
         .then((res) => {
-          console.log("reissue",res)
+          console.log("reissue", res);
           setToken(res.data.result.accessToken);
           setRefToken(res.data.result.refreshToken);
         })
@@ -43,7 +44,7 @@ const LoginModal = () => {
           console.log("로그인체크");
           setName(response.data.result.name);
           setId(response.data.result.loginId);
-        } else  if (response.data.result.status === false) {
+        } else if (response.data.result.status === false) {
           setToken(null);
           setRefToken(null);
           setName(null);
@@ -62,7 +63,7 @@ const LoginModal = () => {
   useQuery(["refresh_token"], reIssue, {
     refetchInterval: 60 * 25 * 1000, //25분마다 refresh하여 access토큰 재발급
     refetchIntervalInBackground: true,
-    refetchOnWindowFocus: false 
+    refetchOnWindowFocus: false,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +82,6 @@ const LoginModal = () => {
     axios
       .post(API.LOGOUT, token)
       .then((response) => {
-        console.log("tok", response.data.result);
 
         setToken(null);
         setRefToken(null);
