@@ -88,6 +88,7 @@ const Product = () => {
       if (!window.location.pathname.includes("productDetail")) {
         console.log("로케이션 이동 알림");
         sse.close();
+        return;
       }
 
       const { data: receivedConnectData } = e;
@@ -100,6 +101,7 @@ const Product = () => {
       if (!window.location.pathname.includes("productDetail")) {
         console.log("로케이션 이동 알림");
         sse.close();
+        return;
       }
       const { data: receivedConnectData } = e;
       const r = JSON.parse(receivedConnectData);
