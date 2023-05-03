@@ -19,7 +19,9 @@ import {
 } from '@chatscope/chat-ui-kit-react';
 import axios from "axios";
 import { API } from "../../config";
-import React, { location, useState, useEffect,useRef } from "react";
+import React, { location, useState, useEffect,useRef, useContext } from "react";
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
+import {client,ClientContext} from "./Soket";
 import SockJS from "sockjs-client";
 const Stomp = require('stompjs');
 axios.defaults.withCredentials = true;
@@ -37,10 +39,15 @@ const sidebarStyle = {
     height: "390px",
     overflow: "hidden"
 };
+const innerSelectRoomStyle ={
+  margin: "auto auto",
+  fontSize: "30px",
+};
 
 const ChatRoomList = () => {
     const [token, setToken] = useRecoilState(accessToken);
     const [name, setName] = useRecoilState(nicknameKey);
+
     const [searchValue, setSearchValue] = useState("");
     const [conversationList, setConversationList] = useState([]);
     const [searched, setSearched] = useState([]);
@@ -49,20 +56,20 @@ const ChatRoomList = () => {
     const [selectedRoomName, setSelectedRoomName] = useState("");
     const [selectedRoomId, setSelectedRoomId] = useState("");
     const [loadedMessages, setLoadedMessages] = useState([]);
-    const [message, setMessage] = useState({});
+    const [message, setMessage] = useState("");
     const [messageInputValue, setMessageInputValue] = useState("");
     const [pageNum,setPageNum] = useState(1);
-
+    const {client,setClient} = useContext(ClientContext);
+    
     let sseTrigger =useRef(false);
-    let stomp_client =useRef();
-    //let stomp_client = useRef();
-    //stomp_client.current = Stomp.over(socket);
+    let noMorePage = useRef(false);
 
     useEffect(() => {
       if(window.history.state.isExist == true){
         console.log(window.history.state);
         onClcik(window.history.state.chatRoomId, window.history.state.roomName);
       }
+
       axios
         .get(API.CHATROOMLIST)
         .then((response) => {
@@ -73,16 +80,67 @@ const ChatRoomList = () => {
             console.log(error.response.data);
         });
 
-      //sse작업  
+      const sse = new EventSource(API.SSECONNECTIONOFCHATTINGROOM+`?token=${token}`, {
+        withCredentials: true,
+        heartbeatTimeout: 60000,
+      });
+      sse.addEventListener("CONNECT", (e) => {
+        if(!(window.location.pathname.includes("chattingRoom"))){
+          console.log("로케이션 이동 알림");
+          sse.close();
+          return;
+        }
+        const { data: receivedConnectData } = e;
+        const data = JSON.parse(receivedConnectData);
+        console.log(data);
+      });
+      sse.addEventListener("SEND_ROOM_DATA", (e) => {
+        if(!(window.location.pathname.includes("chattingRoom"))){
+          console.log("로케이션 이동 알림");
+          sse.close();
+          return;
+        }
+        const { data: receivedConnectData } = e;
+        const data = JSON.parse(receivedConnectData);
+        console.log(data);
+      });
+      sse.addEventListener("SEND_ROOM_ENTER_DATA", (e) => {
+        if(!(window.location.pathname.includes("chattingRoom"))){
+          console.log("로케이션 이동 알림");
+          sse.close();
+          return;
+        }
+        const { data: receivedConnectData } = e;
+        const data = JSON.parse(receivedConnectData);
+        console.log(data);
+      }); 
+      sse.addEventListener("SEND_NEW_ROOM_DATA", (e) => {
+        if(!(window.location.pathname.includes("chattingRoom"))){
+          console.log("로케이션 이동 알림");
+          sse.close();
+          return;
+        }
+        const { data: receivedConnectData } = e;
+        const data = JSON.parse(receivedConnectData);
+        console.log(data);
+      }); 
+      sse.onerror = (e) => {
+        if(!(window.location.pathname.includes("chattingRoom"))){
+          console.log("로케이션 이동 알림");
+          sse.close();
+          return;
+        }
+      };
     }, []);
 
     useEffect(() => {
-      
-    }, [sseTrigger]);
-
-    useEffect(() => {
-      console.log("onReadTrigger먹힘");
-      //여기서 readOrNot을 true로 전환.
+      if(onReadTrigger==true){
+        const tempMessageList = loadedMessages.map((item) => 
+          item.readOrNot == false?{...item,readOrNot: true}:item
+        );
+        setLoadedMessages(tempMessageList);
+        setOnReadTrigger(false);
+      }
     }, [onReadTrigger]);
 
     useEffect(() => {
@@ -95,6 +153,10 @@ const ChatRoomList = () => {
     useEffect(() => {
       if(onClickTrigger == true ){
         console.log(selectedRoomName);
+        if(client.current!=undefined && client.current.connected==true){
+          console.log(client.current.connected);
+          client.current.disconnect();
+        }
         onConnectSocket();
 
         axios
@@ -114,32 +176,35 @@ const ChatRoomList = () => {
 
     useEffect(() => {
       console.log(loadedMessages);
+      if(message != ""){
+        console.log("메세지 있음.");
       setLoadedMessages(loadedMessages.concat(message));
+      }
     }, [message]);
 
     const onConnectSocket = () => {
-      console.log("리스트:"+ loadedMessages);
-      let socket = new SockJS('https://' + "usedauction.shop" + '/chat/ws',{perMessageDeflate: false});
-      stomp_client.current = Stomp.over(socket);
+      // client = Stomp.over(socket);
+      let socket = new SockJS('https://' + "usedauction.shop" + '/chat/ws');
+      setClient(socket);
 
-      stomp_client.current.connect(
+      client.current.connect(
         {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
 
         },function(){
           console.log('Going to subscribe ... ');
-          stomp_client.current.subscribe(`/sub/room/${window.history.state.chatRoomId}`, function(frame){
+          client.current.subscribe(`/sub/room/${window.history.state.chatRoomId}`, function(frame){
             console.log('Subscribe되는중');
             console.log('Subscribe: Incoming message: ' + frame.body);
             if (frame.body) {
               const tempMessage = JSON.parse(frame.body);
               if(tempMessage.type=="ENTER" && tempMessage.sender!=name){
                 console.log("상대가 방에 들어왔다.");
+                setOnReadTrigger(true);
               }
               if(tempMessage.type=="ENTER" && tempMessage.sender==name){
                 console.log("내가 방에 들어왔다.");
-                setOnReadTrigger(true);
               }
               else if(tempMessage.type=="TALK"){
                 if(tempMessage.sender==name){
@@ -151,27 +216,26 @@ const ChatRoomList = () => {
               }
             }
             console.log("스톰프-subscribe: ");
-            console.log(stomp_client);
+            console.log(client);
           }, {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           });
 
           setTimeout(function() {
-            stomp_client.current.send('/pub/message', {
+            client.current.send('/pub/message', {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`,
             }, JSON.stringify({
-              chatRoomId : window.history.state.chatRoomId,
+              chatRoomId : selectedRoomId,
               sender: name,
               type: 'ENTER'
             }));
             console.log("스톰프-send1: ");
-            console.log(stomp_client);
+            console.log(client);
           }, 300);
-      });
-      console.log("스톰프-connectBefore: ");
-      console.log(stomp_client);
+        }
+      );
     };
 
     const onChangeSearchValue = (e) => {
@@ -187,7 +251,7 @@ const ChatRoomList = () => {
     const onSendMessage = () => {
       console.log("리스트:"+ loadedMessages);
 
-      stomp_client.current.send('/pub/message', {
+      client.current.send('/pub/message', {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       }, JSON.stringify({
@@ -217,19 +281,24 @@ const ChatRoomList = () => {
     };
 
   const onYReachStart = () => {
-    axios
-      .get(API.CHATLIST + `/${selectedRoomId}?page=${pageNum}`)
-      .then((response) => {
-        console.log(response.data.content);
-        console.log(loadedMessages);
-        if(response.data.content.length != 0){
-          setLoadedMessages(response.data.content.reverse().concat(loadedMessages));
-          setPageNum(pageNum+1);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if(noMorePage.current == false){
+      setTimeout(() => {
+        axios
+          .get(API.CHATLIST + `/${selectedRoomId}?page=${pageNum}`)
+          .then((response) => {
+            console.log(response.data.content);
+            console.log(loadedMessages);
+            if(response.data.content.length != 0){
+              setLoadedMessages(response.data.content.reverse().concat(loadedMessages));
+              setPageNum(pageNum+1);
+            }
+            noMorePage.current = true;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 500);
+    };
   };
 
   const chatList = () => {
@@ -271,7 +340,7 @@ const ChatRoomList = () => {
 
   const defaultList = () => {
     return(
-      <div>채팅방을 선택해주십시오</div>
+      <div style={innerSelectRoomStyle}>채팅방을 선택해주십시오</div>
     );
   };
 

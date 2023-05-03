@@ -134,7 +134,7 @@ const ProductManagement = (props) => {
     const [prevProps,setPrevProps] = useState(0);
     const [pageNum, setPageNum] = useState(0);
     const [totalItemNum, setTotalItemNum] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+    const [pageSize, setPageSize] = useState(3);
 
     useEffect(() => {
         console.log(props.props);
@@ -142,28 +142,11 @@ const ProductManagement = (props) => {
             setCategoryName(prev => "전체");
             setPrevProps(props.props);
             setSelectedKeys(0);
+            setPageNum(0);
         }
+    },[props.props]);
 
-
-        // const message = {
-        //     "test" : "이런거 할거면 미리 말해주지 밥먹고 올걸 ㅠㅠ",
-        // };
-
-        // let stomp_client;
-        // let socket = new SockJS('https://' + "usedauction.shop" + '/chat/ws');
-        // stomp_client = Stomp.over(socket);
-        // stomp_client.connect({},function(){
-        //     console.log('Going to subscribe ... ');
-        //     stomp_client.subscribe('/sub/test', function(frame){
-        //         console.log('Subscribe: Incoming message: ' + frame.body);
-        //         if (frame.body) {
-        //           let message = JSON.parse(frame.body);
-        //           console.log('New message arrived: ' + frame.body);
-        //         }
-        //       }, {});
-        //     stomp_client.send('/pub/hello', {}, JSON.stringify(message));
-        // });
-
+    useEffect(() => {
         if(props.props == 1){
             setItems(prev => items1);
 
@@ -360,7 +343,7 @@ const ProductManagement = (props) => {
                 });
             }
         }
-    }, [props.props, pageNum, categoryName]);
+    }, [pageNum, categoryName]);
 
     const onClick = (key) =>{
         console.log("clicked",key);
