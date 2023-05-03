@@ -106,8 +106,8 @@ const Headers = () => {
           <Search categoryId={categoryId}></Search>
         </div>
         <Link 
-          to={isLogIn==true?"/usedAuctionFE/sellProduct":"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+          to={"/usedAuctionFE/sellProduct"} 
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <PayCircleFilled style={iconSize} />
@@ -115,8 +115,8 @@ const Headers = () => {
           </div>
         </Link>
         <Link 
-          to={isLogIn==true?"/usedAuctionFE/myStore":"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+          to={"/usedAuctionFE/myStore"} 
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
@@ -124,8 +124,8 @@ const Headers = () => {
           </div>
         </Link>
         <Link 
-          to={isLogIn==true?"/usedAuctionFE/chattingRoom":"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+          to={"/usedAuctionFE/chattingRoom"} 
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <WechatOutlined style={iconSize} />
