@@ -13,7 +13,7 @@ import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
 import {client,ClientContext} from "../chattingRoom/Soket";
-
+import req from "../../axios/req";
 
 const outerBox = {
   display: "flex",
@@ -73,8 +73,7 @@ const Headers = () => {
     }
   }, [location]);
   useEffect(() => {
-    console.log("USEEFFECT 일어남");
-    axios
+    req
     .get(API.ISLOGIN)
     .then((response) => {
       console.log(response);
@@ -85,9 +84,7 @@ const Headers = () => {
         setIsLogIn(false);
       }
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    
   }, );
   return (
     <div style={outerBox}>

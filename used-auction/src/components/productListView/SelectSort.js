@@ -1,11 +1,11 @@
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { API } from "../../config";
-import axios from "axios";
+import req from "../../axios/req";
 const SelectSort = ({ setOrderBy, orderBy }) => {
   const [options, setOptions] = useState([{}]);
   useEffect(() => {
-    axios.get(API.ORDERBY).then((response) => {
+    req.get(API.ORDERBY).then((response) => {
       console.log(response.data.result);
       let object = response.data.result;
       object.map((val) => {

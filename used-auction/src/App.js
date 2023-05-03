@@ -17,6 +17,7 @@ import { useQuery } from "react-query";
 import { ClientContext } from "./components/chattingRoom/Soket";
 import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
+import req from "./axios/req";
 const Stomp = require("stompjs");
 
 const layoutStyle = {
@@ -26,6 +27,7 @@ const layoutStyle = {
 
 function App() {
   const [token, setToken] = useRecoilState(accessToken);
+  req.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.withCredentials = true;
   axios.defaults.headers.post["Content-Type"] = "application/json";

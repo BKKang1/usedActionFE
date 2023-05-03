@@ -1,10 +1,11 @@
 import { Avatar, List, Radio, Space, Button, Pagination } from "antd";
 import { useEffect, useState } from "react";
 import { API } from "../../config";
-import axios from "axios";
+
 import { loginId, nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
 import WrittingModal from "./WrittingModal";
+import req from "../../axios/req";
 const QNA = ({ productId, nickname }) => {
   const [id, setID] = useRecoilState(loginId);
   const [name, setName] = useRecoilState(nicknameKey);
@@ -44,7 +45,7 @@ const QNA = ({ productId, nickname }) => {
     setPage(value - 1);
   };
   useEffect(() => {
-    axios
+    req
       .get(API.QUESTIONVIEW + `/${productId}?page=${page}&size=${4}`)
       .then((res) => {
         console.log("댓글", res.data.content);
@@ -77,7 +78,7 @@ const QNA = ({ productId, nickname }) => {
               {id == item.loginId ? (
                 <Button
                   onClick={() =>
-                    axios
+                    req
                       .delete(API.QUESTIONDELETE + `/${data[index].questionId}`)
                       .then((res) => window.location.reload())
                   }
@@ -110,7 +111,7 @@ const QNA = ({ productId, nickname }) => {
                     {id == item.loginId ? (
                       <Button
                         onClick={() =>
-                          axios
+                          req
                             .delete(API.QUESTIONDELETE + `/${item.questionId}`)
                             .then((res) => window.location.reload())
                         }
