@@ -152,7 +152,8 @@ const ProductManagement = (props) => {
     useEffect(() => {
         console.log(props.props);
         if(props.props != prevProps){
-            setCategoryName(prev => "전체");
+            console.log(props.props);
+            setCategoryName("전체");
             setPrevProps(props.props);
             setSelectedKeys(0);
             setPageNum(0);
@@ -162,6 +163,91 @@ const ProductManagement = (props) => {
     useEffect(() => {
         if(props.props == 1){
             setItems(prev => items1);
+
+      if (categoryName == "전체") {
+        axios
+          .get(API.PRODUCTMANAGMENT + `?page=${pageNum}&size=${pageSize}`)
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      } else if (categoryName == "경매중") {
+        axios
+          .get(
+            API.PRODUCTMANAGMENT +
+              `?page=${pageNum}&size=${pageSize}&status=bid`
+          )
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      } else if (categoryName == "낙찰성공") {
+        axios
+          .get(
+            API.PRODUCTMANAGMENT +
+              `?page=${pageNum}&size=${pageSize}&status=success-bid`
+          )
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      } else if (categoryName == "낙찰실패") {
+        axios
+          .get(
+            API.PRODUCTMANAGMENT +
+              `?page=${pageNum}&size=${pageSize}&status=fail-bid`
+          )
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      } else if (categoryName == "거래성공") {
+        axios
+          .get(
+            API.PRODUCTMANAGMENT +
+              `?page=${pageNum}&size=${pageSize}&status=transaction-ok`
+          )
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      } else if (categoryName == "거래실패") {
+        axios
+          .get(
+            API.PRODUCTMANAGMENT +
+              `?page=${pageNum}&size=${pageSize}&status=transaction-fail`
+          )
+          .then((response) => {
+            console.log(response.data);
+            setData(response.data.content);
+            setTotalItemNum(response.data.totalElements);
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
+    } else if (props.props == 2) {
+      setItems((prev) => items2);
 
       if (categoryName == "전체") {
         axios
@@ -289,7 +375,7 @@ const ProductManagement = (props) => {
           });
       }
     }
-  }, [pageNum, categoryName]);
+  }, [props.props, pageNum, categoryName]);
 
   const onClick = (key) => {
     console.log("clicked", key);
