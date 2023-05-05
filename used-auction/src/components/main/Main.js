@@ -55,7 +55,7 @@ const Main = () => {
               sigImgSrc={value.sigImgSrc}
               productId={value.productId}
               productName={value.productName}
-              nowPrice={value.nowPrice}
+              nowPrice={value.nowPrice!==null?value.nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
               nickname={value.nickname}
               categoryName={value.categoryName}
               auctionEndDate={value.auctionEndDate}

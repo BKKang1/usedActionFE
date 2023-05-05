@@ -58,7 +58,9 @@ const Product = () => {
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
   };
-
+  const contentStyle= {
+    whiteSpace: "pre-wrap"
+  }
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -152,17 +154,20 @@ const Product = () => {
                   <Descriptions.Item label="시작가">
                     <Badge
                       color="blue"
-                      count={product.startPrice}
+                      count={product.startPrice!==null?product.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
                       overflowCount={9999999999}
                     ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="현재가">
-                    <Badge count={nowPrice} overflowCount={9999999999}></Badge>
+                    <Badge
+                      count={nowPrice!==null?nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
+                      overflowCount={9999999999}
+                    ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="단위가격">
                     <Badge
                       color="green"
-                      count={product.priceUnit}
+                      count={product.priceUnit!==null?product.priceUnit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
                       overflowCount={9999999999}
                     ></Badge>
                   </Descriptions.Item>
@@ -192,7 +197,7 @@ const Product = () => {
               </div>
 
               <Divider />
-              <div>{product.info}</div>
+              <div style={contentStyle}>{product.info}</div>
               <Divider />
               <div style={boxStyle}>
                 <div style={imgArrStyle}>
