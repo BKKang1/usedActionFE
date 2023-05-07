@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/usedAuctionFE/static/css/main.020411ae.css",
-    "main.js": "/usedAuctionFE/static/js/main.c97b80e0.js",
+    "main.js": "/usedAuctionFE/static/js/main.e70d808b.js",
     "index.html": "/usedAuctionFE/index.html",
     "main.020411ae.css.map": "/usedAuctionFE/static/css/main.020411ae.css.map",
-    "main.c97b80e0.js.map": "/usedAuctionFE/static/js/main.c97b80e0.js.map"
+    "main.e70d808b.js.map": "/usedAuctionFE/static/js/main.e70d808b.js.map"
   },
   "entrypoints": [
     "static/css/main.020411ae.css",
-    "static/js/main.c97b80e0.js"
+    "static/js/main.e70d808b.js"
   ]
 }
