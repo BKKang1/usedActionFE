@@ -440,7 +440,8 @@ const ProductManagement = (props) => {
                     </Link>
                   }
                   description={
-                    <span style={descriptionStyle}>{item.nowPrice}</span>
+                    <span style={descriptionStyle}>{item.nowPrice}
+                    </span>
                   }
                 />
                 <span style={listSpanStyle}>{item.status}</span>
