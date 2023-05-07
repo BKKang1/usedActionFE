@@ -21,7 +21,7 @@ import axios from "axios";
 import { API } from "../../config";
 import React, { location, useState, useEffect,useRef, useContext } from "react";
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
-import {client,ClientContext} from "./Soket";
+import {ClientContext} from "./Soket";
 import SockJS from "sockjs-client";
 const Stomp = require('stompjs');
 axios.defaults.withCredentials = true;
@@ -50,6 +50,8 @@ const ChatRoomList = () => {
 
     const [searchValue, setSearchValue] = useState("");
     const [conversationList, setConversationList] = useState([]);
+    const [updatedConversation, setUpdatedConversation] = useState("");
+    const [enteredRoomId, setEnteredRoomId] = useState("");
     const [searched, setSearched] = useState([]);
     const [onClickTrigger,setOnClickTrigger] =useState(false);
     const [onReadTrigger,setOnReadTrigger] =useState(false);
@@ -60,9 +62,11 @@ const ChatRoomList = () => {
     const [messageInputValue, setMessageInputValue] = useState("");
     const [pageNum,setPageNum] = useState(1);
     const {client,setClient} = useContext(ClientContext);
+    const {sse,setSse} = useContext(ClientContext);
     
-    let sseTrigger =useRef(false);
     let noMorePage = useRef(false);
+    // const EventSource = EventSourcePolyfill;
+    // let sse;
 
     useEffect(() => {
       if(window.history.state.isExist == true){
@@ -80,58 +84,128 @@ const ChatRoomList = () => {
             console.log(error.response.data);
         });
 
-      const sse = new EventSource(API.SSECONNECTIONOFCHATTINGROOM+`?token=${token}`, {
-        withCredentials: true,
-        heartbeatTimeout: 60000,
-      });
-      sse.addEventListener("CONNECT", (e) => {
-        if(!(window.location.pathname.includes("chattingRoom"))){
-          console.log("로케이션 이동 알림");
-          sse.close();
-          return;
-        }
+      
+      // sse = new EventSource(API.SSECONNECTIONOFCHATTINGROOM, {
+      //   headers:{
+      //     Authorization: `Bearer ${token}`,
+      //     "Content-Type": "application/json",
+      //   },
+      //   withCredentials: true,
+      //   heartbeatTimeout: 60000,
+      // });
+      console.log(sse);
+      setSse();
+      console.log(sse);
+
+      sse.current.addEventListener("CONNECT", (e) => {
         const { data: receivedConnectData } = e;
         const data = JSON.parse(receivedConnectData);
         console.log(data);
       });
-      sse.addEventListener("SEND_ROOM_DATA", (e) => {
-        if(!(window.location.pathname.includes("chattingRoom"))){
-          console.log("로케이션 이동 알림");
-          sse.close();
-          return;
-        }
+      sse.current.addEventListener("SEND_ROOM_DATA", (e) => {
         const { data: receivedConnectData } = e;
         const data = JSON.parse(receivedConnectData);
-        console.log(data);
+        console.log(data.result);
+        setUpdatedConversation(data.result);
       });
-      sse.addEventListener("SEND_ROOM_ENTER_DATA", (e) => {
-        if(!(window.location.pathname.includes("chattingRoom"))){
-          console.log("로케이션 이동 알림");
-          sse.close();
-          return;
-        }
+      sse.current.addEventListener("SEND_ROOM_ENTER_DATA", (e) => {
         const { data: receivedConnectData } = e;
         const data = JSON.parse(receivedConnectData);
-        console.log(data);
+        console.log(data.result);
+        setEnteredRoomId(data.result);
       }); 
-      sse.addEventListener("SEND_NEW_ROOM_DATA", (e) => {
-        if(!(window.location.pathname.includes("chattingRoom"))){
-          console.log("로케이션 이동 알림");
-          sse.close();
-          return;
-        }
+      sse.current.addEventListener("SEND_NEW_ROOM_DATA", (e) => {
         const { data: receivedConnectData } = e;
         const data = JSON.parse(receivedConnectData);
-        console.log(data);
+        console.log(data.result);
       }); 
-      sse.onerror = (e) => {
+      sse.current.onerror = (e) => {
         if(!(window.location.pathname.includes("chattingRoom"))){
           console.log("로케이션 이동 알림");
-          sse.close();
+          sse.current.close();
           return;
         }
       };
     }, []);
+
+    useEffect(() => {
+      if(updatedConversation != ""){
+        console.log("채팅방리스트 업데이트 준비 완료.");
+        let tempConversationList;
+        let tempSearchedConversationList;
+
+        if(updatedConversation.unReadMessages==true){
+          tempConversationList = conversationList.map((item) => 
+            item.chatRoomId==updatedConversation.chatRoomId?
+            {
+              ...item , 
+              recentMessage: updatedConversation.recentMessage, 
+              recentSender: updatedConversation.recentSender,
+              unReadMessages: 0
+            }
+            :item
+          );
+          tempSearchedConversationList = searched.map((item) => 
+            item.chatRoomId==updatedConversation.chatRoomId?
+            {
+              ...item , 
+              recentMessage: updatedConversation.recentMessage, 
+              recentSender: updatedConversation.recentSender,
+              unReadMessages: 0
+            }
+            :item
+          );
+        }
+        else if(updatedConversation.unReadMessages==false){
+          tempConversationList = conversationList.map((item) => 
+            item.chatRoomId==updatedConversation.chatRoomId?
+            {
+              ...item , 
+              recentMessage: updatedConversation.recentMessage, 
+              recentSender: updatedConversation.recentSender,
+              unReadMessages: item.unReadMessages + 1
+            }
+            :item
+          );
+          tempSearchedConversationList = searched.map((item) => 
+            item.chatRoomId==updatedConversation.chatRoomId?
+            {
+              ...item , 
+              recentMessage: updatedConversation.recentMessage, 
+              recentSender: updatedConversation.recentSender,
+              unReadMessages: item.unReadMessages + 1
+            }
+            :item
+          );
+        }
+        console.log(tempConversationList);
+        setSearched(tempSearchedConversationList);
+        setConversationList(tempConversationList);
+      }
+    }, [updatedConversation]);
+
+    useEffect(() => {
+      if(enteredRoomId != ""){
+        console.log("채팅방리스트 업데이트 준비 완료.");
+        const tempConversationList = conversationList.map((item) => 
+        item.chatRoomId==enteredRoomId.chatRoomId?{
+          ...item , 
+          unReadMessages: 0
+        }
+          :item
+        );
+        const tempSearchedConversationList = searched.map((item) => 
+        item.chatRoomId==enteredRoomId.chatRoomId?{
+          ...item , 
+          unReadMessages: 0
+        }
+          :item
+        );
+        console.log(tempConversationList);
+        setSearched(tempSearchedConversationList);
+        setConversationList(tempConversationList);
+      }
+    }, [enteredRoomId]);
 
     useEffect(() => {
       if(onReadTrigger==true){

@@ -15,6 +15,7 @@ import { useEffect,useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useQuery } from 'react-query';
 import {ClientContext} from "./components/chattingRoom/Soket";
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 import SockJS from "sockjs-client";
 const Stomp = require('stompjs');
 
@@ -38,20 +39,34 @@ function App() {
     client.current=Stomp.over(e);
   };
 
-  // useEffect(() => {
-  //   return()=>{
-  //     client.current.disconnect();
-  //   }
-  // }, []);
+  const EventSource = EventSourcePolyfill;
+  let sse = useRef();
+  const setSse = (e) => {
+    console.log("sse 세팅중");
+    sse.current = new EventSource(API.SSECONNECTIONOFCHATTINGROOM, {
+      headers:{
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      heartbeatTimeout: 60000,
+    });
+  };
+
+  useEffect(() => {
+    return()=>{
+      client.current.disconnect();
+    }
+  }, []);
 
   return (
-      <ClientContext.Provider value={{client,setClient}}>
+      <ClientContext.Provider value={{client,setClient,sse,setSse}}>
         <div style={layoutStyle}>
           <BrowserRouter>
             <Header></Header>
             <Routes  >
               <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
-              <Route path="/usedAuctionFE/myStore" element={<MyStore />}></Route>
+              <Route path="/usedAuctionFE/myStore/:userId" element={<MyStore />}></Route>
               <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
               <Route path="/usedAuctionFE/chattingRoom" element={<ChatRoomList />}></Route>
               <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>

@@ -147,7 +147,7 @@ const ProductManagement = (props) => {
     const [prevProps,setPrevProps] = useState(0);
     const [pageNum, setPageNum] = useState(0);
     const [totalItemNum, setTotalItemNum] = useState(0);
-    const [pageSize, setPageSize] = useState(3);
+    const [pageSize, setPageSize] = useState(10);
 
     useEffect(() => {
         console.log(props.props);
@@ -433,7 +433,7 @@ const ProductManagement = (props) => {
                 <List.Item.Meta
                   title={
                     <Link
-                      to={`./../productList/productDetail/${item.productId}`}
+                      to={`../usedAuctionFE/productList/productDetail/${item.productId}`}
                       style={titleStyle}
                     >
                       {item.productName}
