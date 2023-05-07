@@ -437,16 +437,19 @@ const ProductManagement = (props) => {
                 <List.Item.Meta
                   title={
                     <Link
-                      to={`./../productList/productDetail/${item.productId}`}
+                      to={`../usedAuctionFE/productList/productDetail/${item.productId}`}
                       style={titleStyle}
                     >
                       {item.productName}
                     </Link>
                   }
                   description={
-                    <span style={descriptionStyle}>{item.nowPrice!== null?
-                      item.nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      : null}
+                    <span style={descriptionStyle}>
+                      {item.nowPrice !== (null||undefined)
+                        ? item.nowPrice
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : item.nowPrice }
                     </span>
                   }
                 />

@@ -9,10 +9,12 @@ import {
   PayCircleFilled,
 } from "@ant-design/icons";
 import { API } from "../../config";
+import { useRecoilState } from "recoil";
+import {loginId} from "../../recoil/loginId";
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
-import { client, ClientContext } from "../chattingRoom/Soket";
+import {ClientContext } from "../chattingRoom/Soket";
 import req from "../../axios/req";
 import { PriceOfSSE } from "../productView/ContextOfPrice";
 
@@ -58,7 +60,9 @@ const textDecoration = {
 const Headers = () => {
   let location = useLocation();
   let categoryId = useRef("0");
-  const { client, setClient } = useContext(ClientContext);
+  const [id, setId] = useRecoilState(loginId);
+  const {client,setClient} = useContext(ClientContext);
+  const {sse,setSse} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
 
@@ -66,6 +70,11 @@ const Headers = () => {
     console.log("location", location.pathname.includes("productDetail/"));
     if (!location.pathname.includes("chattingRoom")) {
       console.log("채팅페이지 아닌거 확인");
+
+      if(sse.current!=undefined){
+        sse.current.close();
+        //console.log("sss 끊어짐.");
+      }
 
       if (client.current != undefined && client.current.connected == true) {
         console.log(client.current.connected);
@@ -114,7 +123,7 @@ const Headers = () => {
             <b>판매하기</b>
           </div>
         </Link>
-        <Link to={"/usedAuctionFE/myStore"} style={textDecoration}>
+        <Link to={`/usedAuctionFE/myStore/${id}`} style={textDecoration}>
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
             <b>내 상점</b>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../../config";
-import { Button, Layout, Menu, Modal } from "antd";
+import { Button, Layout, Menu, Modal, Input } from "antd";
 import { PageHeader } from "@ant-design/pro-layout";
 import React, { location, useState, useEffect } from "react";
 import {
@@ -13,7 +13,9 @@ import {
 } from "react-router-dom";
 import ProductManagement from "./ProductManagement";
 import { useRecoilState } from "recoil";
-import { accessToken, loginState } from "../../recoil/accessToken";
+import { accessToken } from "../../recoil/accessToken";
+import { refreshToken } from "../../recoil/refreshToken";
+import { loginId, nicknameKey } from "../../recoil/loginId";
 import UserInfoForm from "./userInfo/UserInfoForm";
 import pic from "../../img/회원.jpg";
 axios.defaults.withCredentials = true;
@@ -51,12 +53,21 @@ const userText = {
   paddingBottom: "15%",
   marginLeft: "40px",
   fontSize: "25px",
-  fontWeight: "700",
+  //fontWeight: "700",
+};
+
+const passwordText = {
+  display: "flex",
+  paddingTop: "15%",
+  paddingBottom: "15%",
+  fontSize: "25px",
+  //fontWeight: "700",
 };
 
 const buttonBox = {
   position: "relative",
   marginLeft: "40px",
+  marginBottom: "20px",
 };
 
 const userScoreText1 = {
@@ -128,7 +139,7 @@ const imgStyle = {
 };
 
 const btnStyle = {
-  backgroundColor: "black",
+  backgroundColor: "orange",
 };
 
 const modalStyle = {
@@ -136,26 +147,60 @@ const modalStyle = {
 };
 
 const MyStore = () => {
-
+  const [name, setName] = useRecoilState(nicknameKey);
   const [token, setToken] = useRecoilState(accessToken);
-  const [userName, setUserName] = useState("강댕강댕");
-  const [userScore, setUserScore] = useState("88");
+  const [refToken, setRefToken] = useRecoilState(refreshToken);
+  const [id, setId] = useRecoilState(loginId);
+  //const [userScore, setUserScore] = useState("88");
+  const [userPassword, setUserPassword] = useState("");
   const [choiceNum, setChoiceNum] = useState(1);
   const [isHovering1, setIsHovering1] = useState(false);
   const [isHovering2, setIsHovering2] = useState(false);
   const [isHovering3, setIsHovering3] = useState(false);
   const [isHovering4, setIsHovering4] = useState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen1, setIsModalOpen1] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
 
   const navigate = useNavigate();
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showModal1 = () => {
+    setIsModalOpen1(true);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleCancel1 = () => {
+    setIsModalOpen1(false);
+  };
+
+  const showModal2 = () => {
+    setIsModalOpen2(true);
+  };
+
+  const handleCancel2 = () => {
+    setIsModalOpen2(false);
+  };
+
+  const onChange = (e) => {
+    const { value } = e.target;
+    setUserPassword(value);
+  };
+
+  const deleteUser = () => {
+    console.log(userPassword);
+    axios
+      .delete(API.MEMBER+`?password=${userPassword}`)
+      .then((response) => {
+        console.log(response.data);
+        setToken(null);
+        setRefToken(null);
+        setName(null);
+        setId(null);
+        navigate("/usedAuctionFE");
+      })
+      .catch((error) => {
+        console.log(error.response.data.msg);
+        alert(error.response.data.msg);
+      });
   };
 
   const ifNum = () => {
@@ -176,30 +221,58 @@ const MyStore = () => {
         <img style={imgStyle} src={pic} />
         <div className="user-info" style={userInfo}>
           <span className="user-text" style={userText}>
-            {userName}
+            {name}
           </span>
           <div className="button-box" style={buttonBox}>
             <Button
               className="button1"
               type="primary"
               style={btnStyle}
-              onClick={showModal}
+              onClick={showModal1}
             >
               회원 정보 조회
             </Button>
             <Modal
               title={<div style={modalStyle}>회원 정보 조회</div>}
-              open={isModalOpen}
-              onCancel={handleCancel}
+              open={isModalOpen1}
+              onCancel={handleCancel1}
               footer={false}
               destroyOnClose="true"
             >
-              <UserInfoForm onCancel={handleCancel}></UserInfoForm>
+              <UserInfoForm onCancel={handleCancel1}></UserInfoForm>
             </Modal>
           </div>
-          <span className="user-score" style={userScoreText1}>
-            평가점수 :<span style={userScoreText2}>{userScore}</span>
-          </span>
+          <div className="button-box" style={buttonBox}>
+            <Button
+              className="button2"
+              type="primary"
+              style={btnStyle}
+              onClick={showModal2}
+            >
+              회원 탈퇴
+            </Button>
+            <Modal
+              title={<div style={modalStyle}>회원 탈퇴</div>}
+              open={isModalOpen2}
+              onCancel={handleCancel2}
+              footer={false}
+              destroyOnClose="true"
+            >
+              <div>
+                <span className="user-text" style={passwordText}>
+                  Password: <Input.Password name="password" onChange={onChange}/> 
+                </span>
+                <Button
+                  className="button3"
+                  type="primary"
+                  style={btnStyle}
+                  onClick={deleteUser}
+                >
+                  회원 탈퇴
+                </Button>
+              </div>
+            </Modal>
+          </div>
         </div>
       </div>
 

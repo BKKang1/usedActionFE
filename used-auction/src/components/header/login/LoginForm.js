@@ -7,6 +7,7 @@ import { accessToken } from "../../../recoil/accessToken";
 import { refreshToken } from "../../../recoil/refreshToken";
 import { useEffect } from "react";
 import req from "../../../axios/req";
+import axios from "axios";
 
 const btnBoxstyle = {
   display: "flex",
@@ -29,7 +30,7 @@ const LoginForm = ({ onCancel, setName }) => {
     const json = JSON.stringify(values);
     console.log("json", json);
 
-    req
+    axios
       .post(API.LOGIN, json)
       .then((response) => {
        
@@ -38,6 +39,7 @@ const LoginForm = ({ onCancel, setName }) => {
       })
 
       .then(() => onCancel())
+      .catch(()=>{alert("잘못된 아이디나 비밀번호입니다!")})
   };
 
   const onFinishFailed = (errorInfo) => {

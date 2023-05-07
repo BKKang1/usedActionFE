@@ -32,6 +32,6 @@ export const API = {
   SSECONNECTIONOFCHATTINGROOM:`${BASE_URL}/api/sse/chat-connect`,
   AUCTION:`${BASE_URL}/api/auctions`,
   SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`,
-  PRODUCTUPDATE:`${BASE_URL}/api/products/update`
-  
+  PRODUCTUPDATE:`${BASE_URL}/api/products/update`,
+  MEMBER: `${BASE_URL}/api/member`,
 };
