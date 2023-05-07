@@ -33,4 +33,5 @@ export const API = {
   AUCTION:`${BASE_URL}/api/auctions`,
   SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`,
   PRODUCTUPDATE:`${BASE_URL}/api/products/update`
+  
 };
