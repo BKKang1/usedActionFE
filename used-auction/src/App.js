@@ -15,6 +15,7 @@ import { useEffect, useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useQuery } from "react-query";
 import { ClientContext } from "./components/chattingRoom/Soket";
+import { EventSourcePolyfill } from 'event-source-polyfill';
 import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
 import req from "./axios/req";
@@ -41,6 +42,25 @@ function App() {
     client.current = Stomp.over(e);
   };
 
+  const EventSource = EventSourcePolyfill;
+  let sse = useRef();
+  const setSse = (e) => {
+    console.log("sse 세팅중");
+    sse.current = new EventSource(API.SSECONNECTIONOFCHATTINGROOM, {
+      headers:{
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+      heartbeatTimeout: 60000,
+    });
+  };
+
+  useEffect(() => {
+    return()=>{
+      client.current.disconnect();
+    }
+  }, []);
   let ssePrice = useRef();
 
   const setSSEPrice = (auctionId ) => {
@@ -54,17 +74,15 @@ function App() {
     );
   };
   return (
-    <ClientContext.Provider value={{ client, setClient }}>
+      <ClientContext.Provider value={{client,setClient,sse,setSse}}>
       <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
           <Router>
             <Header></Header>
-            <Routes>
-              <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
-              <Route
-                path="/usedAuctionFE/chattingRoom/detail/:roomId"
-                element={<ChatRoomList />}
-              ></Route>
+            <Routes  >
+              <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
+              <Route path="/usedAuctionFE/myStore/:userId" element={<MyStore />}></Route>
+              <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
               <Route
                 path="/usedAuctionFE/productList"
                 element={<ProductList />}
@@ -74,10 +92,6 @@ function App() {
                 element={<Product />}
               ></Route>
               <Route element={<PrivateRoute />}>
-                <Route
-                  path="/usedAuctionFE/myStore"
-                  element={<MyStore />}
-                ></Route>
                 <Route
                   element={<ModifyProduct />}
                   path="/usedAuctionFE/modifyProduct/:productId"
