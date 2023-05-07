@@ -1,9 +1,7 @@
 import { Button, Form, Input } from "antd";
-
+import req from "../../../axios/req";
 import { API } from "../../../config";
-import axios from "axios";
 
-axios.defaults.withCredentials = true;
 const boxHeight = {
   height: "2.5rem",
 };
@@ -34,27 +32,26 @@ const SignUp = ({ onCancel }) => {
   let chkEmail = null;
   const onFinish = (values) => {
     if (chkname !== values.name) {
-      console.log("닉네임에 대한 중복체크가 필요합니다");
+      alert("닉네임에 대한 중복체크가 필요합니다");
       return;
     }
     if (chkLoginId !== values.loginId) {
-      console.log("아이디에 대한 중복체크가 필요합니다");
+      alert("아이디에 대한 중복체크가 필요합니다");
       return;
     }
-
     if (chkEmail !== values.email) {
-      console.log("이메일에 대한 인증이 필요합니다");
+      alert("이메일에 대한 인증이 필요합니다");
       return;
     }
 
     const json = JSON.stringify(values);
     console.log("json", json);
 
-    axios
+    req
       .post(API.SIGNUP, json)
-      .then((response) => console.log(response.data.result.msg))
+      .then((response) => alert(response.data.result.msg))
       .then(() => onCancel())
-      .catch((error) => console.log(error.response.data));
+      
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -66,66 +63,65 @@ const SignUp = ({ onCancel }) => {
     const url = API.IDCHECK + `/${loginId}/exists`;
     console.log("id", loginId);
     if (loginId === undefined) {
-      console.log("공백은 허용되지 않습니다", loginId);
+      alert("공백은 허용되지 않습니다", loginId);
       return;
     }
-    axios
+    req
       .get(url)
       .then((response) => {
-        console.log(response.data.result);
         if (response.data.result === false) {
           chkLoginId = loginId;
+          alert("사용 가능합니다");
+        } else {
+          alert("사용 불가능합니다");
         }
       })
-      .catch((error) => console.log(error.response.data));
+      
   };
 
   const checkNickname = () => {
     const name = form.getFieldsValue().name;
     const url = API.NICKNAMECHECK + `/${name}/exists`;
     if (name === undefined) {
-      console.log("공백은 허용되지 않습니다", name);
+      alert("공백은 허용되지 않습니다", name);
       return;
     }
-    axios
+    req
       .get(url)
       .then((response) => {
-        console.log(response.data.result);
         if (response.data.result === false) {
           chkname = name;
+          alert("사용 가능합니다");
+        } else {
+          alert("사용 불가능합니다");
         }
       })
-      .catch((error) => console.log(error.response.data));
   };
   const sendEmail = () => {
     const email = form.getFieldsValue().email;
-    if (email.length <= 12) {
-      console.log("올바른 이메일을 입력하세요");
+    if (email === undefined || email.length <= 12) {
+      alert("올바른 이메일을 입력하세요");
       return;
     }
     const emailform = email.slice(-12);
 
     if (emailform !== "@kumoh.ac.kr") {
-      console.log("올바른 이메일을 입력하세요");
+      alert("올바른 이메일을 입력하세요");
       return;
     }
     let url = API.EMAILCHECK + `/${email}/exists`;
-    console.log(url);
-    axios
-      .get(url)
-      .then((response) => {
-        if (response.data.result === false) {
-          chkEmail = email;
-          url = API.EMAILSEND + `/${email}`;
-          axios
-            .post(url)
 
-            .catch((error) => console.log(error.response));
-        } else {
-          console.log("이미 사용된 이메일입니다");
-        }
-      })
-      .catch((error) => console.log(error.response.data));
+    req.get(url).then((response) => {
+      if (response.data.result === false) {
+        chkEmail = email;
+        url = API.EMAILSEND + `/${email}`;
+        req.post(url).then(() => {
+          alert("웹메일에 코드가 전송되었습니다.");
+        });
+      } else {
+        alert("이미 사용된 이메일입니다");
+      }
+    });
   };
 
   return (

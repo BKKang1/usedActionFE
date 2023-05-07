@@ -1,4 +1,3 @@
-import axios from "axios";
 import { API } from "../../config";
 import {
   BrowserRouter,
@@ -26,12 +25,12 @@ import {
   Image,
   Upload,
   Typography,
+  Spin,
 } from "antd";
-
+import req from "../../axios/req";
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
-
 const defaultStyle = {
   margin: "2rem",
 };
@@ -127,6 +126,7 @@ const items = [
 ];
 
 const ModifyProduct = () => {
+  const [isloading, setIsLoading] = useState(true);
   const productId = useParams().productId;
   const [renderStart, setRenderStart] = useState(false);
   const [fileList, setFileList] = useState([]);
@@ -157,7 +157,7 @@ const ModifyProduct = () => {
   };
 
   useEffect(() => {
-    axios.get(API.PRODUCTUPDATE + `/${productId}`).then((res) => {
+    req.get(API.PRODUCTUPDATE + `/${productId}`).then((res) => {
       console.log(res.data.result);
       setProduct(res.data.result);
     });
@@ -177,6 +177,7 @@ const ModifyProduct = () => {
       urlToObject(product.ordinalImgList);
       urlToSig(product.sigImg);
       setRenderStart(true);
+      setIsLoading(false);
     }
   }, [product]);
 
@@ -251,8 +252,8 @@ const ModifyProduct = () => {
       console.log(key, ":", formData.get(key));
     }
 
-    axios
-      .patch(API.PRODUCTUPDATE + `/${3}`, formData, {
+    req
+      .patch(API.PRODUCTUPDATE + `/${productId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
@@ -260,133 +261,135 @@ const ModifyProduct = () => {
         alert(response.data.result.msg);
       })
       .then(() => {
-        refreshPage();
-      })
-      .catch((error) => {
-        alert(error.response.data.msg);
-        console.log(error);
+        navigate("/usedAuctionFE/myStore");
       });
   };
 
   if (renderStart) {
     return (
-      <div style={defaultStyle}>
-        <div style={titleStyle}>상품 수정</div>
+      <Spin spinning={isloading} size="large">
+        <div style={defaultStyle}>
+          <div style={titleStyle}>상품 수정</div>
 
-        <Form
-          form={form}
-          name="basic"
-          style={defaultStyle}
-          labelCol={{
-            span: 4,
-          }}
-          wrapperCol={{
-            span: 14,
-          }}
-          layout="horizontal"
-          autoComplete="off"
-          onFinish={onFinish}
-        >
-          <Form.Item label="카테고리" name="categoryId">
-            <Select
-              options={items}
-              //changeOnSelect
+          <Form
+            form={form}
+            name="basic"
+            style={defaultStyle}
+            labelCol={{
+              span: 4,
+            }}
+            wrapperCol={{
+              span: 14,
+            }}
+            layout="horizontal"
+            autoComplete="off"
+            onFinish={onFinish}
+          >
+            <Form.Item label="카테고리" name="categoryId">
+              <Select
+                options={items}
+                //changeOnSelect
 
-              onChange={onChange}
-              fieldNames={{
-                value: "key",
-                label: "label",
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="상품명" name="productName">
-            <Input />
-          </Form.Item>
-          <Form.Item label="경매 시작가" name="startPrice">
-            <InputNumber />
-          </Form.Item>
-          <Form.Item label="입찰 단위" name="priceUnit">
-            <InputNumber min={1000} />
-          </Form.Item>
-          <Form.Item label="경매 종료일" name="auctionEndDate">
-            <DatePicker
-              showTime={{
-                format: "HH:mm",
-              }}
-              value={date}
-              format="YYYY-MM-DD HH:mm"
-              onChange={onChangeDate}
-              onOk={onOk}
-            />
-          </Form.Item>
-          <Form.Item label="설명" name="info">
-            <TextArea rows={10} placeholder="maxLength is 6" maxLength={300} />
-          </Form.Item>
-          <Form.Item label="대표이미지" name="sigImg">
-            <Upload
-              beforeUpload={(file) => {
-                if (sigList.length < 1) {
-                  console.log("file", file);
-                  setSigList((sigList) => sigList.concat(file));
-                }
-                return false; // 파일 선택시 바로 업로드 하지 않고 후에 한꺼번에 전송하기 위함
-              }}
-              listType="picture"
-              maxCount={1.5}
-              fileList={sigList}
-              onPreview={() => false}
-              onRemove={(file) => {
-                setSigList(sigList.filter((i) => i.uid !== file.uid));
-              }}
-            >
-              <div>
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload
-                </div>
-              </div>
-            </Upload>
-          </Form.Item>
-          <Form.Item label="이미지" name="imgList">
-            <Upload
-              fileList={fileList}
-              onPreview={() => false}
-              beforeUpload={(file) => {
-                console.log("file", file);
-                if (sigList.length <= 4) setFileList(fileList.concat(file));
-                return false; // 파일 선택시 바로 업로드 하지 않고 후에 한꺼번에 전송하기 위함
-              }}
-              listType="picture"
-              maxCount={5}
-              onRemove={(file) => {
-                setFileList(fileList.filter((i) => i.uid !== file.uid));
-              }}
-            >
-              <div>
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload
-                </div>
-              </div>
-            </Upload>
-          </Form.Item>
-          <div>
-            <Form.Item label="제출">
-              <Button type="primary" htmlType="submit">
-                글 등록
-              </Button>
+                onChange={onChange}
+                fieldNames={{
+                  value: "key",
+                  label: "label",
+                }}
+              />
             </Form.Item>
-          </div>
-        </Form>
-      </div>
+            <Form.Item label="상품명" name="productName">
+              <Input />
+            </Form.Item>
+            <Form.Item label="경매 시작가" name="startPrice">
+              <InputNumber />
+            </Form.Item>
+            <Form.Item label="입찰 단위" name="priceUnit">
+              <InputNumber min={1000} />
+            </Form.Item>
+            <Form.Item label="경매 종료일" name="auctionEndDate">
+              <DatePicker
+                showTime={{
+                  format: "HH:mm",
+                }}
+                value={date}
+                format="YYYY-MM-DD HH:mm"
+                onChange={onChangeDate}
+                onOk={onOk}
+              />
+            </Form.Item>
+            <Form.Item label="설명" name="info">
+              <TextArea
+                rows={10}
+                placeholder="maxLength is 6"
+                maxLength={300}
+              />
+            </Form.Item>
+            <Form.Item label="대표이미지" name="sigImg">
+              <Upload
+                beforeUpload={(file) => {
+                  if (sigList.length < 1) {
+                    console.log("file", file);
+                    setSigList((sigList) => sigList.concat(file));
+                  }
+                  return false; // 파일 선택시 바로 업로드 하지 않고 후에 한꺼번에 전송하기 위함
+                }}
+                listType="picture"
+                maxCount={1.5}
+                fileList={sigList}
+                onPreview={() => false}
+                onRemove={(file) => {
+                  setSigList(sigList.filter((i) => i.uid !== file.uid));
+                }}
+              >
+                <div>
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload
+                  </div>
+                </div>
+              </Upload>
+            </Form.Item>
+            <Form.Item label="이미지" name="imgList">
+              <Upload
+                fileList={fileList}
+                onPreview={() => false}
+                beforeUpload={(file) => {
+                  console.log("file", file);
+                  if (sigList.length <= 4) setFileList(fileList.concat(file));
+                  return false; // 파일 선택시 바로 업로드 하지 않고 후에 한꺼번에 전송하기 위함
+                }}
+                listType="picture"
+                maxCount={5}
+                onRemove={(file) => {
+                  setFileList(fileList.filter((i) => i.uid !== file.uid));
+                }}
+              >
+                <div>
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload
+                  </div>
+                </div>
+              </Upload>
+            </Form.Item>
+            <div>
+              <Form.Item label="제출">
+                <Button type="primary" htmlType="submit">
+                  글 등록
+                </Button>
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
+      </Spin>
     );
   }
 };

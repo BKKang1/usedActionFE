@@ -1,4 +1,4 @@
-import axios from "axios";
+
 import { useEffect, useState, useRef } from "react";
 import { API } from "../../config";
 import GridItem from "../main/GridItem";
@@ -6,6 +6,7 @@ import { Row } from "antd";
 import { useLocation } from "react-router-dom";
 import { Pagination } from "antd";
 import SelectSort from "./SelectSort";
+import req from "../../axios/req";
 const ProductList = () => {
   const location = useLocation();
 
@@ -53,7 +54,7 @@ const ProductList = () => {
     console.log("productName", productName);
     console.log("categoryId", categoryId);
     console.log("page", page);
-    axios
+    req
       .get(
         API.SEARCH +
           `?categoryId=${categoryId}&productName=${productName}&orderBy=${orderBy}&page=${
@@ -65,7 +66,6 @@ const ProductList = () => {
         setMainContent(response.data.content);
         setTotalPage(response.data.totalPages*8)
       })
-      .catch((error) => console.log(error.response.data));
   }, [productName, categoryId, page,orderBy]);
 
   return (
@@ -81,7 +81,7 @@ const ProductList = () => {
               sigImgSrc={value.sigImgSrc}
               productId={value.productId}
               productName={value.productName}
-              nowPrice={value.nowPrice}
+              nowPrice={value.nowPrice!==null?value.nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
               nickname={value.nickname}
               categoryName={value.categoryName}
               auctionEndDate={value.auctionEndDate}

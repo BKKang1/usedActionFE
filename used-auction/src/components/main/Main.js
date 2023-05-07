@@ -1,10 +1,9 @@
-import axios from "axios";
+
 import { useEffect, useState } from "react";
 import { API } from "../../config";
 import GridItem from "./GridItem";
 import { Divider } from "antd";
-
-axios.defaults.withCredentials = true;
+import req from "../../axios/req";
 
 const Main = () => {
  
@@ -32,7 +31,7 @@ const Main = () => {
     },
   ]);
   useEffect(() => {
-    axios
+    req
       .get(
         API.SEARCH +
           `?categoryId=0&productName=&orderBy=VIEW_ORDER&page=0&size=8`
@@ -41,9 +40,7 @@ const Main = () => {
         setMainContent(response.data.content);
         console.log("리스트 이미지 결과", response.data.content);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+     
   }, []);
 
   
@@ -58,7 +55,7 @@ const Main = () => {
               sigImgSrc={value.sigImgSrc}
               productId={value.productId}
               productName={value.productName}
-              nowPrice={value.nowPrice}
+              nowPrice={value.nowPrice!==null?value.nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
               nickname={value.nickname}
               categoryName={value.categoryName}
               auctionEndDate={value.auctionEndDate}

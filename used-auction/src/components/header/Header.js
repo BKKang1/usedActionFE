@@ -2,7 +2,7 @@ import Search from "./others/SearchProductName";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
-import { useRef,useState, useEffect,useContext } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -14,8 +14,9 @@ import {loginId} from "../../recoil/loginId";
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
-import {ClientContext} from "../chattingRoom/Soket";
-
+import {ClientContext } from "../chattingRoom/Soket";
+import req from "../../axios/req";
+import { PriceOfSSE } from "../productView/ContextOfPrice";
 
 const outerBox = {
   display: "flex",
@@ -63,11 +64,11 @@ const Headers = () => {
   const {client,setClient} = useContext(ClientContext);
   const {sse,setSse} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
-  
+  const {ssePrice, setSSEPrice} = useContext(PriceOfSSE);
 
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
-    if(!(location.pathname.includes("chattingRoom"))){
+    if (!location.pathname.includes("chattingRoom")) {
       console.log("채팅페이지 아닌거 확인");
 
       if(sse.current!=undefined){
@@ -75,29 +76,36 @@ const Headers = () => {
         //console.log("sss 끊어짐.");
       }
 
-      if(client.current!=undefined && client.current.connected==true){
-        //console.log(client.current.connected);
+      if (client.current != undefined && client.current.connected == true) {
+        console.log(client.current.connected);
         client.current.disconnect();
       }
     }
+    if (!location.pathname.includes("productDetail")) {
+      
+      if(ssePrice.current!=undefined){
+        ssePrice.current.close();
+      
+
+        console.log("상품상세페이지 아님");
+      }
+
+
+   
+      return;
+      
+    }
   }, [location]);
   useEffect(() => {
-    console.log("USEEFFECT 일어남");
-    axios
-    .get(API.ISLOGIN)
-    .then((response) => {
+    req.get(API.ISLOGIN).then((response) => {
       console.log(response);
       if (response.data.result.status === true) {
         setIsLogIn(true);
-      }
-      else{
+      } else {
         setIsLogIn(false);
       }
-    })
-    .catch((error) => {
-      console.log(error);
     });
-  }, );
+  });
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
@@ -114,27 +122,27 @@ const Headers = () => {
         <div style={innerBox && itemStyle1}>
           <Search categoryId={categoryId}></Search>
         </div>
-        <Link 
-          to={isLogIn==true?"/usedAuctionFE/sellProduct":"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+        <Link
+          to={"/usedAuctionFE/sellProduct"}
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <PayCircleFilled style={iconSize} />
             <b>판매하기</b>
           </div>
         </Link>
-        <Link 
-          to={isLogIn==true?`/usedAuctionFE/myStore/${id}`:"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+        <Link
+          to={`/usedAuctionFE/myStore/${id}`}
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
             <b>내 상점</b>
           </div>
         </Link>
-        <Link 
-          to={isLogIn==true?"/usedAuctionFE/chattingRoom":"/usedAuctionFE"} 
-          onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
+        <Link
+          to={"/usedAuctionFE/chattingRoom"}
+          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
             <WechatOutlined style={iconSize} />

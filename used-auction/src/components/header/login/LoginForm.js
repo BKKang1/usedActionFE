@@ -1,11 +1,12 @@
 import { Button, Form, Input } from "antd";
 import SignUpModal from "../Signup/SignUpModal";
-import axios from "axios";
+
 import { API } from "../../../config";
 import { useRecoilState } from "recoil";
 import { accessToken } from "../../../recoil/accessToken";
 import { refreshToken } from "../../../recoil/refreshToken";
 import { useEffect } from "react";
+import req from "../../../axios/req";
 
 const btnBoxstyle = {
   display: "flex",
@@ -24,21 +25,19 @@ const LoginForm = ({ onCancel, setName }) => {
   const [token, setToken] = useRecoilState(accessToken);
   const [refToken, setRefToken] = useRecoilState(refreshToken);
 
-
   const onFinish = (values) => {
     const json = JSON.stringify(values);
     console.log("json", json);
 
-    axios
+    req
       .post(API.LOGIN, json)
       .then((response) => {
-        console.log(response.data.result);
+       
         setToken(response.data.result.accessToken);
         setRefToken(response.data.result.refreshToken);
       })
 
       .then(() => onCancel())
-      .catch((error) => console.log(error));
   };
 
   const onFinishFailed = (errorInfo) => {

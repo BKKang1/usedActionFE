@@ -2,6 +2,7 @@ import { Button, Form, Input } from "antd";
 import axios from "axios";
 import { API } from "../../config";
 import { useEffect, useState } from "react";
+import req from "../../axios/req";
 const { TextArea } = Input;
 const CommentWritting = ({ onCancel, productId, questionId }) => {
   const [status, setStatus] = useState(false);
@@ -15,16 +16,14 @@ const CommentWritting = ({ onCancel, productId, questionId }) => {
     const json = JSON.stringify(values);
     console.log("json", json);
 
-    axios
+    req
       .post(API.QUESTION, json)
       .then((res) => {
         console.log(res.data);
 
         window.location.reload();
       })
-      .catch((error) => {
-        console.log(error);
-      });
+     
   };
 
   const onFinishFailed = (errorInfo) => {

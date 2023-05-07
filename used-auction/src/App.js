@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Main from "./components/main/Main";
 import Header from "./components/header/Header";
@@ -11,13 +11,16 @@ import { API } from "./config";
 import { useRecoilState } from "recoil";
 import { accessToken } from "./recoil/accessToken";
 import Product from "./components/productView/Product";
-import { useEffect,useRef } from "react";
+import { useEffect, useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
-import { useQuery } from 'react-query';
-import {ClientContext} from "./components/chattingRoom/Soket";
-import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
+import { useQuery } from "react-query";
+import { ClientContext } from "./components/chattingRoom/Soket";
+import { EventSourcePolyfill } from 'event-source-polyfill';
 import SockJS from "sockjs-client";
-const Stomp = require('stompjs');
+import PrivateRoute from "./components/router/PrivateRoute";
+import req from "./axios/req";
+import { PriceOfSSE } from "./components/productView/ContextOfPrice";
+const Stomp = require("stompjs");
 
 const layoutStyle = {
   margin: "0 auto",
@@ -25,8 +28,8 @@ const layoutStyle = {
 };
 
 function App() {
-
   const [token, setToken] = useRecoilState(accessToken);
+  req.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.withCredentials = true;
   axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -36,7 +39,7 @@ function App() {
   let client = useRef();
   const setClient = (e) => {
     console.log("client 세팅중");
-    client.current=Stomp.over(e);
+    client.current = Stomp.over(e);
   };
 
   const EventSource = EventSourcePolyfill;
@@ -58,17 +61,27 @@ function App() {
       client.current.disconnect();
     }
   }, []);
+  let ssePrice = useRef();
 
+  const setSSEPrice = (auctionId ) => {
+    console.log("auid",auctionId)
+    ssePrice.current = new EventSource(
+      API.SSECONNECTIONOFPRODUCT + `/${auctionId}`,
+      {
+        withCredentials: true,
+        heartbeatTimeout: 300000,
+      }
+    );
+  };
   return (
       <ClientContext.Provider value={{client,setClient,sse,setSse}}>
+      <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
-          <BrowserRouter>
+          <Router>
             <Header></Header>
             <Routes  >
               <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
               <Route path="/usedAuctionFE/myStore/:userId" element={<MyStore />}></Route>
-              <Route path="/usedAuctionFE/sellProduct" element={<SellProduct />}></Route>
-              <Route path="/usedAuctionFE/chattingRoom" element={<ChatRoomList />}></Route>
               <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
               <Route
                 path="/usedAuctionFE/productList"
@@ -78,10 +91,26 @@ function App() {
                 path="/usedAuctionFE/productList/productDetail/:productId"
                 element={<Product />}
               ></Route>
+              <Route element={<PrivateRoute />}>
+                <Route
+                  element={<ModifyProduct />}
+                  path="/usedAuctionFE/modifyProduct/:productId"
+                  exact
+                ></Route>
+                <Route
+                  path="/usedAuctionFE/sellProduct"
+                  element={<SellProduct />}
+                ></Route>
+                <Route
+                  path="/usedAuctionFE/chattingRoom"
+                  element={<ChatRoomList />}
+                ></Route>
+              </Route>
             </Routes>
-          </BrowserRouter>
+          </Router>
         </div>
-      </ClientContext.Provider>
+      </PriceOfSSE.Provider>
+    </ClientContext.Provider>
   );
 }
 

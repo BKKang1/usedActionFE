@@ -31,6 +31,18 @@ const textStyle = {
   overflow: "hidden",
   textOverflow: "ellipsis",
 };
+const categoryStyle = {
+  maxWidth: "70px",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
+const priceStyle = {
+  maxWidth: "120px",
+  whiteSpace: "nowrap",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+};
 const dateStyle = {
   fontSize: "1rem",
   fontWeight: "1",
@@ -53,48 +65,25 @@ const GridItem = ({
   status,
 }) => {
   return (
-  
     <div style={boxStyle}>
       <Space direction="vertical" size={16}>
-        <Card
-          bordered={true}
-         
-        >
+        <Card bordered={true}>
           <NavLink to={productDetail + productId} style={LinkStyle}>
             <img style={imgStyle} src={sigImgSrc} alt="이미지" />
             <div style={textStyle}>
               <Descriptions title={productName} column={2}>
-                <Descriptions.Item label="상태">
-                  <Badge
-                    color="green"
-                    count={status}
-                    overflowCount={9999999999}
-                  ></Badge>
-                </Descriptions.Item>
+                <Descriptions.Item label="상태">{status}</Descriptions.Item>
 
                 <Descriptions.Item label="현재가">
-                  <Badge count={nowPrice} overflowCount={9999999999}></Badge>
+                  <span style={priceStyle}>{nowPrice}</span>
                 </Descriptions.Item>
-                <Descriptions.Item label="판매자">
-                  <Badge
-                    color="green"
-                    count={nickname}
-                    overflowCount={9999999999}
-                  ></Badge>
-                </Descriptions.Item>
+                <Descriptions.Item label="판매자">{nickname}</Descriptions.Item>
+
                 <Descriptions.Item label="카테고리">
-                  <Badge
-                    color="green"
-                    count={categoryName}
-                    overflowCount={9999999999}
-                  ></Badge>
+                  <span style={categoryStyle}>{categoryName}</span>
                 </Descriptions.Item>
                 <Descriptions.Item label="경매마감일">
-                  <Badge
-                    color="green"
-                    count={auctionEndDate}
-                    overflowCount={9999999999}
-                  ></Badge>
+                  <span>{auctionEndDate}</span>
                 </Descriptions.Item>
               </Descriptions>
             </div>
