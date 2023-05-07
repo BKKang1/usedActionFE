@@ -18,6 +18,7 @@ import { ClientContext } from "./components/chattingRoom/Soket";
 import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
 import req from "./axios/req";
+import { PriceOfSSE } from "./components/productView/ContextOfPrice";
 const Stomp = require("stompjs");
 
 const layoutStyle = {
@@ -40,47 +41,61 @@ function App() {
     client.current = Stomp.over(e);
   };
 
+  let ssePrice = useRef();
+
+  const setSSEPrice = (auctionId ) => {
+    console.log("auid",auctionId)
+    ssePrice.current = new EventSource(
+      API.SSECONNECTIONOFPRODUCT + `/${auctionId}`,
+      {
+        withCredentials: true,
+        heartbeatTimeout: 300000,
+      }
+    );
+  };
   return (
     <ClientContext.Provider value={{ client, setClient }}>
-      <div style={layoutStyle}>
-        <Router>
-          <Header></Header>
-          <Routes>
-            <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
-            <Route
-              path="/usedAuctionFE/chattingRoom/detail/:roomId"
-              element={<ChatRoomList />}
-            ></Route>
-            <Route
-              path="/usedAuctionFE/productList"
-              element={<ProductList />}
-            ></Route>
-            <Route
-              path="/usedAuctionFE/productList/productDetail/:productId"
-              element={<Product />}
-            ></Route>
-            <Route element={<PrivateRoute />}>
+      <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
+        <div style={layoutStyle}>
+          <Router>
+            <Header></Header>
+            <Routes>
+              <Route path="/usedAuctionFE" element={<Main></Main>}></Route>
               <Route
-                path="/usedAuctionFE/myStore"
-                element={<MyStore />}
-              ></Route>
-              <Route
-                element={<ModifyProduct />}
-                path="/usedAuctionFE/modifyProduct/:productId"
-                exact
-              ></Route>
-              <Route
-                path="/usedAuctionFE/sellProduct"
-                element={<SellProduct />}
-              ></Route>
-              <Route
-                path="/usedAuctionFE/chattingRoom"
+                path="/usedAuctionFE/chattingRoom/detail/:roomId"
                 element={<ChatRoomList />}
               ></Route>
-            </Route>
-          </Routes>
-        </Router>
-      </div>
+              <Route
+                path="/usedAuctionFE/productList"
+                element={<ProductList />}
+              ></Route>
+              <Route
+                path="/usedAuctionFE/productList/productDetail/:productId"
+                element={<Product />}
+              ></Route>
+              <Route element={<PrivateRoute />}>
+                <Route
+                  path="/usedAuctionFE/myStore"
+                  element={<MyStore />}
+                ></Route>
+                <Route
+                  element={<ModifyProduct />}
+                  path="/usedAuctionFE/modifyProduct/:productId"
+                  exact
+                ></Route>
+                <Route
+                  path="/usedAuctionFE/sellProduct"
+                  element={<SellProduct />}
+                ></Route>
+                <Route
+                  path="/usedAuctionFE/chattingRoom"
+                  element={<ChatRoomList />}
+                ></Route>
+              </Route>
+            </Routes>
+          </Router>
+        </div>
+      </PriceOfSSE.Provider>
     </ClientContext.Provider>
   );
 }
