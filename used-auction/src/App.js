@@ -28,6 +28,7 @@ const layoutStyle = {
 };
 
 function App() {
+  const basename = process.env.PUBLIC_URL;
   const [token, setToken] = useRecoilState(accessToken);
   req.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -77,32 +78,32 @@ function App() {
       <ClientContext.Provider value={{client,setClient,sse,setSse}}>
       <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
-          <Router>
+          <Router basename={basename}>
             <Header></Header>
             <Routes  >
-              <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
-              <Route path="/usedAuctionFE/myStore/:userId" element={<MyStore />}></Route>
-              <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
+              <Route path="/"  element={<Main></Main>}></Route>
+              <Route path="/myStore/:userId" element={<MyStore />}></Route>
+              <Route path="/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
               <Route
-                path="/usedAuctionFE/productList"
+                path="/productList"
                 element={<ProductList />}
               ></Route>
               <Route
-                path="/usedAuctionFE/productList/productDetail/:productId"
+                path="/productList/productDetail/:productId"
                 element={<Product />}
               ></Route>
               <Route element={<PrivateRoute />}>
                 <Route
                   element={<ModifyProduct />}
-                  path="/usedAuctionFE/modifyProduct/:productId"
+                  path="/modifyProduct/:productId"
                   exact
                 ></Route>
                 <Route
-                  path="/usedAuctionFE/sellProduct"
+                  path="/sellProduct"
                   element={<SellProduct />}
                 ></Route>
                 <Route
-                  path="/usedAuctionFE/chattingRoom"
+                  path="/chattingRoom"
                   element={<ChatRoomList />}
                 ></Route>
               </Route>

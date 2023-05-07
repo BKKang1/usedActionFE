@@ -135,7 +135,7 @@ const SellProduct = () => {
 
   const refreshPage = () => {
     console.log("refreshPage");
-    navigate("/usedAuctionFE/sellProduct");
+    navigate("/sellProduct");
   };
 
   const onChange = (value) => {

@@ -19,7 +19,7 @@ const SearchProductName = ({ categoryId }) => {
   const doSearch = (value) => {
     productName=value
     console.log("ck",value)
-    navigate(`/usedAuctionFE/productList`, {state:{categoryId:categoryId,productName:productName}})
+    navigate(`/productList`, {state:{categoryId:categoryId,productName:productName}})
     
   };
   return (

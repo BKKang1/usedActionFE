@@ -212,7 +212,7 @@ const ModifyProduct = () => {
 
   const refreshPage = () => {
     console.log("refreshPage");
-    navigate("/usedAuctionFE/modifyProduct");
+    navigate("/modifyProduct");
   };
 
   const onChangeDate = (value, dateString) => {
@@ -261,7 +261,7 @@ const ModifyProduct = () => {
         alert(response.data.result.msg);
       })
       .then(() => {
-        navigate("/usedAuctionFE/myStore");
+        navigate("/myStore");
       });
   };
 

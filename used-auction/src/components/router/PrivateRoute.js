@@ -9,7 +9,7 @@ const PrivateRoute = () => {
   }
   return (
     
-      auth ? <Outlet /> :<Navigate to = "/usedAuctionFE"></Navigate>
+      auth ? <Outlet /> :<Navigate to = "/"></Navigate>
 
   );
 };
