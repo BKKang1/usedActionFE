@@ -15,7 +15,7 @@ import { useEffect, useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useQuery } from "react-query";
 import { ClientContext } from "./components/chattingRoom/Soket";
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import { EventSourcePolyfill } from "event-source-polyfill";
 import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
 import req from "./axios/req";
@@ -48,7 +48,7 @@ function App() {
   const setSse = (e) => {
     console.log("sse 세팅중");
     sse.current = new EventSource(API.SSECONNECTIONOFCHATTINGROOM, {
-      headers:{
+      headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
@@ -58,14 +58,14 @@ function App() {
   };
 
   useEffect(() => {
-    return()=>{
+    return () => {
       client.current.disconnect();
-    }
+    };
   }, []);
   let ssePrice = useRef();
 
-  const setSSEPrice = (auctionId ) => {
-    console.log("auid",auctionId)
+  const setSSEPrice = (auctionId) => {
+    console.log("auid", auctionId);
     ssePrice.current = new EventSource(
       API.SSECONNECTIONOFPRODUCT + `/${auctionId}`,
       {
@@ -75,37 +75,31 @@ function App() {
     );
   };
   return (
-      <ClientContext.Provider value={{client,setClient,sse,setSse}}>
+    <ClientContext.Provider value={{ client, setClient, sse, setSse }}>
       <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
           <Router basename={basename}>
             <Header></Header>
-            <Routes  >
-              <Route path="/"  element={<Main></Main>}></Route>
-              <Route path="/myStore/:userId" element={<MyStore />}></Route>
-              <Route path="/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
+            <Routes>
+              <Route path="/" element={<Main></Main>}></Route>
               <Route
-                path="/productList"
-                element={<ProductList />}
+                path="/chattingRoom/detail/:roomId"
+                element={<ChatRoomList />}
               ></Route>
+              <Route path="/productList" element={<ProductList />}></Route>
               <Route
                 path="/productList/productDetail/:productId"
                 element={<Product />}
               ></Route>
               <Route element={<PrivateRoute />}>
+                <Route path="/myStore/:userId" element={<MyStore />}></Route>
                 <Route
                   element={<ModifyProduct />}
                   path="/modifyProduct/:productId"
                   exact
                 ></Route>
-                <Route
-                  path="/sellProduct"
-                  element={<SellProduct />}
-                ></Route>
-                <Route
-                  path="/chattingRoom"
-                  element={<ChatRoomList />}
-                ></Route>
+                <Route path="/sellProduct" element={<SellProduct />}></Route>
+                <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
               </Route>
             </Routes>
           </Router>
