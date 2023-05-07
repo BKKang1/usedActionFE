@@ -2,17 +2,20 @@ import { Card, Space, Divider, Image, Descriptions, Badge, Button } from "antd";
 import req from "../../axios/req";
 import { API } from "../../config";
 import { useLocation, useBeforeUnload } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import QNA from "./QNA";
 import CommentWritting from "./CommentWritting";
 import React from "react";
 import BidModal from "./bid/BidModal";
+import { PriceOfSSE } from "./ContextOfPrice";
+import { ClientContext } from "../chattingRoom/Soket";
 const Product = () => {
   let location = useLocation();
 
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
   const [nowPrice, setNowPrice] = useState(null);
+  const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
   const [product, setProduct] = useState({
     auctionId: null,
     auctionEndDate: null,
@@ -58,9 +61,9 @@ const Product = () => {
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
   };
-  const contentStyle= {
-    whiteSpace: "pre-wrap"
-  }
+  const contentStyle = {
+    whiteSpace: "pre-wrap",
+  };
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -82,29 +85,15 @@ const Product = () => {
   const sseConnect = (auctionId) => {
     console.log("au", auctionId);
 
-    let sse = new EventSource(API.SSECONNECTIONOFPRODUCT + `/${auctionId}`, {
-      withCredentials: true,
-      heartbeatTimeout: 300000,
-    });
-    sse.addEventListener("CONNECT", (e) => {
-      if (!window.location.pathname.includes("productDetail")) {
-        console.log("로케이션 이동 알림");
-        sse.close();
-        return;
-      }
-
+    setSSEPrice(auctionId);
+    ssePrice.current.addEventListener("CONNECT", (e) => {
       const { data: receivedConnectData } = e;
       const c = JSON.parse(receivedConnectData);
       console.log("c", c);
       console.log("connect event id: ", c.sseId); // "sse-id"
       console.log("connect event result: ", c.result); // "연결성공!"
     });
-    sse.addEventListener("SEND_BID_DATA", (e) => {
-      if (!window.location.pathname.includes("productDetail")) {
-        console.log("로케이션 이동 알림");
-        sse.close();
-        return;
-      }
+    ssePrice.current.addEventListener("SEND_BID_DATA", (e) => {
       const { data: receivedConnectData } = e;
       const r = JSON.parse(receivedConnectData);
       setNowPrice(r.result);
@@ -154,20 +143,38 @@ const Product = () => {
                   <Descriptions.Item label="시작가">
                     <Badge
                       color="blue"
-                      count={product.startPrice!==null?product.startPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
+                      count={
+                        product.startPrice !== null
+                          ? product.startPrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : null
+                      }
                       overflowCount={9999999999}
                     ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="현재가">
                     <Badge
-                      count={nowPrice!==null?nowPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
+                      count={
+                        nowPrice !== null
+                          ? nowPrice
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : null
+                      }
                       overflowCount={9999999999}
                     ></Badge>
                   </Descriptions.Item>
                   <Descriptions.Item label="단위가격">
                     <Badge
                       color="green"
-                      count={product.priceUnit!==null?product.priceUnit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','):null}
+                      count={
+                        product.priceUnit !== null
+                          ? product.priceUnit
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          : null
+                      }
                       overflowCount={9999999999}
                     ></Badge>
                   </Descriptions.Item>

@@ -2,7 +2,7 @@ import Search from "./others/SearchProductName";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DropdownMenu from "./others/DropdownMenu";
-import { useRef,useState, useEffect,useContext } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import {
   WechatOutlined,
   TeamOutlined,
@@ -12,8 +12,9 @@ import { API } from "../../config";
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
-import {client,ClientContext} from "../chattingRoom/Soket";
+import { client, ClientContext } from "../chattingRoom/Soket";
 import req from "../../axios/req";
+import { PriceOfSSE } from "../productView/ContextOfPrice";
 
 const outerBox = {
   display: "flex",
@@ -57,35 +58,45 @@ const textDecoration = {
 const Headers = () => {
   let location = useLocation();
   let categoryId = useRef("0");
-  const {client,setClient} = useContext(ClientContext);
+  const { client, setClient } = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
-  
+  const {ssePrice, setSSEPrice} = useContext(PriceOfSSE);
 
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
-    if(!(location.pathname.includes("chattingRoom"))){
+    if (!location.pathname.includes("chattingRoom")) {
       console.log("채팅페이지 아닌거 확인");
 
-      if(client.current!=undefined && client.current.connected==true){
+      if (client.current != undefined && client.current.connected == true) {
         console.log(client.current.connected);
         client.current.disconnect();
       }
     }
+    if (!location.pathname.includes("productDetail")) {
+      
+      if(ssePrice.current!=undefined){
+        ssePrice.current.close();
+      
+
+        console.log("상품상세페이지 아님");
+      }
+
+
+   
+      return;
+      
+    }
   }, [location]);
   useEffect(() => {
-    req
-    .get(API.ISLOGIN)
-    .then((response) => {
+    req.get(API.ISLOGIN).then((response) => {
       console.log(response);
       if (response.data.result.status === true) {
         setIsLogIn(true);
-      }
-      else{
+      } else {
         setIsLogIn(false);
       }
-    })
-    
-  }, );
+    });
+  });
   return (
     <div style={outerBox}>
       <div style={LoginModalBoxStyle}>
@@ -102,8 +113,8 @@ const Headers = () => {
         <div style={innerBox && itemStyle1}>
           <Search categoryId={categoryId}></Search>
         </div>
-        <Link 
-          to={"/usedAuctionFE/sellProduct"} 
+        <Link
+          to={"/usedAuctionFE/sellProduct"}
           //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
@@ -111,8 +122,8 @@ const Headers = () => {
             <b>판매하기</b>
           </div>
         </Link>
-        <Link 
-          to={"/usedAuctionFE/myStore"} 
+        <Link
+          to={"/usedAuctionFE/myStore"}
           //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
@@ -120,8 +131,8 @@ const Headers = () => {
             <b>내 상점</b>
           </div>
         </Link>
-        <Link 
-          to={"/usedAuctionFE/chattingRoom"} 
+        <Link
+          to={"/usedAuctionFE/chattingRoom"}
           //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
         >
           <div style={innerBox}>
