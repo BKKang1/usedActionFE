@@ -64,7 +64,7 @@ const Headers = () => {
   const {client,setClient} = useContext(ClientContext);
   const {sse,setSse} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
-  const {ssePrice, setSSEPrice} = useContext(PriceOfSSE);
+  const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
 
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
@@ -82,18 +82,13 @@ const Headers = () => {
       }
     }
     if (!location.pathname.includes("productDetail")) {
-      
-      if(ssePrice.current!=undefined){
+      if (ssePrice.current != undefined) {
         ssePrice.current.close();
-      
 
         console.log("상품상세페이지 아님");
       }
 
-
-   
       return;
-      
     }
   }, [location]);
   useEffect(() => {
@@ -122,28 +117,19 @@ const Headers = () => {
         <div style={innerBox && itemStyle1}>
           <Search categoryId={categoryId}></Search>
         </div>
-        <Link
-          to={"/usedAuctionFE/sellProduct"}
-          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
-        >
+        <Link to={"/usedAuctionFE/sellProduct"} style={textDecoration}>
           <div style={innerBox}>
             <PayCircleFilled style={iconSize} />
             <b>판매하기</b>
           </div>
         </Link>
-        <Link
-          to={`/usedAuctionFE/myStore/${id}`}
-          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
-        >
+        <Link to={`/usedAuctionFE/myStore/${id}`} style={textDecoration}>
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
             <b>내 상점</b>
           </div>
         </Link>
-        <Link
-          to={"/usedAuctionFE/chattingRoom"}
-          //onClick={()=>{if(isLogIn==false)alert("로그인해주십시오.");}}
-        >
+        <Link to={"/usedAuctionFE/chattingRoom"} style={textDecoration}>
           <div style={innerBox}>
             <WechatOutlined style={iconSize} />
             <b>채팅</b>

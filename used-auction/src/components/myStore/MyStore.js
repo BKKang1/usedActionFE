@@ -128,7 +128,8 @@ const menuHover = {
 };
 
 const blank = {
-  paddingBottom: "30%",
+  paddingBottom: "20%",
+  backgroundColor:"white"
 };
 
 const imgStyle = {

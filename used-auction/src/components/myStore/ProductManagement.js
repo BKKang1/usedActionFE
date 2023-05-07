@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../../config";
-import { DownOutlined,ToolOutlined} from "@ant-design/icons";
+import { DeleteOutlined, DownOutlined, ToolOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography, Button, List, Layout, Menu } from "antd";
 import React, { location, useState, useEffect, useRef } from "react";
 import {
@@ -11,6 +11,8 @@ import {
   NavLink,
   useNavigate,
 } from "react-router-dom";
+import Product from "../productView/Product";
+import req from "../../axios/req";
 //import MyStore from "./MyStore";
 // import SockJS from "sockjs-client";
 // const Stomp = require('stompjs');
@@ -38,12 +40,12 @@ const descriptionStyle = {
   fontWeight: "500",
 };
 const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-  
-      {text}
-    </Space>
-  );
+  <Space>
+    {React.createElement(icon)}
+
+    {text}
+  </Space>
+);
 const buttonStyle = {
   display: "flex",
   marginTop: "5%",
@@ -140,29 +142,31 @@ const items4 = [
 ];
 
 const ProductManagement = (props) => {
-    const [data, setData] = useState();
-    const [categoryName, setCategoryName] = useState("전체");
-    const [selectedKeys, setSelectedKeys] = useState(0);
-    const [items,setItems] = useState(items1);
-    const [prevProps,setPrevProps] = useState(0);
-    const [pageNum, setPageNum] = useState(0);
-    const [totalItemNum, setTotalItemNum] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+  const [data, setData] = useState();
+  const [categoryName, setCategoryName] = useState("전체");
+  const [selectedKeys, setSelectedKeys] = useState(0);
+  const [items, setItems] = useState(items1);
+  const [prevProps, setPrevProps] = useState(0);
+  const [pageNum, setPageNum] = useState(0);
+  const [totalItemNum, setTotalItemNum] = useState(0);
+  const [pageSize, setPageSize] = useState(3);
+  const iconStyle = {
+    marginLeft: "1rem",
+  };
+  useEffect(() => {
+    console.log(props.props);
+    if (props.props != prevProps) {
+      console.log(props.props);
+      setCategoryName("전체");
+      setPrevProps(props.props);
+      setSelectedKeys(0);
+      setPageNum(0);
+    }
+  }, [props.props]);
 
-    useEffect(() => {
-        console.log(props.props);
-        if(props.props != prevProps){
-            console.log(props.props);
-            setCategoryName("전체");
-            setPrevProps(props.props);
-            setSelectedKeys(0);
-            setPageNum(0);
-        }
-    },[props.props]);
-
-    useEffect(() => {
-        if(props.props == 1){
-            setItems(prev => items1);
+  useEffect(() => {
+    if (props.props == 1) {
+      setItems((prev) => items1);
 
       if (categoryName == "전체") {
         axios
@@ -440,7 +444,12 @@ const ProductManagement = (props) => {
                     </Link>
                   }
                   description={
-                    <span style={descriptionStyle}>{item.nowPrice}
+                    <span style={descriptionStyle}>
+                      {item.nowPrice !== (null||undefined)
+                        ? item.nowPrice
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : item.nowPrice }
                     </span>
                   }
                 />
@@ -458,9 +467,21 @@ const ProductManagement = (props) => {
                     <IconText icon={ToolOutlined} text="수정" />
                   </Link>
                 ) : null}
-                {/* <Button className="button1" type="button" style = {buttonStyle}>
-                                삭제
-                            </Button> */}
+                {item.possibleUpdate ? (
+                  <span
+                    style={iconStyle}
+                    onClick={() =>
+                      req
+                        .delete(API.PRODUCT + `/${item.productId}`)
+                        .then((res) => {
+                          alert(res.data.result.msg);
+                        })
+                        .then(() => window.location.reload())
+                    }
+                  >
+                    <IconText icon={DeleteOutlined} text="삭제" />
+                  </span>
+                ) : null}
               </List.Item>
             );
           }}
