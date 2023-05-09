@@ -12,7 +12,6 @@ import { useRecoilState } from "recoil";
 import { loginState } from "../../recoil/accessToken";
 import React, { useEffect, useState, useRef } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 import {
   Form,
   Input,
@@ -28,6 +27,10 @@ import {
   Spin,
 } from "antd";
 import req from "../../axios/req";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { loginId } from "../../recoil/loginId";
+dayjs.extend(customParseFormat);
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -126,6 +129,7 @@ const items = [
 ];
 
 const ModifyProduct = () => {
+  const [userId, setUserId] = useRecoilState(loginId);
   const [isloading, setIsLoading] = useState(true);
   const productId = useParams().productId;
   const [renderStart, setRenderStart] = useState(false);
@@ -152,10 +156,14 @@ const ModifyProduct = () => {
       },
     ],
   });
+  
   const onChange = (value) => {
     setId(value);
   };
-
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf("day");
+  };
   useEffect(() => {
     req.get(API.PRODUCTUPDATE + `/${productId}`).then((res) => {
       console.log(res.data.result);
@@ -261,7 +269,7 @@ const ModifyProduct = () => {
         alert(response.data.result.msg);
       })
       .then(() => {
-        navigate("/myStore");
+        navigate(`/myStore/${userId}`);
       });
   };
 
@@ -301,7 +309,7 @@ const ModifyProduct = () => {
               <Input />
             </Form.Item>
             <Form.Item label="경매 시작가" name="startPrice">
-              <InputNumber />
+              <InputNumber min={1000} />
             </Form.Item>
             <Form.Item label="입찰 단위" name="priceUnit">
               <InputNumber min={1000} />
@@ -314,6 +322,7 @@ const ModifyProduct = () => {
                 value={date}
                 format="YYYY-MM-DD HH:mm"
                 onChange={onChangeDate}
+                disabledDate={disabledDate}
                 onOk={onOk}
               />
             </Form.Item>

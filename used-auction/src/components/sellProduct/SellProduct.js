@@ -25,7 +25,10 @@ import {
   Upload,
   Typography,
 } from "antd";
-
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import { loginId } from "../../recoil/loginId";
+dayjs.extend(customParseFormat);
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -126,6 +129,8 @@ const items = [
 ];
 
 const SellProduct = () => {
+  
+  const [userId, setUserId] = useRecoilState(loginId);
   const [fileList, setFileList] = useState([]);
   const [sigList, setSigList] = useState([]);
   const id = useRef(0);
@@ -142,7 +147,10 @@ const SellProduct = () => {
     console.log(value);
     id.current = value;
   };
-
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf("day");
+  };
   const onChangeDate = (value, dateString) => {
     console.log("Selected Time: ", value);
     console.log("Formatted Selected Time: ", dateString);
@@ -189,7 +197,7 @@ const SellProduct = () => {
         alert(response.data.result.msg);
       })
       .then(() => {
-        refreshPage();
+        navigate(`/myStore/${userId}`);
       })
       .catch((error) => {
         alert(error.response.data.msg);
@@ -236,10 +244,10 @@ const SellProduct = () => {
           </span>
         </Form.Item>
         <Form.Item label="경매 시작가" name="startPrice">
-          <InputNumber />
+          <InputNumber min={1000}/>
         </Form.Item>
         <Form.Item label="입찰 단위" name="priceUnit">
-          <InputNumber />
+          <InputNumber min={1000}/>
         </Form.Item>
         <Form.Item label="경매 종료일" name="auctionEndDate">
           <DatePicker
@@ -248,6 +256,7 @@ const SellProduct = () => {
               format: "HH:mm",
             }}
             format="YYYY-MM-DD HH:mm"
+            disabledDate={disabledDate}
             onChange={onChangeDate}
             onOk={onOk}
           />

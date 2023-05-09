@@ -42,14 +42,15 @@ const ProductList = () => {
   const [totalPage,setTotalPage] =useState(null);
 
   const [orderBy,setOrderBy] = useState("VIEW_ORDER")
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   let size = "8";
   let productName = location.state.productName;
   let categoryId = location.state.categoryId.current;
   const onChange = (value) => {
-    console.log(value);
-    setPage(value - 1);
+   
+    setPage(value);
   };
+  const [cur,setCur] = useState(1);
   useEffect(() => {
     console.log("productName", productName);
     console.log("categoryId", categoryId);
@@ -58,7 +59,7 @@ const ProductList = () => {
       .get(
         API.SEARCH +
           `?categoryId=${categoryId}&productName=${productName}&orderBy=${orderBy}&page=${
-            page | 0
+            page-1 | 0
           }&size=${size}`
       )
       .then((response) => {
@@ -66,12 +67,12 @@ const ProductList = () => {
         setMainContent(response.data.content);
         setTotalPage(response.data.totalPages*8)
       })
-  }, [productName, categoryId, page,orderBy]);
+  }, [productName, categoryId, page, orderBy]);
 
   return (
     <div>
       <div style={sortStyle}>
-        <SelectSort orderBy={orderBy} setOrderBy={setOrderBy}/>
+        <SelectSort orderBy={orderBy} setOrderBy={setOrderBy} onChange={onChange} setPage={setPage}/>
       </div>
       <div style={style}>
         {MainContent.map((value, i) => {
@@ -95,6 +96,8 @@ const ProductList = () => {
           onChange={onChange}
           total={totalPage}
           pageSize={8}
+          
+          current={page}
         ></Pagination>
       </div>
     </div>
