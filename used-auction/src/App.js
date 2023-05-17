@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Main from "./components/main/Main";
 import Header from "./components/header/Header";
@@ -20,11 +20,13 @@ import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
 import req from "./axios/req";
 import { PriceOfSSE } from "./components/productView/ContextOfPrice";
+import OnlineMeeting from "./components/stream/OnlineMetting";
+import OnlineMeetingOfSub from "./components/stream/OnlineMettingOfSub";
 const Stomp = require("stompjs");
 
 const layoutStyle = {
   margin: "0 auto",
-  width: "1200px",
+  width: "1500px",
 };
 
 function App() {
@@ -78,31 +80,44 @@ function App() {
     <ClientContext.Provider value={{ client, setClient, sse, setSse }}>
       <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
-          <Router basename={basename}>
-            <Header></Header>
-            <Routes>
-              <Route path="/" element={<Main></Main>}></Route>
+          <Header></Header>
+          <Routes>
+            <Route path="/" element={<Main></Main>}></Route>
+            <Route
+              path="/chattingRoom/detail/:roomId"
+              element={<ChatRoomList />}
+            ></Route>
+            <Route
+              path="/productList/:categoryId/:productName"
+              element={<ProductList />}
+            ></Route>
+            <Route
+              path="/productList/:categoryId"
+              element={<ProductList />}
+            ></Route>
+            <Route
+              path="/productList/productDetail/:productId"
+              element={<Product />}
+            ></Route>
+            <Route
+              path="/stream/:productId"
+              element={<OnlineMeeting />}
+            ></Route>
+            <Route
+              path="/stream/sub/:productId"
+              element={<OnlineMeetingOfSub />}
+            ></Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/myStore/:userId" element={<MyStore />}></Route>
               <Route
-                path="/chattingRoom/detail/:roomId"
-                element={<ChatRoomList />}
+                element={<ModifyProduct />}
+                path="/modifyProduct/:productId"
+                exact
               ></Route>
-              <Route path="/productList" element={<ProductList />}></Route>
-              <Route
-                path="/productList/productDetail/:productId"
-                element={<Product />}
-              ></Route>
-              <Route element={<PrivateRoute />}>
-                <Route path="/myStore/:userId" element={<MyStore />}></Route>
-                <Route
-                  element={<ModifyProduct />}
-                  path="/modifyProduct/:productId"
-                  exact
-                ></Route>
-                <Route path="/sellProduct" element={<SellProduct />}></Route>
-                <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
-              </Route>
-            </Routes>
-          </Router>
+              <Route path="/sellProduct" element={<SellProduct />}></Route>
+              <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
+            </Route>
+          </Routes>
         </div>
       </PriceOfSSE.Provider>
     </ClientContext.Provider>

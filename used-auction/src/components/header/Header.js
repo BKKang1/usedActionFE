@@ -19,15 +19,18 @@ import req from "../../axios/req";
 import { PriceOfSSE } from "../productView/ContextOfPrice";
 
 const outerBox = {
+
   display: "flex",
   flexDirection: "column",
   margin: "2rem",
+  
 };
 const headerBox = {
   display: "flex",
   justifyContent: "center",
   margin: "2rem",
   alignItems: "center",
+  
   borderBottom: "2px solid",
 };
 const innerBox = {
@@ -65,7 +68,15 @@ const Headers = () => {
   const {sse,setSse} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
+  const [selected,setSelected] = useState("전체");
 
+  useEffect(()=>{
+    if (!location.pathname.includes("productList")&&location.pathname.includes) {
+    categoryId.current="0"
+    setSelected("전체")
+   
+    }
+  },[location])
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
     if (!location.pathname.includes("chattingRoom")) {
@@ -137,7 +148,7 @@ const Headers = () => {
         </Link>
       </div>
       <div style={DropdownMenuStyle}>
-        <DropdownMenu categoryId={categoryId}></DropdownMenu>
+        <DropdownMenu categoryId={categoryId} setSelected={setSelected} selected={selected}></DropdownMenu>
       </div>
     </div>
   );

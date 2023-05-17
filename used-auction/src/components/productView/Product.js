@@ -8,10 +8,13 @@ import CommentWritting from "./CommentWritting";
 import React from "react";
 import BidModal from "./bid/BidModal";
 import { PriceOfSSE } from "./ContextOfPrice";
+import { Link } from "react-router-dom";
 import { ClientContext } from "../chattingRoom/Soket";
+import { nicknameKey } from "../../recoil/loginId";
+import { useRecoilState } from "recoil";
 const Product = () => {
   let location = useLocation();
-
+  const [name, setName] = useRecoilState(nicknameKey);
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
   const [nowPrice, setNowPrice] = useState(null);
@@ -64,6 +67,13 @@ const Product = () => {
   const contentStyle = {
     whiteSpace: "pre-wrap",
   };
+  const titleStyle = {
+    fontSize: "2.3rem",
+  };
+  const bodyStyle = {
+    fontSize: "1.3rem",
+  };
+
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -103,12 +113,15 @@ const Product = () => {
   };
 
   {
+    const streamPage = `/stream/${productId}`;
+    
+    const streamPageofSub = `/stream/sub/${productId}`;
     if (renderStart) {
       return (
         <div style={boxStyle}>
           <Space direction="vertical" size={16}>
             <Card
-              title={product.productName}
+              title={<h1 style={titleStyle}>{product.productName}</h1>}
               style={{
                 width: 900,
               }}
@@ -118,79 +131,47 @@ const Product = () => {
                   <Image width={250} height={250} src={product.sigImg.path} />
                 </div>
 
-                <Descriptions column={2} title="상품 정보">
+                <Descriptions
+                  column={2}
+                  title="상품 정보"
+                  labelStyle={bodyStyle}
+                  contentStyle={bodyStyle}
+                >
                   <Descriptions.Item label="판매자">
-                    <Badge
-                      color="green"
-                      count={product.nickname}
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {product.nickname}
                   </Descriptions.Item>
                   <Descriptions.Item label="카테고리">
-                    <Badge
-                      color="green"
-                      count={product.categoryName}
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {product.categoryName}
                   </Descriptions.Item>
                   <Descriptions.Item label="상태">
-                    <Badge
-                      color="green"
-                      count={product.status}
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {product.status}
                   </Descriptions.Item>
                   <Descriptions.Item label="시작가">
-                    <Badge
-                      color="blue"
-                      count={
-                        product.startPrice !== null
-                          ? product.startPrice
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                          : null
-                      }
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {product.startPrice !== null
+                      ? product.startPrice
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="현재가">
-                    <Badge
-                      count={
-                        nowPrice !== null
-                          ? nowPrice
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                          : null
-                      }
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {nowPrice !== null
+                      ? nowPrice
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="단위가격">
-                    <Badge
-                      color="green"
-                      count={
-                        product.priceUnit !== null
-                          ? product.priceUnit
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                          : null
-                      }
-                      overflowCount={9999999999}
-                    ></Badge>
+                    {product.priceUnit !== null
+                      ? product.priceUnit
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      : null}
                   </Descriptions.Item>
                   <Descriptions.Item label="조회수">
-                    <Badge
-                      color="yellow"
-                      count={product.viewCount}
-                      overflowCount={9999}
-                    ></Badge>
+                    {product.viewCount}
                   </Descriptions.Item>
                   <Descriptions.Item label="경매마감일">
-                    <Badge
-                      color="green"
-                      count={product.auctionEndDate}
-                      overflowCount={999999999999}
-                    ></Badge>
+                    {product.auctionEndDate}
                   </Descriptions.Item>
                   <Descriptions.Item>
                     <BidModal
@@ -200,11 +181,25 @@ const Product = () => {
                       auctionId={product.auctionId}
                     />
                   </Descriptions.Item>
+                  <Descriptions.Item></Descriptions.Item>
+                  {product.nickname === name ? (
+                    <Descriptions.Item>
+                      <Button>
+                        {" "}
+                        <Link to={streamPage}>방송하기</Link>{" "}
+                      </Button>
+                    </Descriptions.Item>
+                  ) : (
+                    <Descriptions.Item>
+                      <Button> 
+                      <Link to={streamPageofSub}>방송보기</Link>{" "}</Button>
+                    </Descriptions.Item>
+                  )}
                 </Descriptions>
               </div>
 
               <Divider />
-              <div style={contentStyle}>{product.info}</div>
+              <div style={contentStyle}>{<h2>{product.info}</h2>}</div>
               <Divider />
               <div style={boxStyle}>
                 <div style={imgArrStyle}>

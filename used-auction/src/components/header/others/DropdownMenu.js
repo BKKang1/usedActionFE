@@ -1,6 +1,6 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, Typography } from "antd";
-
+import { useState } from "react";
 const menuStyle = {
   color: "black",
   fontSize: "2.5rem",
@@ -84,12 +84,12 @@ const items = [
     label: "취미/게임/음반",
   },
 ];
-
-const DropdownMenu = ({ categoryId }) => {
+const DropdownMenu = ({ categoryId, setSelected, selected }) => {
   const onSelect = (selectedKeys) => {
-    
     categoryId.current = selectedKeys.key;
-    console.log(categoryId.current)
+    setSelected(items.at(selectedKeys.key).label);
+    console.log(selectedKeys);
+    console.log(categoryId.current);
   };
   return (
     <Dropdown
@@ -97,13 +97,14 @@ const DropdownMenu = ({ categoryId }) => {
       menu={{
         items,
         selectable: true,
-        defaultSelectedKeys: ["0"],
         onSelect,
+   
+        selectedKeys: [categoryId.current],
       }}
     >
       <Typography.Link>
         <Space style={menuStyle}>
-          
+          {selected}
           <DownOutlined />
         </Space>
       </Typography.Link>

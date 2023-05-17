@@ -5,33 +5,29 @@ const flexBox = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-
 };
 const searchStyle = {
-  minWidth:"10rem"
-}
-
+  minWidth: "10rem",
+};
 
 const SearchProductName = ({ categoryId }) => {
   const navigate = useNavigate();
-  let productName =null;
+  let productName = null;
 
   const doSearch = (value) => {
-    productName=value
-    console.log("ck",value)
-    navigate(`/productList`, {state:{categoryId:categoryId,productName:productName}})
-    
+    productName = value;
+    console.log(value);
+   // "/productList/name=/:productName/id=/:categoryId"
+    //if (value == "") navigate(`/productList/""/${categoryId.current}`);
+     navigate(`/productList/${categoryId.current}/${productName}`);
   };
   return (
     <div style={flexBox}>
       <Input.Search
         style={searchStyle}
         placeholder="검색어를 입력하세요"
-       
         onSearch={doSearch}
-       
       />
-
     </div>
   );
 };
