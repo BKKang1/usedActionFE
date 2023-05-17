@@ -226,6 +226,7 @@ class OnlineMeeting extends Component {
     super(props);
     this.userRef = React.createRef();
 
+    
     this.state = {
       mySessionId: "SessionA",
       myUserName: undefined,
