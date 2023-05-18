@@ -12,24 +12,26 @@ const boxStyle = {
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
-  width: "270px",
+  width: "340px",
   height: "390px",
   justifyContent: "center",
   alignItems: "center",
 };
 const imgStyle = {
   borderRadius: "30px",
-  width: "230px",
+  paddingTop:"1rem",
+  width: "300px",
   height: "180px",
 };
 const textStyle = {
-  width: "260px",
+  width: "320px",
   display: "-webkit-box",
   WebkitLineClamp: "2",
   WebkitBoxOrient: "vertical",
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
+ 
 };
 const categoryStyle = {
   maxWidth: "70px",
@@ -38,7 +40,7 @@ const categoryStyle = {
   textOverflow: "ellipsis",
 };
 const priceStyle = {
-  maxWidth: "120px",
+  maxWidth: "80px",
   whiteSpace: "nowrap",
   overflow: "hidden",
   textOverflow: "ellipsis",
@@ -47,7 +49,9 @@ const dateStyle = {
   fontSize: "1rem",
   fontWeight: "1",
 };
-
+const bodyStyle = {
+  fontSize:"1.3rem"
+}
 const LinkStyle = {
   color: "black",
   textDecoration: "none",
@@ -66,12 +70,12 @@ const GridItem = ({
 }) => {
   return (
     <div style={boxStyle}>
-      <Space direction="vertical" size={16}>
-        <Card bordered={true}>
+      <Space direction="vertical" >
+        
           <NavLink to={productDetail + productId} style={LinkStyle}>
             <img style={imgStyle} src={sigImgSrc} alt="이미지" />
             <div style={textStyle}>
-              <Descriptions title={productName} column={2}>
+              <Descriptions title={productName} column={2} contentStyle={bodyStyle} labelStyle={bodyStyle}>
                 <Descriptions.Item label="상태">{status}</Descriptions.Item>
 
                 <Descriptions.Item label="현재가">
@@ -88,7 +92,7 @@ const GridItem = ({
               </Descriptions>
             </div>
           </NavLink>
-        </Card>
+  
       </Space>
     </div>
   );

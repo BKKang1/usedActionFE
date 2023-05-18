@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import Main from "./components/main/Main";
 import Header from "./components/header/Header";
@@ -15,19 +15,22 @@ import { useEffect, useRef } from "react";
 import ModifyProduct from "./components/sellProduct/ModifyProduct";
 import { useQuery } from "react-query";
 import { ClientContext } from "./components/chattingRoom/Soket";
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import { EventSourcePolyfill } from "event-source-polyfill";
 import SockJS from "sockjs-client";
 import PrivateRoute from "./components/router/PrivateRoute";
 import req from "./axios/req";
 import { PriceOfSSE } from "./components/productView/ContextOfPrice";
+import OnlineMeeting from "./components/stream/OnlineMetting";
+import OnlineMeetingOfSub from "./components/stream/OnlineMettingOfSub";
 const Stomp = require("stompjs");
 
 const layoutStyle = {
   margin: "0 auto",
-  width: "1200px",
+  width: "1500px",
 };
 
 function App() {
+  const basename = process.env.PUBLIC_URL;
   const [token, setToken] = useRecoilState(accessToken);
   req.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -47,7 +50,7 @@ function App() {
   const setSse = (e) => {
     console.log("sse 세팅중");
     sse.current = new EventSource(API.SSECONNECTIONOFCHATTINGROOM, {
-      headers:{
+      headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
@@ -57,14 +60,14 @@ function App() {
   };
 
   useEffect(() => {
-    return()=>{
+    return () => {
       client.current.disconnect();
-    }
+    };
   }, []);
   let ssePrice = useRef();
 
-  const setSSEPrice = (auctionId ) => {
-    console.log("auid",auctionId)
+  const setSSEPrice = (auctionId) => {
+    console.log("auid", auctionId);
     ssePrice.current = new EventSource(
       API.SSECONNECTIONOFPRODUCT + `/${auctionId}`,
       {
@@ -74,40 +77,47 @@ function App() {
     );
   };
   return (
-      <ClientContext.Provider value={{client,setClient,sse,setSse}}>
+    <ClientContext.Provider value={{ client, setClient, sse, setSse }}>
       <PriceOfSSE.Provider value={{ ssePrice, setSSEPrice }}>
         <div style={layoutStyle}>
-          <Router>
-            <Header></Header>
-            <Routes  >
-              <Route path="/usedAuctionFE"  element={<Main></Main>}></Route>
-              <Route path="/usedAuctionFE/myStore/:userId" element={<MyStore />}></Route>
-              <Route path="/usedAuctionFE/chattingRoom/detail/:roomId" element={<ChatRoomList />}></Route>
+          <Header></Header>
+          <Routes>
+            <Route path="/" element={<Main></Main>}></Route>
+            <Route
+              path="/chattingRoom/detail/:roomId"
+              element={<ChatRoomList />}
+            ></Route>
+            <Route
+              path="/productList/:categoryId/:productName"
+              element={<ProductList />}
+            ></Route>
+            <Route
+              path="/productList/:categoryId"
+              element={<ProductList />}
+            ></Route>
+            <Route
+              path="/productList/productDetail/:productId"
+              element={<Product />}
+            ></Route>
+            <Route
+              path="/stream/:productId"
+              element={<OnlineMeeting />}
+            ></Route>
+            <Route
+              path="/stream/sub/:productId"
+              element={<OnlineMeetingOfSub />}
+            ></Route>
+            <Route element={<PrivateRoute />}>
+              <Route path="/myStore/:userId" element={<MyStore />}></Route>
               <Route
-                path="/usedAuctionFE/productList"
-                element={<ProductList />}
+                element={<ModifyProduct />}
+                path="/modifyProduct/:productId"
+                exact
               ></Route>
-              <Route
-                path="/usedAuctionFE/productList/productDetail/:productId"
-                element={<Product />}
-              ></Route>
-              <Route element={<PrivateRoute />}>
-                <Route
-                  element={<ModifyProduct />}
-                  path="/usedAuctionFE/modifyProduct/:productId"
-                  exact
-                ></Route>
-                <Route
-                  path="/usedAuctionFE/sellProduct"
-                  element={<SellProduct />}
-                ></Route>
-                <Route
-                  path="/usedAuctionFE/chattingRoom"
-                  element={<ChatRoomList />}
-                ></Route>
-              </Route>
-            </Routes>
-          </Router>
+              <Route path="/sellProduct" element={<SellProduct />}></Route>
+              <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
+            </Route>
+          </Routes>
         </div>
       </PriceOfSSE.Provider>
     </ClientContext.Provider>

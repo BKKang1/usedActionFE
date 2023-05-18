@@ -380,7 +380,7 @@ const ChatRoomList = () => {
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
-          <ConversationHeader.Content userName={selectedRoomName} info="Active 10 mins ago" />         
+          <ConversationHeader.Content userName={selectedRoomName}  />         
         </ConversationHeader>
         <MessageList loadingMore={false} onYReachStart={onYReachStart}>
           {

@@ -195,7 +195,7 @@ const MyStore = () => {
         setRefToken(null);
         setName(null);
         setId(null);
-        navigate("/usedAuctionFE");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error.response.data.msg);

@@ -19,15 +19,18 @@ import req from "../../axios/req";
 import { PriceOfSSE } from "../productView/ContextOfPrice";
 
 const outerBox = {
+
   display: "flex",
   flexDirection: "column",
   margin: "2rem",
+  
 };
 const headerBox = {
   display: "flex",
   justifyContent: "center",
   margin: "2rem",
   alignItems: "center",
+  
   borderBottom: "2px solid",
 };
 const innerBox = {
@@ -65,7 +68,15 @@ const Headers = () => {
   const {sse,setSse} = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
+  const [selected,setSelected] = useState("전체");
 
+  useEffect(()=>{
+    if (!location.pathname.includes("productList")&&location.pathname.includes) {
+    categoryId.current="0"
+    setSelected("전체")
+   
+    }
+  },[location])
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
     if (!location.pathname.includes("chattingRoom")) {
@@ -108,7 +119,7 @@ const Headers = () => {
       </div>
 
       <div style={headerBox}>
-        <NavLink to="/usedAuctionFE" style={textDecoration}>
+        <NavLink to="/" style={textDecoration}>
           <div style={innerBox}>
             <Title></Title>
           </div>
@@ -117,19 +128,19 @@ const Headers = () => {
         <div style={innerBox && itemStyle1}>
           <Search categoryId={categoryId}></Search>
         </div>
-        <Link to={"/usedAuctionFE/sellProduct"} style={textDecoration}>
+        <Link to={"/sellProduct"} style={textDecoration}>
           <div style={innerBox}>
             <PayCircleFilled style={iconSize} />
             <b>판매하기</b>
           </div>
         </Link>
-        <Link to={`/usedAuctionFE/myStore/${id}`} style={textDecoration}>
+        <Link to={`/myStore/${id}`} style={textDecoration}>
           <div style={innerBox}>
             <TeamOutlined style={iconSize} />
             <b>내 상점</b>
           </div>
         </Link>
-        <Link to={"/usedAuctionFE/chattingRoom"} style={textDecoration}>
+        <Link to={"/chattingRoom"} style={textDecoration}>
           <div style={innerBox}>
             <WechatOutlined style={iconSize} />
             <b>채팅</b>
@@ -137,7 +148,7 @@ const Headers = () => {
         </Link>
       </div>
       <div style={DropdownMenuStyle}>
-        <DropdownMenu categoryId={categoryId}></DropdownMenu>
+        <DropdownMenu categoryId={categoryId} setSelected={setSelected} selected={selected}></DropdownMenu>
       </div>
     </div>
   );
