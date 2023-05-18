@@ -59,11 +59,12 @@ function App() {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      client.current.disconnect();
-    };
-  }, []);
+  // useEffect(() => {
+  //   return()=>{
+  //     client.current.disconnect();
+  //   }
+  // }, []);
+  
   let ssePrice = useRef();
 
   const setSSEPrice = (auctionId) => {
@@ -83,10 +84,6 @@ function App() {
           <Header></Header>
           <Routes>
             <Route path="/" element={<Main></Main>}></Route>
-            <Route
-              path="/chattingRoom/detail/:roomId"
-              element={<ChatRoomList />}
-            ></Route>
             <Route
               path="/productList/:categoryId/:productName"
               element={<ProductList />}
@@ -116,6 +113,8 @@ function App() {
               ></Route>
               <Route path="/sellProduct" element={<SellProduct />}></Route>
               <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
+              <Route path="/chattingRoom/detail/*" element={<ChatRoomList />}
+            ></Route>
             </Route>
           </Routes>
         </div>
