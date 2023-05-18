@@ -240,7 +240,7 @@ class OnlineMeeting extends Component {
       axios
         .get(OPENVIDU_SERVER_URL + `api/sessions/count/${productId}`)
         .then((res) => this.setState({ member: res.data.result.count }));
-    }, 5000);
+    }, 1000);
   }
   onbeforeunload(e) {
     this.leaveSession();
