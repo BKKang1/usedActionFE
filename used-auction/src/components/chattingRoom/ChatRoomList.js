@@ -20,6 +20,7 @@ import {
 import axios from "axios";
 import { API } from "../../config";
 import React, { location, useState, useEffect,useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 import {ClientContext} from "./Soket";
 import SockJS from "sockjs-client";
@@ -65,13 +66,21 @@ const ChatRoomList = () => {
     const {sse,setSse} = useContext(ClientContext);
     
     let noMorePage = useRef(false);
-    // const EventSource = EventSourcePolyfill;
-    // let sse;
+
 
     useEffect(() => {
-      if(window.history.state.isExist == true){
-        console.log(window.history.state);
-        onClcik(window.history.state.chatRoomId, window.history.state.roomName);
+      console.log(window.location.pathname);
+      if(window.location.pathname.includes("chattingRoom/detail")){
+        let word = decodeURI(window.location.pathname);
+        let words = word.split("/");
+        word = words[4];
+        words = word.split("&");
+        let tempChatRoomId = words[0];
+        let tempRoomName = words[1];
+        tempChatRoomId = tempChatRoomId.split("=")[1];
+        tempRoomName = tempRoomName.split("=")[1];
+        console.log("채팅방아이디 : "+tempChatRoomId);
+        onClcik(tempChatRoomId, tempRoomName);
       }
 
       axios
@@ -268,7 +277,7 @@ const ChatRoomList = () => {
 
         },function(){
           console.log('Going to subscribe ... ');
-          client.current.subscribe(`/sub/room/${window.history.state.chatRoomId}`, function(frame){
+          client.current.subscribe(`/sub/room/${selectedRoomId}`, function(frame){
             console.log('Subscribe되는중');
             console.log('Subscribe: Incoming message: ' + frame.body);
             if (frame.body) {
@@ -329,7 +338,7 @@ const ChatRoomList = () => {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
       }, JSON.stringify({
-        chatRoomId : window.history.state.chatRoomId,
+        chatRoomId : selectedRoomId,
         sender: name,
         message: messageInputValue,
         type: 'TALK'
@@ -340,17 +349,24 @@ const ChatRoomList = () => {
     const onClcik = (e1, e2) => {
       console.log(e1 + "/" + e2);
       if(selectedRoomId != e1){
-        const state = { 
-          isExist: true,
-          chatRoomId: e1,
-          roomName: e2,
-        };
-        window.history.pushState(state, null, `/usedAuctionFE/chattingRoom/detail/${e1}`);
-        setSelectedRoomName(window.history.state.roomName);
-        setSelectedRoomId(window.history.state.chatRoomId);
+        window.history.pushState({}, null,`/usedAuctionFE/chattingRoom/detail/chatRoomId=${e1}&roomName=${e2}`);
+        setSelectedRoomName(e2);
+        setSelectedRoomId(e1);
         setOnClickTrigger(true);
         setLoadedMessages([]);
         setPageNum(1);
+
+        // const state = { 
+        //   isExist: true,
+        //   chatRoomId: e1,
+        //   roomName: e2,
+        // };
+        // window.history.pushState(state, null, `/usedAuctionFE/chattingRoom/detail/${e1}`);
+        // setSelectedRoomName(window.history.state.roomName);
+        // setSelectedRoomId(window.history.state.chatRoomId);
+        // setOnClickTrigger(true);
+        // setLoadedMessages([]);
+        // setPageNum(1);
       }
     };
 
@@ -380,7 +396,7 @@ const ChatRoomList = () => {
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
-          <ConversationHeader.Content userName={selectedRoomName} info="Active 10 mins ago" />         
+          <ConversationHeader.Content userName={selectedRoomName}/>         
         </ConversationHeader>
         <MessageList loadingMore={false} onYReachStart={onYReachStart}>
           {

@@ -26,6 +26,10 @@ import {
   Typography,
 } from "antd";
 
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
+
 const { Title } = Typography;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -201,6 +205,11 @@ const SellProduct = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf('day');
+  };
+
   return (
     <div style={defaultStyle}>
       <div style={titleStyle}>상품 등록</div>
@@ -248,6 +257,7 @@ const SellProduct = () => {
               format: "HH:mm",
             }}
             format="YYYY-MM-DD HH:mm"
+            disabledDate={disabledDate}
             onChange={onChangeDate}
             onOk={onOk}
           />
