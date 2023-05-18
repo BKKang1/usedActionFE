@@ -396,7 +396,7 @@ const ChatRoomList = () => {
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
-          <ConversationHeader.Content userName={selectedRoomName}/>         
+          <ConversationHeader.Content userName={selectedRoomName}/>                  
         </ConversationHeader>
         <MessageList loadingMore={false} onYReachStart={onYReachStart}>
           {

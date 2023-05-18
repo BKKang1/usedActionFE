@@ -2,7 +2,7 @@ import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { API } from "../../config";
 import req from "../../axios/req";
-const SelectSort = ({ setOrderBy, orderBy }) => {
+const SelectSort = ({ setOrderBy, setPage, orderBy, onSelect }) => {
   const [options, setOptions] = useState([{}]);
   useEffect(() => {
     req.get(API.ORDERBY).then((response) => {
@@ -20,15 +20,14 @@ const SelectSort = ({ setOrderBy, orderBy }) => {
       setOptions(object);
     });
   }, []);
-  const onSelect = (val) => {
-    console.log(val);
-    setOrderBy(val);
-  };
+
   return (
     <Select
+      size="large"
       showSearch
       style={{
-        width: 200,
+        width: 300,
+        marginLeft:"4rem"
       }}
       placeholder="정렬기준"
       optionFilterProp="children"
@@ -40,6 +39,7 @@ const SelectSort = ({ setOrderBy, orderBy }) => {
       }
       options={options}
       onSelect={onSelect}
+      value={orderBy}
     />
   );
 };

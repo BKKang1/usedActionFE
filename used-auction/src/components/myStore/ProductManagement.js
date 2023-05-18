@@ -437,7 +437,7 @@ const ProductManagement = (props) => {
                 <List.Item.Meta
                   title={
                     <Link
-                      to={`../usedAuctionFE/productList/productDetail/${item.productId}`}
+                      to={`../productList/productDetail/${item.productId}`}
                       style={titleStyle}
                     >
                       {item.productName}
@@ -461,8 +461,9 @@ const ProductManagement = (props) => {
                   경매종료일 : {item.auctionEndDate}
                 </span>
 
+
                 {item.possibleUpdate ? (
-                  <Link to={`../usedAuctionFE/modifyProduct/${item.productId}`}>
+                  <Link to={`../modifyProduct/${item.productId}`}>
                     {" "}
                     <IconText icon={ToolOutlined} text="수정" />
                   </Link>
@@ -479,6 +480,7 @@ const ProductManagement = (props) => {
                         .then(() => window.location.reload())
                     }
                   >
+                    
                     <IconText icon={DeleteOutlined} text="삭제" />
                   </span>
                 ) : null}

@@ -2,13 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { RecoilRoot } from "recoil";
-import { QueryClientProvider,QueryClient } from "react-query";
+import { QueryClientProvider, QueryClient } from "react-query";
+import { BrowserRouter } from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-const queryClient= new QueryClient();
+const queryClient = new QueryClient();
 root.render(
   <RecoilRoot>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
+        <App />
+      </BrowserRouter>
     </QueryClientProvider>
   </RecoilRoot>
 );
