@@ -34,4 +34,5 @@ export const API = {
   SSECONNECTIONOFPRODUCT :`${BASE_URL}/api/sse/bid-connect`,
   PRODUCTUPDATE:`${BASE_URL}/api/products/update`,
   MEMBER: `${BASE_URL}/api/member`,
+  ISLIVE: `${BASE_URL}/api/sessions/is-live`
 };
