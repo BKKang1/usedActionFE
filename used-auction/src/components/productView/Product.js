@@ -230,9 +230,7 @@ const Product = () => {
                     </Descriptions.Item>
                   ) : null}
 
-                  <Descriptions.Item>
-                    <Video>녹화보기</Video>
-                  </Descriptions.Item>
+            
                 </Descriptions>
               </div>
 
