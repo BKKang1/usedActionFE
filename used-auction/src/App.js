@@ -22,6 +22,8 @@ import req from "./axios/req";
 import { PriceOfSSE } from "./components/productView/ContextOfPrice";
 import OnlineMeeting from "./components/stream/OnlineMetting";
 import OnlineMeetingOfSub from "./components/stream/OnlineMettingOfSub";
+import StreamSubRoute from "./components/router/StreamSubRoute";
+
 const Stomp = require("stompjs");
 
 const layoutStyle = {
@@ -64,7 +66,7 @@ function App() {
   //     client.current.disconnect();
   //   }
   // }, []);
-  
+
   let ssePrice = useRef();
 
   const setSSEPrice = (auctionId) => {
@@ -96,15 +98,18 @@ function App() {
               path="/productList/productDetail/:productId"
               element={<Product />}
             ></Route>
-            <Route
-              path="/stream/:productId"
-              element={<OnlineMeeting />}
-            ></Route>
-            <Route
-              path="/stream/sub/:productId"
-              element={<OnlineMeetingOfSub />}
-            ></Route>
+    
+            <Route element={<StreamSubRoute />}>
+              <Route
+                path="/stream/sub/:productId"
+                element={<OnlineMeetingOfSub />}
+              ></Route>
+            </Route>
             <Route element={<PrivateRoute />}>
+              <Route
+                path="/stream/:productId"
+                element={<OnlineMeeting />}
+              ></Route>
               <Route path="/myStore/:userId" element={<MyStore />}></Route>
               <Route
                 element={<ModifyProduct />}
@@ -113,8 +118,10 @@ function App() {
               ></Route>
               <Route path="/sellProduct" element={<SellProduct />}></Route>
               <Route path="/chattingRoom" element={<ChatRoomList />}></Route>
-              <Route path="/chattingRoom/detail/*" element={<ChatRoomList />}
-            ></Route>
+              <Route
+                path="/chattingRoom/detail/*"
+                element={<ChatRoomList />}
+              ></Route>
             </Route>
           </Routes>
         </div>

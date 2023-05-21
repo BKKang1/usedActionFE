@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
+
+import Video from "./video/Video";
 const Product = () => {
   let location = useLocation();
   const [name, setName] = useRecoilState(nicknameKey);
@@ -19,6 +21,7 @@ const Product = () => {
   const [productId, setProductId] = useState(null);
   const [nowPrice, setNowPrice] = useState(null);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
+  const [live, setLive] = useState(false);
   const [product, setProduct] = useState({
     auctionId: null,
     auctionEndDate: null,
@@ -39,6 +42,12 @@ const Product = () => {
       originalName: null,
       path: null,
     },
+    videoList: [
+      {
+        originalName: null,
+        path: null,
+      },
+    ],
     startPrice: null,
     status: null,
     viewCount: null,
@@ -63,6 +72,7 @@ const Product = () => {
   };
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
+    position: "relative",
   };
   const contentStyle = {
     whiteSpace: "pre-wrap",
@@ -73,7 +83,19 @@ const Product = () => {
   const bodyStyle = {
     fontSize: "1.3rem",
   };
-
+  const redDot = {
+    position: "absolute",
+    width: "16px",
+    height: "16px",
+    background: "red",
+    borderRadius: "50%",
+    top: "5%",
+    left: "5%",
+    lineHeight: "20px",
+    verticalAlign: "middle",
+    textAlign: "center",
+    color: "white",
+  };
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -81,6 +103,16 @@ const Product = () => {
     if (productId !== null) {
       req.get(`${API.PRODUCT}/${productId}`).then((res) => {
         setProduct(res.data.result);
+      });
+      req.get(API.ISLIVE + `/${productId}`).then((res) => {
+        console.log(
+          "[productiD]:",
+          res.data.result.liveBroadcasting,
+          productId
+        );
+        if (res.data.result.liveBroadcasting) {
+          setLive(true);
+        } else setLive(false);
       });
     }
   }, [productId]);
@@ -114,7 +146,7 @@ const Product = () => {
 
   {
     const streamPage = `/stream/${productId}`;
-    
+    const recodingPage = `/recoding/${productId}`;
     const streamPageofSub = `/stream/sub/${productId}`;
     if (renderStart) {
       return (
@@ -129,6 +161,7 @@ const Product = () => {
               <div style={cardStyle}>
                 <div style={sigImgStyle}>
                   <Image width={250} height={250} src={product.sigImg.path} />
+                  <div style={live ? redDot : null}></div>
                 </div>
 
                 <Descriptions
@@ -189,12 +222,17 @@ const Product = () => {
                         <Link to={streamPage}>방송하기</Link>{" "}
                       </Button>
                     </Descriptions.Item>
-                  ) : (
+                  ) : live === true ? (
                     <Descriptions.Item>
-                      <Button> 
-                      <Link to={streamPageofSub}>방송보기</Link>{" "}</Button>
+                      <Button>
+                        <Link to={streamPageofSub}>방송보기</Link>{" "}
+                      </Button>
                     </Descriptions.Item>
-                  )}
+                  ) : null}
+
+                  <Descriptions.Item>
+                    <Video>녹화보기</Video>
+                  </Descriptions.Item>
                 </Descriptions>
               </div>
 
@@ -218,8 +256,27 @@ const Product = () => {
                   })}
                 </div>
               </div>
+              <Divider />
+              <div style={boxStyle}>
+                <div style={imgArrStyle}>
+                  {product.videoList.map((value, i) => {
+                    console.log(value);
+                    return (
+                      <div key={i}>
+                        <Video
+                          width="800px"
+                          height="600px"
+                          path={value.path}
+                        ></Video>
+                        <Divider />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
               <CommentWritting productId={productId} />
               <Divider />
+
               <QNA productId={productId} nickname={product.nickname} />
             </Card>
           </Space>

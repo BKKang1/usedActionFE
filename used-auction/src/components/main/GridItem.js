@@ -88,12 +88,18 @@ const GridItem = ({
 }) => {
   const [live, setLive] = useState(false);
   useEffect(() => {
-    axios.get(API.ISLIVE + `/${productId}`).then((res) => {
-      console.log("[productiD]:", res.data.result.liveBroadcasting, productId);
-      if (res.data.result.liveBroadcasting) {
-        setLive(true);
-      } else setLive(false);
-    });
+    if (productId !== null) {
+      axios.get(API.ISLIVE + `/${productId}`).then((res) => {
+        console.log(
+          "[productiD]:",
+          res.data.result.liveBroadcasting,
+          productId
+        );
+        if (res.data.result.liveBroadcasting) {
+          setLive(true);
+        } else setLive(false);
+      });
+    }
   });
   return (
     <div style={boxStyle}>
