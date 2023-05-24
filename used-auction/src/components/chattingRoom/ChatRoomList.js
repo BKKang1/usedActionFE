@@ -15,7 +15,7 @@ import {
     Search,
     ConversationList,
     Conversation,
-    
+    Button
 } from '@chatscope/chat-ui-kit-react';
 import axios from "axios";
 import { API } from "../../config";
@@ -407,10 +407,15 @@ const ChatRoomList = () => {
                 sender= {item.sender}
                 direction={item.direction}
               >
-                <MessageGroup.Messages> 
+                <MessageGroup.Messages>
                 <Message model={{
-                  message: item.message
-                }} />
+                  type: "custom"
+                }}>
+                  <Message.CustomContent>
+                    <span>{item.message}</span>
+                    {/* <Button border>Button</Button>  */}
+                  </Message.CustomContent>
+                </Message>
                 </MessageGroup.Messages>
                 <MessageGroup.Footer>{item.readOrNot==true||item.direction=="incoming"?"":"🔴"}  {item.sentTime}</MessageGroup.Footer>
               </MessageGroup>

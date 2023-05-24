@@ -3,6 +3,7 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import styled from "styled-components";
 import UserVideoComponent from "./UserVideoComponent";
+import StreamChat from "./StreamChat";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import HeadsetIcon from "@mui/icons-material/Headset";
@@ -42,6 +43,7 @@ const StudyTitle = styled.p`
 const Middle = styled.div`
   width: 100%;
   display: flex;
+  position: "relative"
   overflow: hidden;
 `;
 
@@ -72,7 +74,7 @@ const Chat = styled.div`
 
 const VideoContainer = styled.div`
   margin-top: 30px;
-  margin-right: 400px;
+  margin-right: 100px;
   margin-left: 100px;
   width: 100%;
   height: 40vh;
@@ -185,6 +187,7 @@ class OnlineMeeting extends Component {
               </div>
             ) : null}
           </VideoContainer>
+          {this.state.publisher !== undefined ? (<StreamChat user={this.state.publisher}></StreamChat>) : <div/>}
         </Middle>
         <Bottom>
           <BottomBox>
@@ -256,7 +259,7 @@ class OnlineMeeting extends Component {
       axios
         .get(OPENVIDU_SERVER_URL + `api/sessions/count/${productId}`)
         .then((res) => this.setState({ member: res.data.result.count }));
-    }, 1000);
+    }, 10000);
     window.onbeforeunload = () => {
       this.leaveSession();
     };

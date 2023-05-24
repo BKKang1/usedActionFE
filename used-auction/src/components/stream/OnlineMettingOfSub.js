@@ -3,6 +3,7 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import styled from "styled-components";
 import UserVideoComponent from "./UserVideoComponent";
+import StreamChat from "./StreamChat";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import HeadsetIcon from "@mui/icons-material/Headset";
@@ -71,7 +72,7 @@ const Chat = styled.div`
 
 const VideoContainer = styled.div`
   margin-top: 30px;
-  margin-right: 400px;
+  margin-right: 100px;
   margin-left: 100px;
   width: 100%;
   height: 40vh;
@@ -182,6 +183,7 @@ class OnlineMeeting extends Component {
               </div>
             ) : null}
           </VideoContainer>
+          {this.state.subscriber !== undefined ? (<StreamChat user={this.state.subscriber}></StreamChat>) : <div/>}
         </Middle>
         <Bottom>
           <BottomBox>
@@ -219,6 +221,7 @@ class OnlineMeeting extends Component {
       isSpeaker: true,
       isChat: false,
       member: undefined,
+      subscriber:undefined
     };
     this.subJoinSession = this.subJoinSession.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
@@ -240,7 +243,7 @@ class OnlineMeeting extends Component {
       axios
         .get(OPENVIDU_SERVER_URL + `api/sessions/count/${productId}`)
         .then((res) => this.setState({ member: res.data.result.count }));
-    }, 5000);
+    }, 10000);
   }
   onbeforeunload(e) {
     this.leaveSession();
@@ -327,16 +330,18 @@ class OnlineMeeting extends Component {
       },
       () => {
         let mySession = this.state.session;
-
+        let subscriber
         // Session 객체가 각각 새로운 stream에 대해 구독 후, subscribers 상태값 업뎃
         mySession.on("streamCreated", (e) => {
           // OpenVidu -> Session -> 102번째 줄 확인 UserVideoComponent를 사용하기 때문에 2번째 인자로 HTML
           // 요소 삽입X
-          let subscriber = mySession.subscribe(e.stream, undefined);
+          subscriber=mySession.subscribe(e.stream, undefined)
+          
 
           subscriber.on("videoElementCreated", (event) => {
             console.log(event);
           });
+          this.setState({subscriber});
           var subscribers = this.state.subscribers;
           subscribers.push(subscriber);
 
