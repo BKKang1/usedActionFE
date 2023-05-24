@@ -1,7 +1,8 @@
 import { Card, Space, Divider, Image, Descriptions, Badge, Button } from "antd";
 import req from "../../axios/req";
 import { API } from "../../config";
-import { useLocation, useBeforeUnload } from "react-router-dom";
+import { useLocation, useBeforeUnload, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import QNA from "./QNA";
 import CommentWritting from "./CommentWritting";
@@ -12,6 +13,7 @@ import { Link } from "react-router-dom";
 import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
+
 import { DeleteOutlined } from "@ant-design/icons";
 import Video from "./video/Video";
 const iconStyle = {
@@ -34,6 +36,7 @@ const video = {
 
 const Product = () => {
   let location = useLocation();
+  const navigate = useNavigate();
   const [name, setName] = useRecoilState(nicknameKey);
   const [renderStart, setRenderStart] = useState(false);
   const [productId, setProductId] = useState(null);
@@ -162,6 +165,19 @@ const Product = () => {
     });
   };
 
+  const addChatRoom = () => {
+    axios
+    .post(API.CHATROOMLIST + `/${productId}`)
+    .then((response) => {
+        console.log(response.data.result);
+        navigate(`/chattingRoom`);
+    })
+    .catch((error) => {
+        console.log(error.response.data.msg);
+        alert(error.response.data.msg);
+    });
+  };
+
   {
     const streamPage = `/stream/${productId}`;
     const recodingPage = `/recoding/${productId}`;
@@ -232,7 +248,11 @@ const Product = () => {
                       auctionId={product.auctionId}
                     />
                   </Descriptions.Item>
-                  <Descriptions.Item></Descriptions.Item>
+                  <Descriptions.Item>
+                    <Button onClick={addChatRoom}>
+                      경매톡
+                    </Button>
+                  </Descriptions.Item>
                   {product.nickname === name ? (
                     <Descriptions.Item>
                       <Button>

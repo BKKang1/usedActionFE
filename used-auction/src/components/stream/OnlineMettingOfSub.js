@@ -3,6 +3,7 @@ import { OpenVidu } from "openvidu-browser";
 import axios from "axios";
 import styled from "styled-components";
 import UserVideoComponent from "./UserVideoComponent";
+import StreamChat from "./StreamChat";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import HeadsetIcon from "@mui/icons-material/Headset";
@@ -46,7 +47,7 @@ const Middle = styled.div`
 
 const VideoContainer = styled.div`
   margin-top: 30px;
-  margin-right: 400px;
+  margin-right: 100px;
   margin-left: 100px;
   width: 100%;
   height: 40vh;
@@ -148,6 +149,7 @@ class OnlineMeeting extends Component {
               </div>
             ) : null}
           </VideoContainer>
+          {this.state.subscriber !== undefined ? (<StreamChat user={this.state.subscriber}></StreamChat>) : <div/>}
         </Middle>
         <Bottom>
           <BottomBox>
