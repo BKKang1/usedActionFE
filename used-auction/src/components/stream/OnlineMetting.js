@@ -264,6 +264,8 @@ class OnlineMeeting extends Component {
       .post(OPENVIDU_SERVER_URL + "api/sessions/remove-user-pub", reqbody)
       .then((res) => {
         console.log(res.data.result.msg);
+      }).catch(()=>{
+        
       });
 
     this.OV = null;
@@ -385,6 +387,7 @@ class OnlineMeeting extends Component {
               this.setState({ mainStreamManager: publisher, publisher });
             })
             .catch((error) => {
+              this.leaveSession();
               console.log("세션 연결 오류", error.code, error.message);
             });
         });
@@ -399,7 +402,9 @@ class OnlineMeeting extends Component {
     const response = await axios.post(
       OPENVIDU_SERVER_URL + "api/sessions/get-token-pub",
       this.productId
-    );
+    ).catch(()=>{
+      this.leaveSession();
+    });
     this.token = response.data.result.token;
 
     console.log(response);

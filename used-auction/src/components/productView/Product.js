@@ -12,8 +12,26 @@ import { Link } from "react-router-dom";
 import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
-
+import { DeleteOutlined } from "@ant-design/icons";
 import Video from "./video/Video";
+const iconStyle = {
+  margin: "0 1rem",
+
+  fontSize: "2rem",
+};
+const videoBox = {
+  display: "flex",
+  flexDirection: "column",
+  marginBottom: "1rem",
+  alignItems: "center",
+  justifyContent: "center",
+};
+const video = {
+  display: "flex",
+  marginBottom: "1rem",
+  alignItems: "center",
+};
+
 const Product = () => {
   let location = useLocation();
   const [name, setName] = useRecoilState(nicknameKey);
@@ -45,7 +63,7 @@ const Product = () => {
     videoList: [
       {
         originalName: null,
-        path: null,
+        videoId: null,
       },
     ],
     startPrice: null,
@@ -229,15 +247,13 @@ const Product = () => {
                       </Button>
                     </Descriptions.Item>
                   ) : null}
-
-            
                 </Descriptions>
               </div>
 
               <Divider />
               <div style={contentStyle}>{<h2>{product.info}</h2>}</div>
               <Divider />
-              <div style={boxStyle}>
+              <div>
                 <div style={imgArrStyle}>
                   {product.ordinalImgList.map((value, i) => {
                     console.log(value);
@@ -255,23 +271,36 @@ const Product = () => {
                 </div>
               </div>
               <Divider />
-              <div style={boxStyle}>
-                <div style={imgArrStyle}>
-                  {product.videoList.map((value, i) => {
-                    console.log(value);
-                    return (
-                      <div key={i}>
-                        <Video
-                          width="800px"
-                          height="600px"
-                          path={value.path}
-                        ></Video>
-                        <Divider />
-                      </div>
-                    );
-                  })}
-                </div>
+              <div style={videoBox}>
+                {product.videoList.map((value, i) => {
+                  console.log(value);
+                  return (
+                    <div key={i} style={video}>
+                      <Video
+                        width="800px"
+                        height="600px"
+                        path={value.path}
+                      ></Video>
+                      <span
+                        style={iconStyle}
+                        onClick={() =>
+                          req
+                            .delete(API.RECORD + `/${value.videoId}`)
+                            .then((res) => {
+                              alert(res.data.result.msg);
+                            })
+                            .then(() => window.location.reload())
+                        }
+                      >
+                        <DeleteOutlined />
+                      </span>
+
+                      <Divider />
+                    </div>
+                  );
+                })}
               </div>
+
               <CommentWritting productId={productId} />
               <Divider />
 

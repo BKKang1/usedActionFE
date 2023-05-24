@@ -23,7 +23,8 @@ import { PriceOfSSE } from "./components/productView/ContextOfPrice";
 import OnlineMeeting from "./components/stream/OnlineMetting";
 import OnlineMeetingOfSub from "./components/stream/OnlineMettingOfSub";
 import StreamSubRoute from "./components/router/StreamSubRoute";
-
+import StreamPage from "./components/stream/StreamPage";
+import StreamPubRoute from "./components/router/StreamPubRoute";
 const Stomp = require("stompjs");
 
 const layoutStyle = {
@@ -98,18 +99,21 @@ function App() {
               path="/productList/productDetail/:productId"
               element={<Product />}
             ></Route>
-    
+
             <Route element={<StreamSubRoute />}>
               <Route
                 path="/stream/sub/:productId"
-                element={<OnlineMeetingOfSub />}
+                element={<StreamPage />}
               ></Route>
             </Route>
+
             <Route element={<PrivateRoute />}>
-              <Route
-                path="/stream/:productId"
-                element={<OnlineMeeting />}
-              ></Route>
+              <Route element={<StreamPubRoute />}>
+                <Route
+                  path="/stream/:productId"
+                  element={<OnlineMeeting />}
+                ></Route>
+              </Route>
               <Route path="/myStore/:userId" element={<MyStore />}></Route>
               <Route
                 element={<ModifyProduct />}

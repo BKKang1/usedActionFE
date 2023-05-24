@@ -21,7 +21,7 @@ const Container = styled.div`
   width: 85%;
   margin: 0 auto;
   background-color: #202124;
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 `;
 
 const Header = styled.div`
