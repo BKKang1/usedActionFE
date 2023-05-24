@@ -250,7 +250,7 @@ const Product = () => {
                   </Descriptions.Item>
                   <Descriptions.Item>
                     <Button onClick={addChatRoom}>
-                      경매톡
+                      채팅하기
                     </Button>
                   </Descriptions.Item>
                   {product.nickname === name ? (

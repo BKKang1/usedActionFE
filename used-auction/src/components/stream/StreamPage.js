@@ -11,6 +11,7 @@ const boxStyle = {
   justifyContent: "center",
   margin: "4rem 15%",
   alignItems: "center",
+  marginBottom: "200px",
 };
 
 const StreamPage = () => {
@@ -27,7 +28,7 @@ const StreamPage = () => {
   useEffect(() => {
     if (productId !== null) {
       axios.get(API.AUCTION + `/${productId}`).then((res) => {
-        console.log("test",res);
+        console.log("test", res);
         setBid(res.data.result);
       });
       //axios productid로 요청 날려서 setbid하고, 현재가는 sse로 받기

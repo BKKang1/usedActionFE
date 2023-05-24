@@ -14,59 +14,28 @@ import CallEndIcon from "@mui/icons-material/CallEnd";
 import TheatersIcon from "@mui/icons-material/Theaters";
 import ChatIcon from "@mui/icons-material/Chat";
 import { withRouter } from "react-router-dom";
-
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 // 로컬 미디어 서버 주소
 const OPENVIDU_SERVER_URL = "https://usedauction.shop/";
-const OPENVIDU_SERVER_SECRET = "MY_SECRET";
+const flexBox = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+const videoBox = {
+  width: "1000px",
+  height: "500px",
+  backgroundColor: "black",
+};
 
-const Container = styled.div`
-  height: 70vh;
-  width: 85%;
-  margin: 0 auto;
-  background-color: #202124;
-  margin-bottom: 200px;
-`;
-
-const Header = styled.div`
-  height: 8vh;
-  display: flex;
-  align-items: center;
-  padding: 0 50px;
-  justify-content: center;
-`;
-
-const StudyTitle = styled.p`
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-`;
-
-const Middle = styled.div`
-  width: 100%;
-  display: flex;
-  position: "relative"
-  overflow: hidden;
-`;
-
-const Chat = styled.div`
-  width: 100%;
-  height: 93%;
-  border-radius: 5px;
-  background-color: white;
-  display: flex;
-`;
-
-const VideoContainer = styled.div`
-  margin-top: 30px;
-  margin-right: 100px;
-  margin-left: 100px;
-  width: 100%;
-  height: 40vh;
-  overflow: hidden;
-  display: flex;
-
-  justify-content: center;
-`;
+const boxStyle = {
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  margin: "4rem 15%",
+  alignItems: "center",
+  marginBottom: "200px",
+};
 
 const StreamContainer = styled.div`
   width: 100%;
@@ -80,7 +49,6 @@ const StreamContainer = styled.div`
 const Bottom = styled.div`
   height: 13vh;
   display: flex;
-  margin-bottom: 200px;
   justify-content: center;
   position: relative;
   align-items: center;
@@ -89,8 +57,7 @@ const Bottom = styled.div`
 const BottomBox = styled.div`
   display: flex;
   height: 100%;
-  width: 20%;
-
+  width: 100%;
   align-items: center;
   justify-content: space-around;
 `;
@@ -100,6 +67,7 @@ const Icon = styled.div`
   justify-content: center;
   align-items: center;
   width: 50px;
+  margin: 1rem;
   height: 50px;
   border-radius: 50%;
   background-color: #333;
@@ -120,50 +88,34 @@ const Icon = styled.div`
       }
     `}
 `;
-
 class OnlineMeeting extends Component {
   render() {
     return (
-      <Container>
-        <Header>
-          <StudyTitle>방송 ({this.state.member}명)</StudyTitle>
-        </Header>
-        <Middle>
-          {this.state.session === undefined ? (
-            <div
-              style={{
-                position: "absolute",
-                right: "0",
-                left: "0",
-                width: "300px",
-                margin: "auto",
-                height: "300px",
-              }}
-              id="join"
-            ></div>
-          ) : null}
-
-          <VideoContainer>
-            {this.state.session !== undefined ? (
-              <div>
-                {this.state.publisher !== undefined ? (
+      <div style={boxStyle}>
+        <div>
+          {this.state.session === undefined ? <div></div> : null}
+          <div>방송 ({this.state.member}명)</div>
+          <div style={flexBox}>
+            <div style={videoBox}>
+              {this.state.session !== undefined ? (
+                this.state.publisher !== undefined ? (
                   <StreamContainer key={this.state.publisher.stream.streamId}>
                     <UserVideoComponent streamManager={this.state.publisher} />
                   </StreamContainer>
                 ) : (
-                  this.state.subscribers.map((sub, i) => {
-                    return (
-                      <StreamContainer key={sub.stream.streamId}>
-                        <UserVideoComponent streamManager={sub} />
-                      </StreamContainer>
-                    );
-                  })
-                )}
-              </div>
-            ) : null}
-          </VideoContainer>
-          {this.state.publisher !== undefined ? (<StreamChat user={this.state.publisher}></StreamChat>) : <div/>}
-        </Middle>
+                  <div />
+                )
+              ) : null}
+            </div>
+            <div>
+              {this.state.publisher !== undefined ? (
+                <StreamChat user={this.state.publisher}></StreamChat>
+              ) : (
+                <div />
+              )}
+            </div>
+          </div>
+        </div>
         <Bottom>
           <BottomBox>
             <Icon
@@ -196,9 +148,16 @@ class OnlineMeeting extends Component {
             <Icon primary onClick={this.leaveSession}>
               <CallEndIcon />
             </Icon>
+            <Icon
+              onClick={() => {
+                document.getElementsByTagName("video")[0].requestFullscreen();
+              }}
+            >
+              <FullscreenIcon />
+            </Icon>
           </BottomBox>
         </Bottom>
-      </Container>
+      </div>
     );
   }
 
@@ -241,7 +200,7 @@ class OnlineMeeting extends Component {
         });
 
       //  this.setState({ member: this.state.session.remoteConnections.size });
-    }, 3000);
+    }, 5000);
     this.timer = timer;
   }
 
@@ -267,9 +226,8 @@ class OnlineMeeting extends Component {
       .post(OPENVIDU_SERVER_URL + "api/sessions/remove-user-pub", reqbody)
       .then((res) => {
         console.log(res.data.result.msg);
-      }).catch(()=>{
-        
-      });
+      })
+      .catch(() => {});
 
     this.OV = null;
     this.setState({
@@ -402,12 +360,11 @@ class OnlineMeeting extends Component {
   //   return await this.createToken(sessionId);
   // }
   async pubGetToken() {
-    const response = await axios.post(
-      OPENVIDU_SERVER_URL + "api/sessions/get-token-pub",
-      this.productId
-    ).catch(()=>{
-      this.leaveSession();
-    });
+    const response = await axios
+      .post(OPENVIDU_SERVER_URL + "api/sessions/get-token-pub", this.productId)
+      .catch(() => {
+        this.leaveSession();
+      });
     this.token = response.data.result.token;
 
     console.log(response);
