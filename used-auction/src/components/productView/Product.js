@@ -13,7 +13,26 @@ import { Link } from "react-router-dom";
 import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
-axios.defaults.withCredentials = true;
+
+import { DeleteOutlined } from "@ant-design/icons";
+import Video from "./video/Video";
+const iconStyle = {
+  margin: "0 1rem",
+
+  fontSize: "2rem",
+};
+const videoBox = {
+  display: "flex",
+  flexDirection: "column",
+  marginBottom: "1rem",
+  alignItems: "center",
+  justifyContent: "center",
+};
+const video = {
+  display: "flex",
+  marginBottom: "1rem",
+  alignItems: "center",
+};
 
 const Product = () => {
   let location = useLocation();
@@ -23,6 +42,7 @@ const Product = () => {
   const [productId, setProductId] = useState(null);
   const [nowPrice, setNowPrice] = useState(null);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
+  const [live, setLive] = useState(false);
   const [product, setProduct] = useState({
     auctionId: null,
     auctionEndDate: null,
@@ -43,6 +63,12 @@ const Product = () => {
       originalName: null,
       path: null,
     },
+    videoList: [
+      {
+        originalName: null,
+        videoId: null,
+      },
+    ],
     startPrice: null,
     status: null,
     viewCount: null,
@@ -67,6 +93,7 @@ const Product = () => {
   };
   const sigImgStyle = {
     margin: "2rem 4rem 2rem 2rem",
+    position: "relative",
   };
   const contentStyle = {
     whiteSpace: "pre-wrap",
@@ -77,7 +104,19 @@ const Product = () => {
   const bodyStyle = {
     fontSize: "1.3rem",
   };
-
+  const redDot = {
+    position: "absolute",
+    width: "16px",
+    height: "16px",
+    background: "red",
+    borderRadius: "50%",
+    top: "5%",
+    left: "5%",
+    lineHeight: "20px",
+    verticalAlign: "middle",
+    textAlign: "center",
+    color: "white",
+  };
   useEffect(() => {
     setProductId(location.pathname.split("productDetail/")[1]);
   }, []);
@@ -85,6 +124,16 @@ const Product = () => {
     if (productId !== null) {
       req.get(`${API.PRODUCT}/${productId}`).then((res) => {
         setProduct(res.data.result);
+      });
+      req.get(API.ISLIVE + `/${productId}`).then((res) => {
+        console.log(
+          "[productiD]:",
+          res.data.result.liveBroadcasting,
+          productId
+        );
+        if (res.data.result.liveBroadcasting) {
+          setLive(true);
+        } else setLive(false);
       });
     }
   }, [productId]);
@@ -131,7 +180,7 @@ const Product = () => {
 
   {
     const streamPage = `/stream/${productId}`;
-    
+    const recodingPage = `/recoding/${productId}`;
     const streamPageofSub = `/stream/sub/${productId}`;
     if (renderStart) {
       return (
@@ -146,6 +195,7 @@ const Product = () => {
               <div style={cardStyle}>
                 <div style={sigImgStyle}>
                   <Image width={250} height={250} src={product.sigImg.path} />
+                  <div style={live ? redDot : null}></div>
                 </div>
 
                 <Descriptions
@@ -210,19 +260,20 @@ const Product = () => {
                         <Link to={streamPage}>방송하기</Link>{" "}
                       </Button>
                     </Descriptions.Item>
-                  ) : (
+                  ) : live === true ? (
                     <Descriptions.Item>
-                      <Button> 
-                      <Link to={streamPageofSub}>방송보기</Link>{" "}</Button>
+                      <Button>
+                        <Link to={streamPageofSub}>방송보기</Link>{" "}
+                      </Button>
                     </Descriptions.Item>
-                  )}
+                  ) : null}
                 </Descriptions>
               </div>
 
               <Divider />
               <div style={contentStyle}>{<h2>{product.info}</h2>}</div>
               <Divider />
-              <div style={boxStyle}>
+              <div>
                 <div style={imgArrStyle}>
                   {product.ordinalImgList.map((value, i) => {
                     console.log(value);
@@ -239,8 +290,40 @@ const Product = () => {
                   })}
                 </div>
               </div>
+              <Divider />
+              <div style={videoBox}>
+                {product.videoList.map((value, i) => {
+                  console.log(value);
+                  return (
+                    <div key={i} style={video}>
+                      <Video
+                        width="800px"
+                        height="600px"
+                        path={value.path}
+                      ></Video>
+                      <span
+                        style={iconStyle}
+                        onClick={() =>
+                          req
+                            .delete(API.RECORD + `/${value.videoId}`)
+                            .then((res) => {
+                              alert(res.data.result.msg);
+                            })
+                            .then(() => window.location.reload())
+                        }
+                      >
+                        <DeleteOutlined />
+                      </span>
+
+                      <Divider />
+                    </div>
+                  );
+                })}
+              </div>
+
               <CommentWritting productId={productId} />
               <Divider />
+
               <QNA productId={productId} nickname={product.nickname} />
             </Card>
           </Space>

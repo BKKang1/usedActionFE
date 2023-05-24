@@ -131,6 +131,7 @@ const ProductList = () => {
               categoryName={value.categoryName}
               auctionEndDate={value.auctionEndDate}
               status={value.status}
+              
             ></GridItem>
           );
         })}

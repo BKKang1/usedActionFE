@@ -22,7 +22,7 @@ const Container = styled.div`
   width: 85%;
   margin: 0 auto;
   background-color: #202124;
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 `;
 
 const Header = styled.div`
@@ -43,31 +43,6 @@ const Middle = styled.div`
   width: 100%;
   display: flex;
   overflow: hidden;
-`;
-
-const Left = styled.div`
-  flex: 3;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
-const Right = styled.div`
-  position: relative;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  transition: 0.5s;
-  ${(props) =>
-    props.primary ? `right:0; flex:1;` : `right:calc(-100vw/3); flex:0;`}
-`;
-
-const Chat = styled.div`
-  width: 100%;
-  height: 93%;
-  border-radius: 5px;
-  background-color: white;
-  display: flex;
 `;
 
 const VideoContainer = styled.div`
@@ -133,15 +108,6 @@ const Icon = styled.div`
     `}
 `;
 
-const ChatIconBox = styled.div`
-  position: absolute;
-  color: white;
-  right: 60px;
-  top: 50%;
-  bottom: 50%;
-  cursor: pointer;
-`;
-
 class OnlineMeeting extends Component {
   render() {
     return (
@@ -166,7 +132,7 @@ class OnlineMeeting extends Component {
 
           <VideoContainer>
             {this.state.session !== undefined ? (
-              <div primary={this.state.isChat} ref={this.userRef}>
+              <div>
                 {this.state.publisher !== undefined ? (
                   <StreamContainer key={this.state.publisher.stream.streamId}>
                     <UserVideoComponent streamManager={this.state.publisher} />
@@ -187,9 +153,6 @@ class OnlineMeeting extends Component {
         </Middle>
         <Bottom>
           <BottomBox>
-            <Icon primary onClick={this.leaveSession}>
-              <CallEndIcon />
-            </Icon>
             <Icon
               primary={!this.state.isCamera}
               onClick={() => {
@@ -197,6 +160,9 @@ class OnlineMeeting extends Component {
               }}
             >
               <VideocamOutlinedIcon />
+            </Icon>
+            <Icon primary onClick={this.leaveSession}>
+              <CallEndIcon />
             </Icon>
           </BottomBox>
         </Bottom>
@@ -221,7 +187,7 @@ class OnlineMeeting extends Component {
       isSpeaker: true,
       isChat: false,
       member: undefined,
-      subscriber:undefined
+      subscriber: undefined,
     };
     this.subJoinSession = this.subJoinSession.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
@@ -238,12 +204,18 @@ class OnlineMeeting extends Component {
     window.onbeforeunload = (event) => {
       this.leaveSession();
     };
-
-    setInterval(() => {
+    console.log(this);
+    let timer = setInterval(() => {
       axios
         .get(OPENVIDU_SERVER_URL + `api/sessions/count/${productId}`)
-        .then((res) => this.setState({ member: res.data.result.count }));
-    }, 10000);
+        .then((res) => {
+          this.setState({ member: res.data.result.count });
+          console.log(res.data.result.count);
+        });
+
+      //  this.setState({ member: this.state.session.remoteConnections.size });
+    }, 3000);
+    this.timer = timer;
   }
   onbeforeunload(e) {
     this.leaveSession();
@@ -253,13 +225,31 @@ class OnlineMeeting extends Component {
   }
   // 화상회의 나갈때
   leaveSession() {
+    if (this.state.subscribers.length < 1) {
+      return;
+    }
+   
+    clearInterval(this.timer);
+    const mySession = this.state.session;
+
+    mySession.disconnect();
+
     let reqbody = { token: this.token, productId: this.productId };
+    console.log(this.state);
+
     axios
       .post(OPENVIDU_SERVER_URL + "api/sessions/remove-user-sub", reqbody)
       .then((res) => {
         console.log(res.data.result.msg);
       });
+    // .then((res) => {
+    //   axios
+    //     .get(OPENVIDU_SERVER_URL + `api/sessions/count/${this.productId}`)
+    //     .then((res) => console.log("count:", res.data.result.count));
+    // });
+    console.log(this.state.session);
 
+    //this.state.session.unsubscribe(this.state.session.subscriber);
     this.OV = null;
     this.setState({
       session: undefined,
@@ -330,29 +320,45 @@ class OnlineMeeting extends Component {
       },
       () => {
         let mySession = this.state.session;
-        let subscriber
+        let subscriber;
         // Session 객체가 각각 새로운 stream에 대해 구독 후, subscribers 상태값 업뎃
         mySession.on("streamCreated", (e) => {
           // OpenVidu -> Session -> 102번째 줄 확인 UserVideoComponent를 사용하기 때문에 2번째 인자로 HTML
-          // 요소 삽입X
-          subscriber=mySession.subscribe(e.stream, undefined)
-          
+          subscriber = mySession.subscribe(e.stream, undefined);
 
           subscriber.on("videoElementCreated", (event) => {
             console.log(event);
           });
-          this.setState({subscriber});
+          this.setState({ subscriber });
           var subscribers = this.state.subscribers;
           subscribers.push(subscriber);
 
           this.setState({ subscribers });
 
           console.log("연결함", subscribers);
+          // let mySession = this.state.session;
+
+          // // Session 객체가 각각 새로운 stream에 대해 구독 후, subscribers 상태값 업뎃
+          // mySession.on("streamCreated", (e) => {
+          //   // OpenVidu -> Session -> 102번째 줄 확인 UserVideoComponent를 사용하기 때문에 2번째 인자로 HTML
+          //   // 요소 삽입X
+          //   this.setState({subscriber :mySession.subscribe(e.stream, undefined)});
+
+          //   this.state.subscriber.on("videoElementCreated", (event) => {
+          //     console.log(event);
+          //   });
+          //   var subscribers = this.state.subscribers;
+          //   subscribers.push(this.state.subscriber);
+
+          //   this.setState({ subscribers });
+
+          //   console.log("연결함", subscribers);
         });
 
         // 사용자가 화상회의를 떠나면 Session 객체에서 소멸된 stream을 받아와 subscribers 상태값 업뎃
         mySession.on("streamDestroyed", (e) => {
           this.deleteSubscriber(e.stream.streamManager);
+          this.state.session.unsubscribe(this.state.subscriber);
         });
 
         // 서버 측에서 비동기식 오류 발생 시 Session 객체에 의해 트리거되는 이벤트

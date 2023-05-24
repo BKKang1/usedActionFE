@@ -11,6 +11,7 @@ import VideocamOffOutlinedIcon from "@mui/icons-material/VideocamOffOutlined";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import HeadsetOffIcon from "@mui/icons-material/HeadsetOff";
 import CallEndIcon from "@mui/icons-material/CallEnd";
+import TheatersIcon from "@mui/icons-material/Theaters";
 import ChatIcon from "@mui/icons-material/Chat";
 import { withRouter } from "react-router-dom";
 
@@ -45,23 +46,6 @@ const Middle = styled.div`
   display: flex;
   position: "relative"
   overflow: hidden;
-`;
-
-const Left = styled.div`
-  flex: 3;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-`;
-
-const Right = styled.div`
-  position: relative;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  transition: 0.5s;
-  ${(props) =>
-    props.primary ? `right:0; flex:1;` : `right:calc(-100vw/3); flex:0;`}
 `;
 
 const Chat = styled.div`
@@ -137,21 +121,12 @@ const Icon = styled.div`
     `}
 `;
 
-const ChatIconBox = styled.div`
-  position: absolute;
-  color: white;
-  right: 60px;
-  top: 50%;
-  bottom: 50%;
-  cursor: pointer;
-`;
-
 class OnlineMeeting extends Component {
   render() {
     return (
       <Container>
         <Header>
-          <StudyTitle>방송 ({(this.state.member)}명)</StudyTitle>
+          <StudyTitle>방송 ({this.state.member}명)</StudyTitle>
         </Header>
         <Middle>
           {this.state.session === undefined ? (
@@ -170,7 +145,7 @@ class OnlineMeeting extends Component {
 
           <VideoContainer>
             {this.state.session !== undefined ? (
-              <div primary={this.state.isChat} ref={this.userRef}>
+              <div>
                 {this.state.publisher !== undefined ? (
                   <StreamContainer key={this.state.publisher.stream.streamId}>
                     <UserVideoComponent streamManager={this.state.publisher} />
@@ -215,7 +190,9 @@ class OnlineMeeting extends Component {
             >
               {this.state.isSpeaker ? <HeadsetIcon /> : <HeadsetOffIcon />}
             </Icon>
-
+            <Icon onClick={this.recoding}>
+              <TheatersIcon />
+            </Icon>
             <Icon primary onClick={this.leaveSession}>
               <CallEndIcon />
             </Icon>
@@ -229,7 +206,6 @@ class OnlineMeeting extends Component {
     super(props);
     this.userRef = React.createRef();
 
-    
     this.state = {
       mySessionId: "SessionA",
       myUserName: undefined,
@@ -248,6 +224,7 @@ class OnlineMeeting extends Component {
     this.handleMainVideoStream = this.handleMainVideoStream.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
+    this.recoding = this.recoding.bind(this);
   }
 
   componentDidMount() {
@@ -255,14 +232,17 @@ class OnlineMeeting extends Component {
     this.productId = productId;
 
     this.joinSession();
-    setInterval(() => {
+    let timer = setInterval(() => {
       axios
         .get(OPENVIDU_SERVER_URL + `api/sessions/count/${productId}`)
-        .then((res) => this.setState({ member: res.data.result.count }));
-    }, 10000);
-    window.onbeforeunload = () => {
-      this.leaveSession();
-    };
+        .then((res) => {
+          this.setState({ member: res.data.result.count });
+          console.log(res.data.result.count);
+        });
+
+      //  this.setState({ member: this.state.session.remoteConnections.size });
+    }, 3000);
+    this.timer = timer;
   }
 
   componentWillUnmount() {
@@ -275,12 +255,20 @@ class OnlineMeeting extends Component {
 
   // 화상회의 나갈때
   leaveSession() {
+    if (this.state.publisher == undefined) {
+      return;
+    }
+    clearInterval(this.timer);
     let reqbody = { token: this.token, productId: this.productId };
     console.log(reqbody);
+    console.log(this.state);
+
     axios
       .post(OPENVIDU_SERVER_URL + "api/sessions/remove-user-pub", reqbody)
       .then((res) => {
         console.log(res.data.result.msg);
+      }).catch(()=>{
+        
       });
 
     this.OV = null;
@@ -338,6 +326,7 @@ class OnlineMeeting extends Component {
   }
 
   joinSession() {
+    if (this.state.publisher !== undefined) return;
     this.OV = new OpenVidu(); // OpenVidu 객체를 얻음
 
     this.OV.setAdvancedConfiguration({
@@ -353,12 +342,12 @@ class OnlineMeeting extends Component {
       },
       () => {
         let mySession = this.state.session;
-
+        let subscriber;
         // Session 객체가 각각 새로운 stream에 대해 구독 후, subscribers 상태값 업뎃
         mySession.on("streamCreated", (e) => {
           // OpenVidu -> Session -> 102번째 줄 확인 UserVideoComponent를 사용하기 때문에 2번째 인자로 HTML
           // 요소 삽입X
-          let subscriber = mySession.subscribe(e.stream, undefined);
+          subscriber = mySession.subscribe(e.stream, undefined);
           var subscribers = this.state.subscribers;
           subscribers.push(subscriber);
 
@@ -370,6 +359,8 @@ class OnlineMeeting extends Component {
         // 사용자가 화상회의를 떠나면 Session 객체에서 소멸된 stream을 받아와 subscribers 상태값 업뎃
         mySession.on("streamDestroyed", (e) => {
           this.deleteSubscriber(e.stream.streamManager);
+
+          this.state.session.unsubscribe(subscriber);
         });
 
         // 서버 측에서 비동기식 오류 발생 시 Session 객체에 의해 트리거되는 이벤트
@@ -399,6 +390,7 @@ class OnlineMeeting extends Component {
               this.setState({ mainStreamManager: publisher, publisher });
             })
             .catch((error) => {
+              this.leaveSession();
               console.log("세션 연결 오류", error.code, error.message);
             });
         });
@@ -413,11 +405,21 @@ class OnlineMeeting extends Component {
     const response = await axios.post(
       OPENVIDU_SERVER_URL + "api/sessions/get-token-pub",
       this.productId
-    );
+    ).catch(()=>{
+      this.leaveSession();
+    });
     this.token = response.data.result.token;
 
     console.log(response);
     return response.data.result.token;
+  }
+  async recoding() {
+    const response = await axios.post(
+      OPENVIDU_SERVER_URL + "api/sessions/recording",
+      this.productId
+    );
+
+    console.log(response.data.result.msg);
   }
 }
 

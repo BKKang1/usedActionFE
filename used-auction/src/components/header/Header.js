@@ -10,27 +10,25 @@ import {
 } from "@ant-design/icons";
 import { API } from "../../config";
 import { useRecoilState } from "recoil";
-import {loginId} from "../../recoil/loginId";
+import { loginId } from "../../recoil/loginId";
 import Title from "./others/Title";
 import LoginModal from "./login/LoginModal";
 import { NavLink, useLocation } from "react-router-dom";
-import {ClientContext } from "../chattingRoom/Soket";
+import { ClientContext } from "../chattingRoom/Soket";
 import req from "../../axios/req";
 import { PriceOfSSE } from "../productView/ContextOfPrice";
 
 const outerBox = {
-
   display: "flex",
   flexDirection: "column",
   margin: "2rem",
-  
 };
 const headerBox = {
   display: "flex",
   justifyContent: "center",
   margin: "2rem",
   alignItems: "center",
-  
+
   borderBottom: "2px solid",
 };
 const innerBox = {
@@ -64,25 +62,27 @@ const Headers = () => {
   let location = useLocation();
   let categoryId = useRef("0");
   const [id, setId] = useRecoilState(loginId);
-  const {client,setClient} = useContext(ClientContext);
-  const {sse,setSse} = useContext(ClientContext);
+  const { client, setClient } = useContext(ClientContext);
+  const { sse, setSse } = useContext(ClientContext);
   const [isLogIn, setIsLogIn] = useState(false);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
-  const [selected,setSelected] = useState("전체");
+  const [selected, setSelected] = useState("전체");
 
-  useEffect(()=>{
-    if (!location.pathname.includes("productList")&&location.pathname.includes) {
-    categoryId.current="0"
-    setSelected("전체")
-   
+  useEffect(() => {
+    if (
+      !location.pathname.includes("productList") &&
+      location.pathname.includes
+    ) {
+      categoryId.current = "0";
+      setSelected("전체");
     }
-  },[location])
+  }, [location]);
   useEffect(() => {
     console.log("location", location.pathname.includes("productDetail/"));
     if (!location.pathname.includes("chattingRoom")) {
       console.log("채팅페이지 아닌거 확인");
 
-      if(sse.current!=undefined){
+      if (sse.current != undefined) {
         sse.current.close();
         //console.log("sss 끊어짐.");
       }
@@ -92,7 +92,10 @@ const Headers = () => {
         client.current.disconnect();
       }
     }
-    if (!location.pathname.includes("productDetail")) {
+    if (
+      !location.pathname.includes("productDetail") ||
+      !location.pathname.includes("sub")
+    ) {
       if (ssePrice.current != undefined) {
         ssePrice.current.close();
 
@@ -148,7 +151,11 @@ const Headers = () => {
         </Link>
       </div>
       <div style={DropdownMenuStyle}>
-        <DropdownMenu categoryId={categoryId} setSelected={setSelected} selected={selected}></DropdownMenu>
+        <DropdownMenu
+          categoryId={categoryId}
+          setSelected={setSelected}
+          selected={selected}
+        ></DropdownMenu>
       </div>
     </div>
   );
