@@ -142,9 +142,16 @@ class OnlineMeeting extends Component {
             >
               {this.state.isSpeaker ? <HeadsetIcon /> : <HeadsetOffIcon />}
             </Icon>
-            <Icon onClick={this.recoding}>
-              <TheatersIcon />
-            </Icon>
+            {this.state.isRecoding ? (
+              <Icon
+                primary={!this.state.isRecoding}
+                onClick={() => this.handleToggle("recoding")}
+              >
+                <TheatersIcon />
+              </Icon>
+            ) : (
+              <div />
+            )}
             <Icon primary onClick={this.leaveSession}>
               <CallEndIcon />
             </Icon>
@@ -176,6 +183,7 @@ class OnlineMeeting extends Component {
       isCamera: true,
       isSpeaker: true,
       isChat: false,
+      isRecoding: true,
       member: undefined,
     };
     this.joinSession = this.joinSession.bind(this);
@@ -277,6 +285,11 @@ class OnlineMeeting extends Component {
         case "mike":
           this.setState({ isMike: !this.state.isMike }, () => {
             this.state.publisher.publishAudio(this.state.isMike);
+          });
+          break;
+        case "recoding":
+          this.setState({ isRecoding: !this.state.isRecoding }, () => {
+            this.recoding();
           });
           break;
       }

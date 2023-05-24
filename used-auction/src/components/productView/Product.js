@@ -14,8 +14,7 @@ import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
 
-import { DeleteOutlined } from "@ant-design/icons";
-import Video from "./video/Video";
+import VideoCarousel from "./VideoCarousel";
 const iconStyle = {
   margin: "0 1rem",
 
@@ -167,15 +166,15 @@ const Product = () => {
 
   const addChatRoom = () => {
     axios
-    .post(API.CHATROOMLIST + `/${productId}`)
-    .then((response) => {
+      .post(API.CHATROOMLIST + `/${productId}`)
+      .then((response) => {
         console.log(response.data.result);
         navigate(`/chattingRoom`);
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.log(error.response.data.msg);
         alert(error.response.data.msg);
-    });
+      });
   };
 
   {
@@ -249,9 +248,7 @@ const Product = () => {
                     />
                   </Descriptions.Item>
                   <Descriptions.Item>
-                    <Button onClick={addChatRoom}>
-                      채팅하기
-                    </Button>
+                    <Button onClick={addChatRoom}>채팅하기</Button>
                   </Descriptions.Item>
                   {product.nickname === name ? (
                     <Descriptions.Item>
@@ -291,34 +288,11 @@ const Product = () => {
                 </div>
               </div>
               <Divider />
-              <div style={videoBox}>
-                {product.videoList.map((value, i) => {
-                  console.log(value);
-                  return (
-                    <div key={i} style={video}>
-                      <Video
-                        width="800px"
-                        height="600px"
-                        path={value.path}
-                      ></Video>
-                      <span
-                        style={iconStyle}
-                        onClick={() =>
-                          req
-                            .delete(API.RECORD + `/${value.videoId}`)
-                            .then((res) => {
-                              alert(res.data.result.msg);
-                            })
-                            .then(() => window.location.reload())
-                        }
-                      >
-                        <DeleteOutlined />
-                      </span>
-
-                      <Divider />
-                    </div>
-                  );
-                })}
+              <div>
+                <VideoCarousel
+                  videoList={product.videoList}
+                  productId={productId}
+                />
               </div>
 
               <CommentWritting productId={productId} />

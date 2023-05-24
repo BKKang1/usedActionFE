@@ -2,10 +2,12 @@ import ReactPlayer from "react-player";
 const Video = ({ path }) => {
   console.log(path);
   return (
-    <div className="App">
+    <div>
       <ReactPlayer
-        url={path}// s3 url
+        url={path} // s3 url
         controls={true}
+        width={"800px"}
+        height={"400px"}
       />
     </div>
   );
