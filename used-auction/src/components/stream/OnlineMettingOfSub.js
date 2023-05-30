@@ -113,6 +113,9 @@ class OnlineMeeting extends Component {
         </div>
         <Bottom>
           <BottomBox>
+            <Icon primary onClick={this.leaveSession}>
+              <CallEndIcon />
+            </Icon>
             <Icon
               primary={!this.state.isCamera}
               onClick={() => {
@@ -121,9 +124,7 @@ class OnlineMeeting extends Component {
             >
               <VideocamOutlinedIcon />
             </Icon>
-            <Icon primary onClick={this.leaveSession}>
-              <CallEndIcon />
-            </Icon>
+
             <Icon
               onClick={() => {
                 document.getElementsByTagName("video")[0].requestFullscreen();

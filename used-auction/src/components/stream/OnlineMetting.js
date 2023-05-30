@@ -118,6 +118,9 @@ class OnlineMeeting extends Component {
         </div>
         <Bottom>
           <BottomBox>
+            <Icon primary onClick={this.leaveSession}>
+              <CallEndIcon />
+            </Icon>
             <Icon
               primary={!this.state.isCamera}
               onClick={() => this.handleToggle("camera")}
@@ -142,19 +145,7 @@ class OnlineMeeting extends Component {
             >
               {this.state.isSpeaker ? <HeadsetIcon /> : <HeadsetOffIcon />}
             </Icon>
-            {this.state.isRecoding ? (
-              <Icon
-                primary={!this.state.isRecoding}
-                onClick={() => this.handleToggle("recoding")}
-              >
-                <TheatersIcon />
-              </Icon>
-            ) : (
-              <div />
-            )}
-            <Icon primary onClick={this.leaveSession}>
-              <CallEndIcon />
-            </Icon>
+
             <Icon
               onClick={() => {
                 document.getElementsByTagName("video")[0].requestFullscreen();
@@ -162,6 +153,14 @@ class OnlineMeeting extends Component {
             >
               <FullscreenIcon />
             </Icon>
+
+            {this.state.isRecoding ? (
+              <Icon  onClick={() => this.handleToggle("recoding")}>
+                <TheatersIcon />
+              </Icon>
+            ) : (
+              <div />
+            )}
           </BottomBox>
         </Bottom>
       </div>

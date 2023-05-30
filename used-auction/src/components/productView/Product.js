@@ -30,11 +30,8 @@ const iconStyle = {
   fontSize: "2rem",
 };
 const videoBox = {
-  display: "flex",
-  flexDirection: "column",
-  marginBottom: "1rem",
-  alignItems: "center",
-  justifyContent: "center",
+  height: "auto",
+  paddingBottom: "2rem",
 };
 const video = {
   display: "flex",
@@ -299,14 +296,13 @@ const Product = () => {
                     })}
                   </div>
                 </div>
-                <Divider />
-                <div>
+                <div style={videoBox}>
                   <VideoCarousel
                     videoList={product.videoList}
                     productId={productId}
                   />
                 </div>
-
+                <Divider />
                 <CommentWritting productId={productId} />
                 <Divider />
 

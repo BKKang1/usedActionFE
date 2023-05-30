@@ -15,18 +15,12 @@ const iconStyle = {
 
   fontSize: "2rem",
 };
-const contentStyle = {
-  margin: 0,
-  height: "500px",
-  color: "#fff",
-  lineHeight: "160px",
-  textAlign: "center",
-  background: "#364d79",
-};
+
 const videoBox = {
   display: "flex",
+
   flexDirection: "column",
-  marginBottom: "1rem",
+  margin: "1rem",
   alignItems: "center",
   justifyContent: "center",
 };
@@ -57,11 +51,15 @@ function VideoCarousel({ videoList, productId }) {
 
   const settings = {
     dots: true,
-    infinite: true,
+    arrows: true,
+    isFinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    height: 500,
+    height: 300,
+  };
+  const dotStyle = {
+    color: "red",
   };
   const list = videoList.map((value, i) => {
     return (
@@ -91,7 +89,12 @@ function VideoCarousel({ videoList, productId }) {
       </div>
     );
   });
-  return <Slider {...settings}>{list}</Slider>;
+  return (
+    <Slider {...settings}>
+     
+       {list}
+    </Slider>
+  );
 }
 
 export default VideoCarousel;
