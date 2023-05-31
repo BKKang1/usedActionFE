@@ -13,49 +13,21 @@ import HeadsetOffIcon from "@mui/icons-material/HeadsetOff";
 import CallEndIcon from "@mui/icons-material/CallEnd";
 import ChatIcon from "@mui/icons-material/Chat";
 import { withRouter } from "react-router-dom";
-
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 // 로컬 미디어 서버 주소
 const OPENVIDU_SERVER_URL = "https://usedauction.shop/";
+const videoBox = {
+  width: "1000px",
+  height: "500px",
+  backgroundColor: "black",
+};
+const defaultVideoBox = {};
 
-const Container = styled.div`
-  height: 70vh;
-  width: 85%;
-  margin: 0 auto;
-  background-color: #202124;
-  margin-bottom: 50px;
-`;
-
-const Header = styled.div`
-  height: 8vh;
-  display: flex;
-  align-items: center;
-  padding: 0 50px;
-  justify-content: center;
-`;
-
-const StudyTitle = styled.p`
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-`;
-
-const Middle = styled.div`
-  width: 100%;
-  display: flex;
-  overflow: hidden;
-`;
-
-const VideoContainer = styled.div`
-  margin-top: 30px;
-  margin-right: 100px;
-  margin-left: 100px;
-  width: 100%;
-  height: 40vh;
-  overflow: hidden;
-  display: flex;
-
-  justify-content: center;
-`;
+const flexBox = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
 
 const StreamContainer = styled.div`
   width: 100%;
@@ -111,48 +83,39 @@ const Icon = styled.div`
 class OnlineMeeting extends Component {
   render() {
     return (
-      <Container>
-        <Header>
-          <StudyTitle>방송 ({this.state.member}명)</StudyTitle>
-        </Header>
-        <Middle>
-          {this.state.session === undefined ? (
-            <div
-              style={{
-                position: "absolute",
-                right: "0",
-                left: "0",
-                width: "300px",
-                margin: "auto",
-                height: "300px",
-              }}
-              id="join"
-            ></div>
-          ) : null}
-
-          <VideoContainer>
-            {this.state.session !== undefined ? (
-              <div>
-                {this.state.publisher !== undefined ? (
-                  <StreamContainer key={this.state.publisher.stream.streamId}>
-                    <UserVideoComponent streamManager={this.state.publisher} />
-                  </StreamContainer>
-                ) : (
-                  this.state.subscribers.map((sub, i) => {
-                    return (
-                      <StreamContainer key={sub.stream.streamId}>
-                        <UserVideoComponent streamManager={sub} />
-                      </StreamContainer>
-                    );
-                  })
-                )}
-              </div>
-            ) : null}
-          </VideoContainer>
-          {this.state.subscriber !== undefined ? (<StreamChat user={this.state.subscriber}></StreamChat>) : <div/>}
-        </Middle>
+      <div>
+        <div>
+          {this.state.session === undefined ? <div></div> : null}
+          <div>방송 ({this.state.member}명)</div>
+          <div style={flexBox}>
+            <div style={videoBox}>
+              {" "}
+              {this.state.session !== undefined ? (
+                this.state.subscribers.map((sub, i) => {
+                  return (
+                    <StreamContainer key={sub.stream.streamId}>
+                      <UserVideoComponent streamManager={sub} />
+                    </StreamContainer>
+                  );
+                })
+              ) : (
+                <div />
+              )}
+            </div>
+            <div>
+              {this.state.subscriber !== undefined ? (
+                <StreamChat user={this.state.subscriber}></StreamChat>
+              ) : (
+                <div />
+              )}
+            </div>
+          </div>
+        </div>
         <Bottom>
           <BottomBox>
+            <Icon primary onClick={this.leaveSession}>
+              <CallEndIcon />
+            </Icon>
             <Icon
               primary={!this.state.isCamera}
               onClick={() => {
@@ -161,12 +124,17 @@ class OnlineMeeting extends Component {
             >
               <VideocamOutlinedIcon />
             </Icon>
-            <Icon primary onClick={this.leaveSession}>
-              <CallEndIcon />
+
+            <Icon
+              onClick={() => {
+                document.getElementsByTagName("video")[0].requestFullscreen();
+              }}
+            >
+              <FullscreenIcon />
             </Icon>
           </BottomBox>
         </Bottom>
-      </Container>
+      </div>
     );
   }
 
@@ -214,7 +182,7 @@ class OnlineMeeting extends Component {
         });
 
       //  this.setState({ member: this.state.session.remoteConnections.size });
-    }, 3000);
+    }, 5000);
     this.timer = timer;
   }
   onbeforeunload(e) {
@@ -228,7 +196,7 @@ class OnlineMeeting extends Component {
     if (this.state.subscribers.length < 1) {
       return;
     }
-   
+
     clearInterval(this.timer);
     const mySession = this.state.session;
 

@@ -1,4 +1,13 @@
-import { Card, Space, Divider, Image, Descriptions, Badge, Button } from "antd";
+import {
+  Card,
+  Space,
+  Divider,
+  Image,
+  Descriptions,
+  Badge,
+  Button,
+  Spin,
+} from "antd";
 import req from "../../axios/req";
 import { API } from "../../config";
 import { useLocation, useBeforeUnload, useNavigate } from "react-router-dom";
@@ -14,19 +23,15 @@ import { ClientContext } from "../chattingRoom/Soket";
 import { nicknameKey } from "../../recoil/loginId";
 import { useRecoilState } from "recoil";
 
-import { DeleteOutlined } from "@ant-design/icons";
-import Video from "./video/Video";
+import VideoCarousel from "./VideoCarousel";
 const iconStyle = {
   margin: "0 1rem",
 
   fontSize: "2rem",
 };
 const videoBox = {
-  display: "flex",
-  flexDirection: "column",
-  marginBottom: "1rem",
-  alignItems: "center",
-  justifyContent: "center",
+  height: "auto",
+  paddingBottom: "2rem",
 };
 const video = {
   display: "flex",
@@ -43,6 +48,7 @@ const Product = () => {
   const [nowPrice, setNowPrice] = useState(null);
   const { ssePrice, setSSEPrice } = useContext(PriceOfSSE);
   const [live, setLive] = useState(false);
+  const [isloading, setIsLoading] = useState(true);
   const [product, setProduct] = useState({
     auctionId: null,
     auctionEndDate: null,
@@ -142,6 +148,7 @@ const Product = () => {
     if (product.auctionId !== null) {
       sseConnect(product.auctionId);
       setRenderStart(true);
+      setIsLoading(false);
     }
   }, [product]);
 
@@ -167,15 +174,15 @@ const Product = () => {
 
   const addChatRoom = () => {
     axios
-    .post(API.CHATROOMLIST + `/${productId}`)
-    .then((response) => {
+      .post(API.CHATROOMLIST + `/${productId}`)
+      .then((response) => {
         console.log(response.data.result);
         navigate(`/chattingRoom`);
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
         console.log(error.response.data.msg);
         alert(error.response.data.msg);
-    });
+      });
   };
 
   {
@@ -184,150 +191,126 @@ const Product = () => {
     const streamPageofSub = `/stream/sub/${productId}`;
     if (renderStart) {
       return (
-        <div style={boxStyle}>
-          <Space direction="vertical" size={16}>
-            <Card
-              title={<h1 style={titleStyle}>{product.productName}</h1>}
-              style={{
-                width: 900,
-              }}
-            >
-              <div style={cardStyle}>
-                <div style={sigImgStyle}>
-                  <Image width={250} height={250} src={product.sigImg.path} />
-                  <div style={live ? redDot : null}></div>
+        <Spin spinning={isloading}>
+          <div style={boxStyle}>
+            <Space direction="vertical" size={16}>
+              <Card
+                title={<h1 style={titleStyle}>{product.productName}</h1>}
+                style={{
+                  width: 900,
+                }}
+              >
+                <div style={cardStyle}>
+                  <div style={sigImgStyle}>
+                    <Image width={250} height={250} src={product.sigImg.path} />
+                    <div style={live ? redDot : null}></div>
+                  </div>
+
+                  <Descriptions
+                    column={2}
+                    title="상품 정보"
+                    labelStyle={bodyStyle}
+                    contentStyle={bodyStyle}
+                  >
+                    <Descriptions.Item label="판매자">
+                      {product.nickname}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="카테고리">
+                      {product.categoryName}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="상태">
+                      {product.status}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="시작가">
+                      {product.startPrice !== null
+                        ? product.startPrice
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : null}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="현재가">
+                      {nowPrice !== null
+                        ? nowPrice
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : null}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="단위가격">
+                      {product.priceUnit !== null
+                        ? product.priceUnit
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        : null}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="조회수">
+                      {product.viewCount}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="경매마감일">
+                      {product.auctionEndDate}
+                    </Descriptions.Item>
+                    <Descriptions.Item>
+                      <BidModal
+                        priceUnit={product.priceUnit}
+                        auctionEndDate={product.auctionEndDate}
+                        nowPrice={nowPrice}
+                        auctionId={product.auctionId}
+                      />
+                    </Descriptions.Item>
+                    <Descriptions.Item>
+                      <Button onClick={addChatRoom}>채팅하기</Button>
+                    </Descriptions.Item>
+                    {product.nickname === name ? (
+                      <Descriptions.Item>
+                        <Button>
+                          {" "}
+                          <Link to={streamPage}>방송하기</Link>{" "}
+                        </Button>
+                      </Descriptions.Item>
+                    ) : live === true ? (
+                      <Descriptions.Item>
+                        <Button>
+                          <Link to={streamPageofSub}>방송보기</Link>{" "}
+                        </Button>
+                      </Descriptions.Item>
+                    ) : null}
+                  </Descriptions>
                 </div>
 
-                <Descriptions
-                  column={2}
-                  title="상품 정보"
-                  labelStyle={bodyStyle}
-                  contentStyle={bodyStyle}
-                >
-                  <Descriptions.Item label="판매자">
-                    {product.nickname}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="카테고리">
-                    {product.categoryName}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="상태">
-                    {product.status}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="시작가">
-                    {product.startPrice !== null
-                      ? product.startPrice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      : null}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="현재가">
-                    {nowPrice !== null
-                      ? nowPrice
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      : null}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="단위가격">
-                    {product.priceUnit !== null
-                      ? product.priceUnit
-                          .toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      : null}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="조회수">
-                    {product.viewCount}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="경매마감일">
-                    {product.auctionEndDate}
-                  </Descriptions.Item>
-                  <Descriptions.Item>
-                    <BidModal
-                      priceUnit={product.priceUnit}
-                      auctionEndDate={product.auctionEndDate}
-                      nowPrice={nowPrice}
-                      auctionId={product.auctionId}
-                    />
-                  </Descriptions.Item>
-                  <Descriptions.Item>
-                    <Button onClick={addChatRoom}>
-                      채팅하기
-                    </Button>
-                  </Descriptions.Item>
-                  {product.nickname === name ? (
-                    <Descriptions.Item>
-                      <Button>
-                        {" "}
-                        <Link to={streamPage}>방송하기</Link>{" "}
-                      </Button>
-                    </Descriptions.Item>
-                  ) : live === true ? (
-                    <Descriptions.Item>
-                      <Button>
-                        <Link to={streamPageofSub}>방송보기</Link>{" "}
-                      </Button>
-                    </Descriptions.Item>
-                  ) : null}
-                </Descriptions>
-              </div>
-
-              <Divider />
-              <div style={contentStyle}>{<h2>{product.info}</h2>}</div>
-              <Divider />
-              <div>
-                <div style={imgArrStyle}>
-                  {product.ordinalImgList.map((value, i) => {
-                    console.log(value);
-                    return (
-                      <div key={i}>
-                        <Image
-                          width="800px"
-                          height="600px"
-                          src={value.path}
-                        ></Image>
-                        <Divider />
-                      </div>
-                    );
-                  })}
+                <Divider />
+                <div style={contentStyle}>{<h2>{product.info}</h2>}</div>
+                <Divider />
+                <div>
+                  <div style={imgArrStyle}>
+                    {product.ordinalImgList.map((value, i) => {
+                      console.log(value);
+                      return (
+                        <div key={i}>
+                          <Image
+                            width="800px"
+                            height="600px"
+                            src={value.path}
+                          ></Image>
+                          <Divider />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-              <Divider />
-              <div style={videoBox}>
-                {product.videoList.map((value, i) => {
-                  console.log(value);
-                  return (
-                    <div key={i} style={video}>
-                      <Video
-                        width="800px"
-                        height="600px"
-                        path={value.path}
-                      ></Video>
-                      <span
-                        style={iconStyle}
-                        onClick={() =>
-                          req
-                            .delete(API.RECORD + `/${value.videoId}`)
-                            .then((res) => {
-                              alert(res.data.result.msg);
-                            })
-                            .then(() => window.location.reload())
-                        }
-                      >
-                        <DeleteOutlined />
-                      </span>
+                <div style={videoBox}>
+                  <VideoCarousel
+                    videoList={product.videoList}
+                    productId={productId}
+                  />
+                </div>
+                <Divider />
+                <CommentWritting productId={productId} />
+                <Divider />
 
-                      <Divider />
-                    </div>
-                  );
-                })}
-              </div>
-
-              <CommentWritting productId={productId} />
-              <Divider />
-
-              <QNA productId={productId} nickname={product.nickname} />
-            </Card>
-          </Space>
-        </div>
+                <QNA productId={productId} nickname={product.nickname} />
+              </Card>
+            </Space>
+          </div>
+        </Spin>
       );
     }
   }

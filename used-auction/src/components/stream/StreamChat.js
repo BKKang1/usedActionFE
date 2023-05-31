@@ -24,9 +24,9 @@ import {
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 const chatBox = {
-    width: "130%",
-    marginRight: "100px",
-    height: "300px",
+   
+    width:"300px",
+    height: "505px",
     borderRadius: "5px",
     backgroundColor: "white",
     overflow: "hidden"
