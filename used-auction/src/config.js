@@ -37,4 +37,8 @@ export const API = {
   ISLIVE: `${BASE_URL}/api/sessions/is-live`,
   RECORD: `${BASE_URL}/api/sessions/record`,
   ISSELLER: `${BASE_URL}/api/products/valid`,
+  TRANSACTIONCOUNT: `${BASE_URL}/api/mypage/count`,
+  SSENOTIFICATION : `${BASE_URL}/api/sse/notification`,
+  NOTIFICATION : `${BASE_URL}/api/notification`,
+  TRANS : `${BASE_URL}/api/trans`,
 };

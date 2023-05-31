@@ -53,6 +53,7 @@ const ChatRoomList = () => {
     const [conversationList, setConversationList] = useState([]);
     const [updatedConversation, setUpdatedConversation] = useState("");
     const [enteredRoomId, setEnteredRoomId] = useState("");
+    const [newChatRoomData, setNewChatRoomData] = useState("");
     const [searched, setSearched] = useState([]);
     const [onClickTrigger,setOnClickTrigger] =useState(false);
     const [onReadTrigger,setOnReadTrigger] =useState(false);
@@ -127,6 +128,7 @@ const ChatRoomList = () => {
         const { data: receivedConnectData } = e;
         const data = JSON.parse(receivedConnectData);
         console.log(data.result);
+        setNewChatRoomData(data.result);
       }); 
       sse.current.onerror = (e) => {
         if(!(window.location.pathname.includes("chattingRoom"))){
@@ -215,6 +217,27 @@ const ChatRoomList = () => {
         setConversationList(tempConversationList);
       }
     }, [enteredRoomId]);
+
+    useEffect(() => {
+      if(newChatRoomData!=""){
+        console.log("채팅방리스트 업데이트 준비 완료.");
+        console.log(newChatRoomData);
+        setConversationList(
+          conversationList =>
+          [
+            ...conversationList,
+            {
+              chatRoomId: newChatRoomData.chatRoomId,
+              roomName: newChatRoomData.roomName,
+              recentMessage: "",
+              recentSender: "",
+              unReadMessages: 0
+            }
+          ]
+        );
+      }
+
+    },[newChatRoomData]);
 
     useEffect(() => {
       if(onReadTrigger==true){
