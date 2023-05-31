@@ -33,6 +33,9 @@ const listBoxStyle = {
 const titleStyle = {
   fontSize: "25px",
   ontWeight: "500",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  whiteSpace: "nowrap"
 };
 
 const descriptionStyle = {
@@ -438,9 +441,8 @@ const ProductManagement = (props) => {
                   title={
                     <Link
                       to={`../productList/productDetail/${item.productId}`}
-                      style={titleStyle}
                     >
-                      {item.productName}
+                      <p style={titleStyle}>{item.productName}</p>
                     </Link>
                   }
                   description={

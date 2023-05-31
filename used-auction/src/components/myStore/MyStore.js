@@ -52,7 +52,7 @@ const userText = {
   paddingTop: "15%",
   paddingBottom: "15%",
   marginLeft: "40px",
-  fontSize: "25px",
+  fontSize: "40px",
   //fontWeight: "700",
 };
 
@@ -60,6 +60,14 @@ const passwordText = {
   display: "flex",
   paddingTop: "15%",
   paddingBottom: "15%",
+  fontSize: "25px",
+  //fontWeight: "700",
+};
+
+const TransactionText = {
+  display: "flex",
+  marginBottom: "10px",
+  marginLeft: "40px",
   fontSize: "25px",
   //fontWeight: "700",
 };
@@ -151,7 +159,7 @@ const MyStore = () => {
   const [token, setToken] = useRecoilState(accessToken);
   const [refToken, setRefToken] = useRecoilState(refreshToken);
   const [id, setId] = useRecoilState(loginId);
-  //const [userScore, setUserScore] = useState("88");
+  const [userScore, setUserScore] = useState({});
   const [userPassword, setUserPassword] = useState("");
   const [choiceNum, setChoiceNum] = useState(1);
   const [isHovering1, setIsHovering1] = useState(false);
@@ -163,6 +171,20 @@ const MyStore = () => {
   const [isModalOpen2, setIsModalOpen2] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(token != null){
+      axios
+        .get(API.TRANSACTIONCOUNT)
+        .then((response) => {
+          console.log(response.data);
+          setUserScore(response.data);
+        })
+        .catch((error) => {
+          console.log(error.response.data.msg);
+        });
+    }
+  },[token]); 
 
   const showModal1 = () => {
     setIsModalOpen1(true);
@@ -273,6 +295,15 @@ const MyStore = () => {
               </div>
             </Modal>
           </div>
+          <span className="transaction-text1" style={TransactionText}>
+            총 판매 횟수 : {userScore.allCount}
+          </span>
+          <span className="transaction-text2" style={TransactionText}>
+            판매 성공 횟수 : {userScore.successCount}
+          </span>
+          <span className="transaction-text3" style={TransactionText}>
+            거래 실패 횟수 : {userScore.rejectCount}
+          </span>
         </div>
       </div>
 
