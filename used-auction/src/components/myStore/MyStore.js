@@ -212,12 +212,15 @@ const MyStore = () => {
     axios
       .delete(API.MEMBER+`?password=${userPassword}`)
       .then((response) => {
-        console.log(response.data);
+        alert(response.data.result.msg);
+
+     
+      })
+      .then(()=>{
         setToken(null);
         setRefToken(null);
         setName(null);
         setId(null);
-        navigate("/");
       })
       .catch((error) => {
         console.log(error.response.data.msg);

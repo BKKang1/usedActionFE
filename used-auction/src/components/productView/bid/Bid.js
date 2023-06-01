@@ -34,7 +34,7 @@ const Bid = ({ onCancel, priceUnit, auctionEndDate, nowPrice, auctionId }) => {
       req
         .post(API.AUCTION + `/${auctionId}`, json)
         .then((res) => {
-          console.log(res.data);
+          alert(res.data.result.msg);
         })
     
     } else {

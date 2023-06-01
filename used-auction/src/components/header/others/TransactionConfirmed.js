@@ -71,7 +71,7 @@ const TransactionConfirmed = ({count}) => {
         })
         .then((response) => {
             console.log(response.data.result);
-            alert(response.data.result);
+            alert(response.data.result.msg);
             sendAlarm(e.notificationId);
         })
         .catch((error) => {
@@ -91,7 +91,7 @@ const TransactionConfirmed = ({count}) => {
         })
         .then((response) => {
             console.log(response.data.result);
-            alert(response.data.result);
+            alert(response.data.result.msg);
             sendAlarm(e.notificationId);
         })
         .catch((error) => {

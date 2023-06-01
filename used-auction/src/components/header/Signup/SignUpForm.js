@@ -216,7 +216,7 @@ const SignUp = ({ onCancel }) => {
             name="phoneNumber"
             rules={[{ required: true, message: "전화번호를 입력하세요" }]}
           >
-            <Input />
+            <Input placeholder="01012345678"/>
           </Form.Item>
         </div>
 
