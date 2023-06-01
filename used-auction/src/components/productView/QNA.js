@@ -33,7 +33,7 @@ const QNA = ({ productId, nickname }) => {
   const flexBox = { display: "flex" };
   const childBox = { marginLeft: "2rem" };
   const [totalPage, setTotalPage] = useState(null);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const boxStyle = {
     display: "flex",
     justifyContent: "center",
@@ -41,12 +41,12 @@ const QNA = ({ productId, nickname }) => {
     alignItems: "center",
   };
   const onChange = (value) => {
-    console.log(value);
-    setPage(value - 1);
+    console.log(value)
+    setPage(value);
   };
   useEffect(() => {
     req
-      .get(API.QUESTIONVIEW + `/${productId}?page=${page}&size=${4}`)
+      .get(API.QUESTIONVIEW + `/${productId}?page=${page-1}&size=${4}`)
       .then((res) => {
         console.log("댓글", res.data.content);
 
@@ -131,6 +131,7 @@ const QNA = ({ productId, nickname }) => {
           onChange={onChange}
           total={totalPage}
           pageSize={4}
+          current={page}
         ></Pagination>
       </div>
     </>
