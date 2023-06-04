@@ -10,6 +10,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
+import { accessToken } from "../../recoil/accessToken";
+import { useRecoilState } from "recoil";
 const iconStyle = {
   margin: "0 1rem",
 
@@ -38,15 +40,20 @@ function VideoCarousel({ videoList, productId }) {
   let [isSeller, setIsSeller] = useState(true);
 
   console.log(productId);
+  const auth = useRecoilState(accessToken)[0];
+
   useEffect(() => {
-    axios
-      .get(API.ISSELLER + `/${productId}`)
-      .then((res) => {
-        setIsSeller(res.data.result.valid);
-      })
-      .catch((error) => {
-        setIsSeller(false);
-      });
+    if (!auth) {
+      setIsSeller(false);
+    } else
+      axios
+        .get(API.ISSELLER + `/${productId}`)
+        .then((res) => {
+          setIsSeller(res.data.result.valid);
+        })
+        .catch((error) => {
+          setIsSeller(false);
+        });
   }, []);
 
   const settings = {
@@ -89,12 +96,7 @@ function VideoCarousel({ videoList, productId }) {
       </div>
     );
   });
-  return (
-    <Slider {...settings}>
-     
-       {list}
-    </Slider>
-  );
+  return <Slider {...settings}>{list}</Slider>;
 }
 
 export default VideoCarousel;

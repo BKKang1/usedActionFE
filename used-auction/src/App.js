@@ -33,6 +33,11 @@ const layoutStyle = {
 };
 
 function App() {
+  if (process.env.NODE_ENV === "production") {
+    console.log = function no_console() {};
+    console.warn = function no_console() {};
+  }
+
   const basename = process.env.PUBLIC_URL;
   const [token, setToken] = useRecoilState(accessToken);
   req.defaults.headers.common["Authorization"] = `Bearer ${token}`;

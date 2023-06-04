@@ -16,7 +16,7 @@ const SearchProductName = ({ categoryId }) => {
 
   const doSearch = (value) => {
     productName = value;
-    console.log(value);
+
    // "/productList/name=/:productName/id=/:categoryId"
     //if (value == "") navigate(`/productList/""/${categoryId.current}`);
      navigate(`/productList/${categoryId.current}/${productName}`);

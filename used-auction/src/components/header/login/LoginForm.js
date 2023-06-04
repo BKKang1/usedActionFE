@@ -28,7 +28,7 @@ const LoginForm = ({ onCancel, setName }) => {
 
   const onFinish = (values) => {
     const json = JSON.stringify(values);
-    console.log("json", json);
+   
 
     axios
       .post(API.LOGIN, json)

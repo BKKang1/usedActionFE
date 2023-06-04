@@ -16,7 +16,7 @@ const LoginModal = () => {
   const [id, setId] = useRecoilState(loginId);
   const [name, setName] = useRecoilState(nicknameKey);
   const reIssue = () => {
-    console.log("token", token);
+   
     if (token) {
       req
         .post(API.REISSUE, {
@@ -24,7 +24,6 @@ const LoginModal = () => {
           refreshToken: refToken,
         })
         .then((res) => {
-          console.log("reissue", res);
           setToken(res.data.result.accessToken);
           setRefToken(res.data.result.refreshToken);
         })
@@ -40,9 +39,9 @@ const LoginModal = () => {
     req
       .get(API.ISLOGIN)
       .then((response) => {
-        console.log("로그인상태체크");
+     
         if (response.data.result.status === true) {
-          console.log("로그인체크");
+      
           setName(response.data.result.name);
           setId(response.data.result.loginId);
         } else if (response.data.result.status === false) {
@@ -50,8 +49,6 @@ const LoginModal = () => {
           setRefToken(null);
           setName(null);
           setId(null);
-          console.log("로그아웃");
-          console.log(response.data.result);
         }
       })
       .catch(() => {
@@ -71,14 +68,12 @@ const LoginModal = () => {
 
   useEffect(() => {
     isLoginState();
-    console.log("로그인상태체크inuseeffect");
   }, [token]);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
   const logout = () => {
-    console.log("before token", token);
 
     req
       .post(API.LOGOUT, token)

@@ -41,14 +41,14 @@ const QNA = ({ productId, nickname }) => {
     alignItems: "center",
   };
   const onChange = (value) => {
-    console.log(value)
+  
     setPage(value);
   };
   useEffect(() => {
     req
       .get(API.QUESTIONVIEW + `/${productId}?page=${page-1}&size=${4}`)
       .then((res) => {
-        console.log("댓글", res.data.content);
+  
 
         setData(res.data.content);
         setTotalPage(res.data.totalPages * 4);

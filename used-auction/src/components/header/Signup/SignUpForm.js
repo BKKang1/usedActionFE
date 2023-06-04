@@ -45,7 +45,7 @@ const SignUp = ({ onCancel }) => {
     }
 
     const json = JSON.stringify(values);
-    console.log("json", json);
+ 
 
     req
       .post(API.SIGNUP, json)
@@ -61,7 +61,7 @@ const SignUp = ({ onCancel }) => {
   const checkID = () => {
     const loginId = form.getFieldsValue().loginId;
     const url = API.IDCHECK + `/${loginId}/exists`;
-    console.log("id", loginId);
+  
     if (loginId === undefined) {
       alert("공백은 허용되지 않습니다", loginId);
       return;

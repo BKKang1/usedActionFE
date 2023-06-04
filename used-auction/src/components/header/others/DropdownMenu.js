@@ -88,8 +88,7 @@ const DropdownMenu = ({ categoryId, setSelected, selected }) => {
   const onSelect = (selectedKeys) => {
     categoryId.current = selectedKeys.key;
     setSelected(items.at(selectedKeys.key).label);
-    console.log(selectedKeys);
-    console.log(categoryId.current);
+
   };
   return (
     <Dropdown
