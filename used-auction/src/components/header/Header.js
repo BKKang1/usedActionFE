@@ -192,7 +192,7 @@ const Headers = () => {
               <BellOutlined style={bellIconSize} onClick={openModal}/>
             </Badge>
             <Modal
-              title="거래확정"
+              title="알림"
               open={isModalOpen}
               onCancel={handleCancel}
               footer={false}
