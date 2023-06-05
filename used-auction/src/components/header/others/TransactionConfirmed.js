@@ -30,12 +30,18 @@ const checkStyle = {
     color: "blue"
 };
 
+const buttonBoxStyle = {
+    display: "flex",
+};
+
 const buttonStyle = {
     marginLeft: "10px",
+    marginBottom: "5px"
     //backgroundColor: "grey",
 };
 
 const TransactionConfirmed = ({count}) => {
+    const navigate = useNavigate();
     const [listData1, setListData1] = useState();
     const [listData2, setListData2] = useState();
     const [selectedSegment, setSelectedSegment] = useState('거래확정');
@@ -115,6 +121,19 @@ const TransactionConfirmed = ({count}) => {
         });
     };
 
+    const addChatRoom = (e) => {
+        axios
+          .post(API.CHATROOMLIST + `/${e.productId}`)
+          .then((response) => {
+            console.log(response.data.result);
+            navigate(`/chattingRoom`);
+          })
+          .catch((error) => {
+            console.log(error.response.data.msg);
+            alert(error.response.data.msg);
+          });
+    };
+
     return (
       <div>
         <Segmented options={['거래확정', '기타알림']} value={selectedSegment} onChange={setSelectedSegment}/>
@@ -164,31 +183,47 @@ const TransactionConfirmed = ({count}) => {
                             <span style={infoStyle}>
                             {item.endPrice+"원"}
                             </span>
+                            <span style={infoStyle}>
+                            {item.content}
+                            </span>
                         </div>
                     }
                     />
-                    <Button 
-                    type="primary" 
-                    style={buttonStyle} 
-                    onClick={
-                        ()=>{
-                            console.log(item); 
-                            transComplete(item);
-                        }
-                    }>
-                        거래 성공
-                    </Button>
-                    <Button 
-                    type="primary" 
-                    style={buttonStyle} 
-                    onClick={
-                        ()=>{
-                            console.log(item); 
-                            transReject(item);
-                        }
-                    }>
-                        거래 실패
-                    </Button>
+                    <div style={buttonBoxStyle}>
+                        <Button 
+                        type="primary" 
+                        style={buttonStyle} 
+                        onClick={
+                            ()=>{
+                                console.log(item); 
+                                transComplete(item);
+                            }
+                        }>
+                            거래성공
+                        </Button>
+                        <Button 
+                        type="primary" 
+                        style={buttonStyle} 
+                        onClick={
+                            ()=>{
+                                console.log(item); 
+                                transReject(item);
+                            }
+                        }>
+                            거래실패
+                        </Button>
+                        <Button 
+                        type="primary" 
+                        style={buttonStyle} 
+                        onClick={
+                            ()=>{
+                                console.log(item); 
+                                addChatRoom(item);
+                            }
+                        }>
+                            채팅하기
+                        </Button>
+                    </div>
                 </List.Item>
                 )}
             />:
